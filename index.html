@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مدیریت ساختمان پلاک ۳</title>
+    <!-- اضافه کردن فونت زیبای Vazirmatn -->
+    <link href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css" rel="stylesheet">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-bottom: 80px; /* فضای خالی برای منوی پایینی موبایل */
+            font-size: 14px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 16px 40px 16px;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* کارت‌های خلاصه وضعیت بالای صفحه */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 16px;
+            margin-top: -24px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+        }
+
+        .stat-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-value.income { color: var(--success); }
+        .stat-value.expense { color: var(--danger); }
+
+        /* بخش اصلی محتوا */
+        .main-content {
+            padding: 0 16px;
+        }
+
+        /* تب‌ها و محتوای آن‌ها */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* استایل کارت‌های لیست واحدها */
+        .unit-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .unit-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .unit-status-badge {
+            padding: 4px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .status-paid { background: #d1fae5; color: #065f46; }
+        .status-unpaid { background: #fee2e2; color: #991b1b; }
+
+        .unit-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .unit-detail-item span {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* دکمه‌های شناور و ناوبری پایین صفحه (مثل اپلیکیشن) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            width: 25%;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+        }
+
+        /* پنجره‌های پاپ‌آپ (Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: flex-end; /* برای موبایل از پایین باز شود */
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 500px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 24px;
+            animation: slideUp 0.3s ease-out;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* استایل فرم‌ها */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #f8fafc;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        /* حالت پرینت بهینه */
+        @media print {
+            body { background: white; padding-bottom: 0; }
+            .bottom-nav, .no-print { display: none !important; }
+            .main-content { padding: 0; }
+            .unit-card { page-break-inside: avoid; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="no-print">
+        <h1 class="header-title">پلاک ۳</h1>
+        <p class="header-subtitle">مدیریت مالی و هزینه‌های ساختمان</p>
+    </header>
+
+    <!-- کارت‌های آمار سریع -->
+    <div class="stats-container no-print">
+        <div class="stat-card">
+            <div class="stat-title">جمع مخارج ماه جاری</div>
+            <div id="total-expenses" class="stat-value expense">۰ ریال</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">کل دریافتی از واحدها</div>
+            <div id="total-collected" class="stat-value income">۰ ریال</div>
+        </div>
+    </div>
+
+    <!-- محتوای اصلی -->
+    <div class="main-content">
+        <!-- تب وضعیت واحدها (صفحه اصلی) -->
+        <div id="tab-units" class="tab-content active">
+            <div id="units-list">
+                <!-- واحدها به صورت پویا با جاوااسکریپت اینجا ساخته می‌شوند -->
+            </div>
+        </div>
+
+        <!-- تب هزینه‌ها -->
+        <div id="tab-expenses" class="tab-content">
+            <div class="unit-card">
+                <h3 style="margin-bottom: 12px;">ثبت هزینه‌های دوره</h3>
+                <button class="btn btn-primary" onclick="openModal('modal-add-expense')">+ ثبت هزینه جدید (آب، برق و...)</button>
+            </div>
+            <div id="expenses-list" style="margin-top: 12px;"></div>
+        </div>
+
+        <!-- تب تنظیمات -->
+        <div id="tab-settings" class="tab-content">
+            <div class="unit-card">
+                <h3>تنظیمات کلی ساختمان</h3>
+                <br>
+                <button class="btn btn-secondary" onclick="openModal('modal-edit-units')" style="margin-bottom: 8px;">ویرایش نام واحدها و تعداد نفرات</button>
+                <button class="btn btn-secondary" onclick="exportData()">پشتیبان‌گیری از داده‌ها (خروجی متنی)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- منوی پایینی (Navigation) -->
+    <nav class="bottom-nav no-print">
+        <button class="nav-item active" onclick="switchTab('units')">
+            <span class="nav-icon">📊</span>
+            <span>واحدها</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('expenses')">
+            <span class="nav-icon">💸</span>
+            <span>هزینه‌ها</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('settings')">
+            <span class="nav-icon">⚙️</span>
+            <span>تنظیمات</span>
+        </button>
+    </nav>
+
+    <!-- مودال ثبت هزینه جدید -->
+    <div id="modal-add-expense" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">ثبت هزینه جدید</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-expense')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">عنوان هزینه</label>
+                <input type="text" id="expense-title" class="form-control" placeholder="مثال: قبض گاز، سرویس آسانسور">
+            </div>
+            <div class="form-group">
+                <label class="form-label">مبلغ (ریال)</label>
+                <input type="number" id="expense-amount" class="form-control" placeholder="مبلغ به ریال">
+            </div>
+            <div class="form-group">
+                <label class="form-label">نوع تقسیم هزینه</label>
+                <select id="expense-split-type" class="form-control">
+                    <option value="people">بر اساس تعداد نفرات</option>
+                    <option value="equal">به طور مساوی بین واحدها</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveExpense()">ثبت هزینه</button>
+        </div>
+    </div>
+
+    <!-- مودال پرداخت وجه واحدها -->
+    <div id="modal-payment" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="payment-title">ثبت پرداخت برای واحد</h3>
+                <button class="modal-close" onclick="closeModal('modal-payment')">×</button>
+            </div>
+            <input type="hidden" id="payment-unit-id">
+            <div class="form-group">
+                <label class="form-label">مبلغ پرداختی (ریال)</label>
+                <input type="number" id="payment-amount" class="form-control">
+            </div>
+            <button class="btn btn-primary" onclick="submitPayment()">تایید و ثبت پرداخت</button>
+        </div>
+    </div>
+
+    <script>
+        // ساختار اولیه داده‌ها در صورت نبود اطلاعات در LocalStorage
+        let db = JSON.parse(localStorage.getItem('building_db')) || {
+            units: [
+                { id: 1, name: "واحد ۱", people: 3, paid: 0, balance: 0 },
+                { id: 2, name: "واحد ۲", people: 1, paid: 0, balance: 0 },
+                { id: 3, name: "واحد ۳", people: 4, paid: 0, balance: 0 },
+                { id: 4, name: "واحد ۴", people: 2, paid: 0, balance: 0 }
+            ],
+            expenses: [],
+            totalExpenses: 0
+        };
+
+        function saveData() {
+            localStorage.setItem('building_db', JSON.stringify(db));
+            render();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // توابع محاسباتی و نمایشی دیگر...
+        function render() {
+            // رندر کردن لیست واحدها و محاسبات مالی با توجه به مقادیر جدید
+            const unitsList = document.getElementById('units-list');
+            unitsList.innerHTML = '';
+            
+            let totalPaid = 0;
+            db.units.forEach(unit => {
+                totalPaid += unit.paid;
+                // محاسبه سهم واحد از کل هزینه‌ها بر اساس منطق پیاده‌سازی شده
+                let unitShare = 0; 
+                db.expenses.forEach(exp => {
+                    if (exp.type === 'equal') {
+                        unitShare += exp.amount / db.units.length;
+                    } else {
+                        const totalPeople = db.units.reduce((sum, u) => sum + u.people, 0);
+                        unitShare += (exp.amount / totalPeople) * unit.people;
+                    }
+                });
+
+                const debt = Math.round(unitShare - unit.paid);
+                const statusText = debt <= 0 ? 'تسویه شده' : `بدهکار: ${debt.toLocaleString()} ریال`;
+                const statusClass = debt <= 0 ? 'status-paid' : 'status-unpaid';
+
+                unitsList.innerHTML += `
+                    <div class="unit-card">
+                        <div class="unit-header">
+                            <span class="unit-name">${unit.name}</span>
+                            <span class="unit-status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="unit-details-grid">
+                            <div class="unit-detail-item">تعداد نفرات: <span>${unit.people} نفر</span></div>
+                            <div class="unit-detail-item">سهم هزینه: <span>${Math.round(unitShare).toLocaleString()} ریال</span></div>
+                            <div class="unit-detail-item">پرداختی: <span>${unit.paid.toLocaleString()} ریال</span></div>
+                        </div>
+                        <button class="btn btn-secondary" style="margin-top:12px; padding:8px 12px; font-size:0.85rem;" onclick="openPaymentModal(${unit.id}, ${debt})">ثبت پرداخت</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('total-expenses').innerText = `${db.expenses.reduce((sum, e) => sum + e.amount, 0).toLocaleString()} ریال`;
+            document.getElementById('total-collected').innerText = `${totalPaid.toLocaleString()} ریال`;
+        }
+
+        function openPaymentModal(unitId, debt) {
+            const unit = db.units.find(u => u.id === unitId);
+            document.getElementById('payment-unit-id').value = unitId;
+            document.getElementById('payment-title').innerText = `ثبت پرداخت برای ${unit.name}`;
+            document.getElementById('payment-amount').value = debt > 0 ? debt : 0;
+            openModal('modal-payment');
+        }
+
+        function submitPayment() {
+            const id = parseInt(document.getElementById('payment-unit-id').value);
+            const amount = parseInt(document.getElementById('payment-amount').value) || 0;
+            const unit = db.units.find(u => u.id === id);
+            unit.paid += amount;
+            saveData();
+            closeModal('modal-payment');
+        }
+
+        function saveExpense() {
+            const title = document.getElementById('expense-title').value;
+            const amount = parseInt(document.getElementById('expense-amount').value) || 0;
+            const type = document.getElementById('expense-split-type').value;
+
+            if(!title || amount <= 0) return alert('اطلاعات معتبر وارد کنید.');
+
+            db.expenses.push({ title, amount, type });
+            saveData();
+            closeModal('modal-add-expense');
+            document.getElementById('expense-title').value = '';
+            document.getElementById('expense-amount').value = '';
+        }
+
+        // بارگذاری اولیه
+        render();
+    </script>
+</body>
+</html>
