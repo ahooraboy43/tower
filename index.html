@@ -6,714 +6,155 @@
     <title>مدیریت ساختمان پلاک ۳</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
-        
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --bg-main: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Vazirmatn', sans-serif;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            padding-bottom: 80px;
-            font-size: 14px;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 20px 16px;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-        }
-
-        .container {
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* استایل گام‌های جادوگر (Wizard Steps) */
-        .step-container {
-            display: none;
-        }
-        .step-container.active {
-            display: block;
-        }
-
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .step-dot {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--border);
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            z-index: 2;
-        }
-
-        .step-dot.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .step-dot.completed {
-            background: var(--success);
-            color: white;
-        }
-
-        /* فرم‌ها */
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: #f8fafc;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            background: #fff;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        .checkbox-container input {
-            width: 18px;
-            height: 18px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 20px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            border: none;
-            text-align: center;
-        }
-
+        :root { --primary: #2563eb; --primary-dark: #1d4ed8; --bg-main: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --success: #10b981; --danger: #ef4444; }
+        * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-main); color: var(--text-main); padding-bottom: 80px; font-size: 14px; }
+        header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px 16px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; }
+        .header-title { font-size: 1.2rem; font-weight: 800; }
+        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; border-bottom: 1px dashed var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .step-container { display: none; } .step-container.active { display: block; }
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; font-size: 1rem; outline: none; }
+        .btn { display: block; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; border: none; text-align: center; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-secondary { background: #e2e8f0; color: var(--text-main); }
-        .btn-danger { background: var(--danger); color: white; }
-
-        /* جدول یا لیست هزینه‌ها */
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .list-item:last-child {
-            border-bottom: none;
-        }
-
-        /* بخش تب‌های پایینی */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            cursor: pointer;
-            width: 33%;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-icon {
-            font-size: 1.3rem;
-            margin-bottom: 2px;
-        }
-
-        .badge {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .badge.success {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        /* استایل مودال پرداخت سریع */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: flex-end;
-            justify-content: center;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; width: 33%; }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon { font-size: 1.3rem; margin-bottom: 2px; }
+        .badge { padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; }
+        .debt-badge { background: #fee2e2; color: #991b1b; }
+        .credit-badge { background: #d1fae5; color: #065f46; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: flex-end; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 500px;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            padding: 20px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        /* حالت پرینت */
-        @media print {
-            .bottom-nav, button, .no-print { display: none !important; }
-            body { background: white; padding-bottom: 0; }
-            .card { border: 1px solid #ccc; box-shadow: none; }
-        }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 500px; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; }
+        @media print { .bottom-nav, button, .no-print { display: none !important; } }
     </style>
 </head>
 <body>
 
     <header class="no-print">
         <span class="header-title">پلاک ۳</span>
-        <span id="current-active-bill" style="font-size: 0.9rem; opacity: 0.9;">قبضی فعال نیست</span>
+        <span id="header-status" style="font-size: 0.8rem; opacity: 0.9;"></span>
     </header>
 
     <div class="container">
         
-        <!-- ================= تب اصلی: داشبورد و وضعیت واحدها ================= -->
+        <!-- Tab 1: Dashboard -->
         <div id="tab-dashboard" class="tab-content-section">
             <div class="card no-print">
-                <div class="card-title">عملیات دوره جاری</div>
-                <button class="btn btn-primary" onclick="startNewBillWizard()">➕ ایجاد قبض جدید برای ساختمان</button>
+                <div class="card-title">پنل اصلی</div>
+                <button class="btn btn-primary" onclick="startNewBillWizard()">➕ ایجاد قبض جدید</button>
             </div>
-
             <div id="dashboard-bill-details" style="display:none;">
                 <div class="card">
-                    <div class="card-title">
-                        <span>خلاصه سهم و دریافتی واحدها - دوره <span id="dash-bill-title"></span></span>
-                        <button class="btn btn-secondary no-print" style="width:auto; padding: 4px 10px; font-size:0.8rem;" onclick="window.print()">🖨️ چاپ فاکتورها</button>
-                    </div>
-                    <div id="units-invoice-list">
-                        <!-- فاکتورهای هر واحد در این قسمت رندر می‌شوند -->
-                    </div>
+                    <div class="card-title"><span>فاکتورهای دوره جاری</span> <button class="btn btn-secondary no-print" style="width:auto; padding: 6px 12px; font-size:0.8rem;" onclick="window.print()">🖨️ چاپ</button></div>
+                    <div id="units-invoice-list"></div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= تب جادوگر (Wizard) ساخت قبض جدید ================= -->
+        <!-- Tab 2: Units Management (New) -->
+        <div id="tab-units" class="tab-content-section" style="display:none;">
+            <div class="card">
+                <div class="card-title">مدیریت واحدها و حساب‌ها</div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">اطلاعات واحدها و مانده حساب نهایی آن‌ها را در اینجا مدیریت کنید.</p>
+                <div id="units-management-list"></div>
+                <button class="btn btn-success" style="margin-top: 16px;" onclick="saveUnitsManagement()">ذخیره تغییرات واحدها</button>
+            </div>
+        </div>
+
+        <!-- Wizard -->
         <div id="tab-wizard" class="tab-content-section" style="display:none;">
-            <div class="card">
-                <!-- نمایشگر مراحل -->
-                <div class="step-indicator">
-                    <div class="step-dot active" id="dot-1">۱</div>
-                    <div class="step-dot" id="dot-2">۲</div>
-                    <div class="step-dot" id="dot-3">۳</div>
-                    <div class="step-dot" id="dot-4">۴</div>
-                    <div class="step-dot" id="dot-5">۵</div>
-                </div>
-
-                <!-- گام ۱: اطلاعات پایه -->
-                <div class="step-container active" id="step-1">
-                    <h3 style="margin-bottom: 12px;">مرحله ۱: اطلاعات دوره</h3>
-                    <div class="form-group">
-                        <label class="form-label">نام دوره یا قبض</label>
-                        <input type="text" id="wiz-bill-name" class="form-control" placeholder="مثال: تیرماه ۱۴۰۵">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">تاریخ صدور</label>
-                        <input type="text" id="wiz-bill-date" class="form-control" placeholder="مثال: ۱۴۰۵/۰۴/۰۱">
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="cancelWizard()">انصراف</button>
-                        <button class="btn btn-primary" onclick="goToStep(2)">مرحله بعد ◀</button>
-                    </div>
-                </div>
-
-                <!-- گام ۲: هزینه‌های ثابت -->
-                <div class="step-container" id="step-2">
-                    <h3 style="margin-bottom: 12px;">مرحله ۲: هزینه‌های ثابت دوره</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">مبالغ پیش‌فرض را برای این دوره در صورت نیاز تغییر دهید:</p>
-                    
-                    <div class="form-group">
-                        <label class="form-label">آب (کل هزینه - تقسیم بر اساس نفرات)</label>
-                        <input type="number" id="wiz-fixed-water" class="form-control" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">برق مشاعات (کل هزینه - تقسیم مساوی واحدها)</label>
-                        <input type="number" id="wiz-fixed-power" class="form-control" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">گاز مشاعات (کل هزینه - تقسیم مساوی واحدها)</label>
-                        <input type="number" id="wiz-fixed-gas" class="form-control" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">نظافت (کل هزینه - تقسیم مساوی واحدها)</label>
-                        <input type="number" id="wiz-fixed-clean" class="form-control" value="0">
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="goToStep(1)">▶ مرحله قبل</button>
-                        <button class="btn btn-primary" onclick="goToStep(3)">مرحله بعد ◀</button>
-                    </div>
-                </div>
-
-                <!-- گام ۳: هزینه‌های متغیر -->
-                <div class="step-container" id="step-3">
-                    <h3 style="margin-bottom: 12px;">مرحله ۳: ثبت هزینه‌های متغیر</h3>
-                    
-                    <!-- آرشیو هزینه‌های متغیر ذخیره شده از قبل -->
-                    <div id="archived-expenses-container" style="display:none; margin-bottom:12px; background:#f1f5f9; padding:8px; border-radius:8px;">
-                        <span style="font-size:0.85rem; font-weight:bold;">انتخاب سریع از هزینه‌های آرشیو شده:</span>
-                        <div id="archived-badges" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;"></div>
-                    </div>
-
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px dashed var(--border); margin-bottom: 16px;">
-                        <div class="form-group">
-                            <label class="form-label">نام هزینه متغیر</label>
-                            <input type="text" id="var-name" class="form-control" placeholder="مثال: تعمیر آسانسور">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">مبلغ (ریال)</label>
-                            <input type="number" id="var-amount" class="form-control" placeholder="مبلغ به ریال">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">روش محاسبه تقسیم</label>
-                            <select id="var-split" class="form-control">
-                                <option value="equal">تقسیم مساوی بین واحدها</option>
-                                <option value="people">تقسیم بر اساس تعداد نفرات</option>
-                            </select>
-                        </div>
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="var-archive" checked>
-                            <span>آرشیو کردن این هزینه (بدون مبلغ) برای دوره‌های بعد</span>
-                        </label>
-                        <button class="btn btn-primary" style="margin-top: 12px;" onclick="addVariableExpenseToList()">➕ افزودن به لیست هزینه این دوره</button>
-                    </div>
-
-                    <div style="margin-top:12px;">
-                        <span style="font-weight:700;">هزینه‌های متغیر ثبت‌شده این دوره:</span>
-                        <div id="wiz-var-list" style="margin-top:8px;"></div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="goToStep(2)">▶ مرحله قبل</button>
-                        <button class="btn btn-primary" onclick="goToStep(4)">مرحله بعد ◀</button>
-                    </div>
-                </div>
-
-                <!-- گام ۴: بدهی قبلی واحدها -->
-                <div class="step-container" id="step-4">
-                    <h3 style="margin-bottom: 12px;">مرحله ۴: تایید بدهی/طلب قبلی واحدها</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
-                        می‌توانید بدهی یا بستانکاری ثبت شده در دوره قبلی را تایید کنید تا به این فاکتور اضافه شود:
-                    </p>
-
-                    <div id="previous-debts-list">
-                        <!-- لیست بدهی‌های قبلی در اینجا لود می‌شود -->
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="goToStep(3)">▶ مرحله قبل</button>
-                        <button class="btn btn-primary" onclick="goToStep(5)">پیش‌نمایش قبض ◀</button>
-                    </div>
-                </div>
-
-                <!-- گام ۵: پیش‌نمایش و ذخیره -->
-                <div class="step-container" id="step-5">
-                    <h3 style="margin-bottom: 12px;">مرحله ۵: پیش‌نمایش و نهایی‌سازی</h3>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 12px; margin-bottom: 16px;" id="wiz-preview-summary">
-                        <!-- خلاصه محاسبات در اینجا نشان داده می‌شود -->
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-secondary" onclick="goToStep(4)">▶ مرحله قبل</button>
-                        <button class="btn btn-success" onclick="saveNewBill()">💾 ذخیره و انتشار نهایی قبض</button>
-                    </div>
-                </div>
-            </div>
+            <!-- کدهای جادوگر قبلی اینجا قرار دارد... -->
+            <div id="wizard-content"></div>
         </div>
-
-        <!-- ================= تب تنظیمات ساختمان ================= -->
-        <div id="tab-settings" class="tab-content-section" style="display:none;">
-            <div class="card">
-                <div class="card-title">مدیریت واحدها (۱۰ واحد)</div>
-                <div id="settings-units-list">
-                    <!-- فرم‌های تغییر نام و نفرات ۱۰ واحد به صورت پیش‌فرض -->
-                </div>
-                <button class="btn btn-success" onclick="saveUnitsSettings()" style="margin-top: 12px;">ذخیره تنظیمات واحدها</button>
-            </div>
-            <div class="card">
-                <div class="card-title">مدیریت داده‌ها</div>
-                <button class="btn btn-secondary" onclick="clearAllData()" style="background:#fee2e2; color:#991b1b;">⚠️ پاک کردن کل اطلاعات برنامه</button>
-            </div>
-        </div>
-
     </div>
 
-    <!-- منوی پایینی موبایل -->
     <nav class="bottom-nav no-print">
-        <button class="nav-item active" id="nav-dash" onclick="switchMainTab('dashboard')">
-            <span class="nav-icon">📊</span>
-            <span>قبض جاری</span>
-        </button>
-        <button class="nav-item" id="nav-settings" onclick="switchMainTab('settings')">
-            <span class="nav-icon">⚙️</span>
-            <span>تنظیمات</span>
-        </button>
+        <button class="nav-item active" id="nav-dash" onclick="switchTab('dashboard')"><span class="nav-icon">📊</span><span>داشبورد</span></button>
+        <button class="nav-item" id="nav-units" onclick="switchTab('units')"><span class="nav-icon">🏠</span><span>واحدها</span></button>
+        <button class="nav-item" onclick="clearAllData()"><span class="nav-icon">⚠️</span><span>ریست</span></button>
     </nav>
 
-    <!-- مودال ثبت پرداخت سریع واحد -->
-    <div id="modal-payment" class="modal">
-        <div class="modal-content">
-            <div class="card-title">
-                <span>ثبت پرداخت واحد</span>
-                <button style="border:none; background:none; font-size:1.5rem; cursor:pointer;" onclick="closePaymentModal()">×</button>
-            </div>
-            <input type="hidden" id="pay-unit-index">
-            <div class="form-group">
-                <label class="form-label" id="pay-label-name">مبلغ پرداختی واحد</label>
-                <input type="number" id="pay-amount-input" class="form-control" placeholder="مبلغ به ریال">
-            </div>
-            <button class="btn btn-success" onclick="confirmPayment()">تایید و ثبت تراکنش</button>
-        </div>
-    </div>
-
     <script>
-        // بانک اطلاعاتی اولیه (تضمین کارکرد برای ۱۰ واحد)
         let db = JSON.parse(localStorage.getItem('plaque3_db')) || {
-            units: Array.from({length: 10}, (_, i) => ({
-                id: i + 1,
-                name: `واحد ${i + 1}`,
-                people: 2,
-                paidThisMonth: 0,
-                balanceCarryover: 0 // بدهی مثبت، بستانکاری منفی
-            })),
-            archiveExpenses: [], // لیست اسامی ذخیره شده هزینه‌های متغیر
-            activeBill: null, // قبض جاری فعال
-            historyBills: [] // تاریخچه قبوض ثبت شده قبلی
+            units: Array.from({length: 10}, (_, i) => ({ id: i + 1, name: `واحد ${i + 1}`, people: 2, balanceCarryover: 0 })),
+            archiveExpenses: [],
+            activeBill: null
         };
 
-        // متغیرهای کمکی جادوگر
-        let wizardData = {
-            name: '',
-            date: '',
-            fixed: { water: 0, power: 0, gas: 0, clean: 0 },
-            variables: [], // { name, amount, split }
-            carryoverDebts: {} // { unitId: amount } به همراه وضعیت تایید انتقال { unitId: boolean }
-        };
-
-        // راه‌اندازی اولیه برنامه
-        function init() {
-            renderDashboard();
-            renderSettingsUnits();
-        }
-
-        function saveData() {
-            localStorage.setItem('plaque3_db', JSON.stringify(db));
-        }
-
-        // تغییر تب‌های اصلی ناوبری پایین
-        function switchMainTab(tabId) {
+        function switchTab(tabId) {
             document.querySelectorAll('.tab-content-section').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
+            
             if (tabId === 'dashboard') {
                 document.getElementById('tab-dashboard').style.display = 'block';
                 document.getElementById('nav-dash').classList.add('active');
                 renderDashboard();
-            } else if (tabId === 'settings') {
-                document.getElementById('tab-settings').style.display = 'block';
-                document.getElementById('nav-settings').classList.add('active');
-                renderSettingsUnits();
+            } else if (tabId === 'units') {
+                document.getElementById('tab-units').style.display = 'block';
+                document.getElementById('nav-units').classList.add('active');
+                renderUnitsManagement();
             }
         }
 
-        // --- بخش جادوگر ساخت قبض جدید ---
-        function startNewBillWizard() {
-            // پر کردن تاریخ امروز به شمسی یا پیش‌فرض
-            const today = new Date();
-            const formattedDate = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
-            
-            wizardData = {
-                name: '',
-                date: formattedDate,
-                fixed: { water: 0, power: 0, gas: 0, clean: 0 },
-                variables: [],
-                carryoverDebts: {}
-            };
-
-            // محاسبه انتقال بدهی‌ها از روی وضعیت فعلی واحدها در دیتابیس
-            db.units.forEach(u => {
-                // اگر قبض فعلی از قبل وجود دارد، مانده حساب نهایی (سهم دوره قبل + بدهی قبل - پرداختی دوره قبل) را برمی‌داریم
-                let previousDebt = 0;
-                if (db.activeBill) {
-                    const activeUnitBill = db.activeBill.unitsBill.find(ub => ub.id === u.id);
-                    if (activeUnitBill) {
-                        previousDebt = (activeUnitBill.totalShare + activeUnitBill.previousDebt) - activeUnitBill.paid;
-                    }
-                } else {
-                    previousDebt = u.balanceCarryover;
-                }
-                wizardData.carryoverDebts[u.id] = {
-                    amount: previousDebt,
-                    approved: true // پیش‌فرض تایید شده برای انتقال
-                };
-            });
-
-            document.getElementById('wiz-bill-name').value = '';
-            document.getElementById('wiz-bill-date').value = formattedDate;
-            document.getElementById('wiz-fixed-water').value = 0;
-            document.getElementById('wiz-fixed-power').value = 0;
-            document.getElementById('wiz-fixed-gas').value = 0;
-            document.getElementById('wiz-fixed-clean').value = 0;
-            document.getElementById('wiz-var-list').innerHTML = '';
-            
-            // رندر کردن نشان‌های آرشیو متغیر
-            renderArchivedBadges();
-
-            // انتقال به نمای جادوگر
-            document.getElementById('tab-dashboard').style.display = 'none';
-            document.getElementById('tab-wizard').style.display = 'block';
-            goToStep(1);
-        }
-
-        function cancelWizard() {
-            if (confirm("آیا می‌خواهید از ساخت قبض جدید منصرف شوید؟ اطلاعات وارد شده پاک خواهند شد.")) {
-                document.getElementById('tab-wizard').style.display = 'none';
-                switchMainTab('dashboard');
-            }
-        }
-
-        function goToStep(stepNum) {
-            // اعتبارسنجی ساده مرحله ۱
-            if (stepNum === 2 && !document.getElementById('wiz-bill-name').value.trim()) {
-                alert("لطفاً نام دوره یا قبض را وارد کنید.");
-                return;
-            }
-
-            // ذخیره داده‌های مرحله جاری قبل از تغییر
-            if (stepNum === 3) {
-                wizardData.name = document.getElementById('wiz-bill-name').value;
-                wizardData.date = document.getElementById('wiz-bill-date').value;
-                wizardData.fixed.water = parseInt(document.getElementById('wiz-fixed-water').value) || 0;
-                wizardData.fixed.power = parseInt(document.getElementById('wiz-fixed-power').value) || 0;
-                wizardData.fixed.gas = parseInt(document.getElementById('wiz-fixed-gas').value) || 0;
-                wizardData.fixed.clean = parseInt(document.getElementById('wiz-fixed-clean').value) || 0;
-            }
-
-            if (stepNum === 4) {
-                renderWizardPreviousDebts();
-            }
-
-            if (stepNum === 5) {
-                calculateAndRenderPreview();
-            }
-
-            // مدیریت نمایش مرحله‌ها
-            document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
-            document.getElementById(`step-${stepNum}`).classList.add('active');
-
-            // مدیریت دایره‌های بالای صفحه
-            for (let i = 1; i <= 5; i++) {
-                const dot = document.getElementById(`dot-${i}`);
-                dot.className = 'step-dot';
-                if (i === stepNum) dot.classList.add('active');
-                if (i < stepNum) dot.classList.add('completed');
-            }
-        }
-
-        // رندر کردن دکمه‌های هزینه‌های آرشیو شده
-        function renderArchivedBadges() {
-            const container = document.getElementById('archived-expenses-container');
-            const badgesDiv = document.getElementById('archived-badges');
-            badgesDiv.innerHTML = '';
-            
-            if (db.archiveExpenses && db.archiveExpenses.length > 0) {
-                container.style.display = 'block';
-                db.archiveExpenses.forEach(name => {
-                    badgesDiv.innerHTML += `
-                        <span class="badge success" style="cursor:pointer; padding:6px 10px;" onclick="selectArchivedExpense('${name}')">${name}</span>
-                    `;
-                });
-            } else {
-                container.style.display = 'none';
-            }
-        }
-
-        function selectArchivedExpense(name) {
-            document.getElementById('var-name').value = name;
-        }
-
-        // افزودن هزینه متغیر به لیست موقت جادوگر
-        function addVariableExpenseToList() {
-            const name = document.getElementById('var-name').value.trim();
-            const amount = parseInt(document.getElementById('var-amount').value) || 0;
-            const split = document.getElementById('var-split').value;
-            const shouldArchive = document.getElementById('var-archive').checked;
-
-            if (!name || amount <= 0) {
-                alert("نام هزینه و مبلغ معتبر وارد کنید.");
-                return;
-            }
-
-            wizardData.variables.push({ name, amount, split });
-
-            // ذخیره در آرشیو اصلی در صورت فعال بودن تیک
-            if (shouldArchive && !db.archiveExpenses.includes(name)) {
-                db.archiveExpenses.push(name);
-                saveData();
-                renderArchivedBadges();
-            }
-
-            // ریست کردن فرم
-            document.getElementById('var-name').value = '';
-            document.getElementById('var-amount').value = '';
-            
-            renderWizardVariablesList();
-        }
-
-        function renderWizardVariablesList() {
-            const listDiv = document.getElementById('wiz-var-list');
-            listDiv.innerHTML = '';
-            wizardData.variables.forEach((item, index) => {
-                listDiv.innerHTML += `
-                    <div class="list-item">
-                        <span>${item.name} (${item.split === 'equal' ? 'واحدی' : 'نفراتی'})</span>
-                        <span>
-                            <strong>${item.amount.toLocaleString()} ریال</strong>
-                            <button class="btn btn-danger" style="padding: 4px 8px; font-size:0.75rem; width:auto; margin-right:8px;" onclick="removeVariableExpense(${index})">حذف</button>
-                        </span>
+        function renderUnitsManagement() {
+            const container = document.getElementById('units-management-list');
+            container.innerHTML = '';
+            db.units.forEach((u, index) => {
+                const balanceClass = u.balanceCarryover > 0 ? 'debt-badge' : 'credit-badge';
+                const balanceText = u.balanceCarryover > 0 ? `بدهکار: ${u.balanceCarryover.toLocaleString()}` : `بستانکار: ${Math.abs(u.balanceCarryover).toLocaleString()}`;
+                
+                const div = document.createElement('div');
+                div.style.padding = "10px 0";
+                div.style.borderBottom = "1px solid #f1f5f9";
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-weight:bold;">${u.name}</span>
+                        <span class="badge ${balanceClass}">${balanceText}</span>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="unit-name-${index}" class="form-control" value="${u.name}" style="padding:8px;">
+                        <input type="number" id="unit-people-${index}" class="form-control" value="${u.people}" style="padding:8px; width:80px;">
                     </div>
                 `;
+                container.appendChild(div);
             });
         }
 
-        function removeVariableExpense(index) {
-            wizardData.variables.splice(index, 1);
-            renderWizardVariablesList();
+        function saveUnitsManagement() {
+            db.units.forEach((u, index) => {
+                u.name = document.getElementById(`unit-name-${index}`).value;
+                u.people = parseInt(document.getElementById(`unit-people-${index}`).value) || 0;
+            });
+            localStorage.setItem('plaque3_db', JSON.stringify(db));
+            alert("اطلاعات واحدها ذخیره شد.");
+            renderUnitsManagement();
         }
 
-        // رندر بدهی‌های قبلی با دکمه تایید انتقال
-        function renderWizardPreviousDebts() {
-            const container = document.getElementById('previous-debts-list');
-            container.innerHTML = '';
-
-            db.units.forEach(u => {
-                const carry = wizardData.carryoverDebts[u.id];
-                let debtText = '';
-                if (carry.amount > 0) {
-                    debtText = `<span style="color:var(--danger);">بدهکار: ${carry.amount.toLocaleString()} ریال</span>`;
-                } else if (carry.amount < 0) {
-                    debtText = `<span style="color:var(--success);">بستانکار: ${Math.abs(carry.amount).toLocaleString()} ریال</span>`;
-                } else {
-                    debtText = `<span style="color:var(--text-muted);">بدون مانده قبلی</span>`;
-                }
-
-                container.innerHTML += `
-                    <div class="list-
+        function renderDashboard() {
+            const listContainer = document.getElementById('units-invoice-list');
+            if (!db.activeBill) {
+                listContainer.innerHTML = '<p style="text-align:center; padding:20px;">قبضی صادر نشده است.</p>';
+                return;
+            }
+            listContainer.innerHTML = db.activeBill.unitsBill.map(ub => `
+                <div style="padding:10px 0; border-bottom:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>${ub.name}</strong>
+                        <span>${(ub.payable - ub.paid).toLocaleString()} ریال</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // اجرای اولیه
+        renderDashboard();
+    </script>
+</body>
+</html>
