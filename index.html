@@ -7,156 +7,72 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb; --primary-dark: #1d4ed8; --primary-light: #eff6ff;
-            --success: #10b981; --success-light: #ecfdf5;
-            --warning: #f59e0b; --warning-light: #fffbeb;
-            --danger: #ef4444; --danger-light: #fef2f2;
+            --primary: #2563eb; --primary-dark: #1d4ed8;
+            --success: #10b981; --danger: #ef4444; --danger-light: #fef2f2;
             --bg-body: #f8fafc; --bg-card: #ffffff;
             --text-main: #0f172a; --text-muted: #64748b;
             --border-color: #e2e8f0; --radius-md: 12px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
-        body { background: var(--bg-body); color: var(--text-main); padding-bottom: 60px; }
-        .app-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 18px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        body { background: var(--bg-body); color: var(--text-main); padding-bottom: 70px; }
+        .app-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 18px 20px; position: sticky; top: 0; z-index: 100; }
         .container { padding: 16px; max-width: 600px; margin: 0 auto; }
-        .card { background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .card-title { font-weight: 700; margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .btn { display: block; width: 100%; padding: 12px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; cursor: pointer; border: none; text-align: center; margin-top: 8px; }
+        .card { background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
+        .card-title { font-weight: 700; margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; display: flex; justify-content: space-between; }
+        .btn { display: block; width: 100%; padding: 12px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; border: none; text-align: center; margin-top: 8px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 99; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
-        .nav-icon { font-size: 1.3rem; }
-        .badge { padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; }
-        .debt { background: var(--danger-light); color: var(--danger); }
-        .credit { background: var(--success-light); color: var(--success); }
-        .form-group { margin-bottom: 14px; }
-        .form-label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #f8fafc; font-size: 1rem; outline: none; }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: flex-end; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: var(--bg-card); width: 100%; max-width: 500px; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; padding: 20px; }
+        .modal.active { display: block; }
+        .modal-content { background: var(--bg-card); max-width: 500px; margin: 0 auto; border-radius: 20px; padding: 20px; }
         .wizard-step { display: none; }
         .wizard-step.active { display: block; }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <div style="font-size: 1.2rem; font-weight: 800;">پلاک ۳</div>
-    </header>
+    <header class="app-header"><div>پلاک ۳</div></header>
 
     <div class="container">
-        
-        <!-- Tab 1: Dashboard -->
         <div id="tab-dashboard" class="tab-content-section">
-            <div class="card">
-                <div class="card-title">پنل اصلی</div>
-                <button class="btn btn-primary" onclick="openWizard()">➕ ایجاد قبض جدید</button>
-            </div>
-            <div class="card">
-                <div class="card-title">قبض‌های قبلی</div>
-                <div id="previous-bills-list"></div>
-            </div>
+            <div class="card"><button class="btn btn-primary" onclick="openWizard()">➕ ایجاد قبض جدید</button></div>
+            <div class="card"><div class="card-title">قبض‌های صادر شده</div><div id="bills-list"></div></div>
         </div>
-
-        <!-- Tab 2: Units Management -->
         <div id="tab-units" class="tab-content-section" style="display:none;">
-            <div class="card">
-                <div class="card-title">لیست واحدها</div>
-                <div id="units-list"></div>
-            </div>
-        </div>
-
-        <!-- Tab 3: Settings -->
-        <div id="tab-settings" class="tab-content-section" style="display:none;">
-            <div class="card">
-                <div class="card-title">تنظیمات</div>
-                <div id="settings-content"></div>
-            </div>
+            <div class="card"><div class="card-title">لیست واحدها</div><div id="units-list"></div></div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('dashboard')"><span class="nav-icon">📊</span><span>داشبورد</span></button>
-        <button class="nav-item" onclick="switchTab('units')"><span class="nav-icon">🏠</span><span>واحدها</span></button>
-        <button class="nav-item" onclick="switchTab('settings')"><span class="nav-icon">⚙️</span><span>تنظیمات</span></button>
+        <button class="nav-item active" onclick="switchTab('dashboard')"><span>📊</span><span>داشبورد</span></button>
+        <button class="nav-item" onclick="switchTab('units')"><span>🏠</span><span>واحدها</span></button>
     </nav>
 
-    <!-- Wizard Modal -->
+    <!-- Wizard -->
     <div class="modal" id="wizard-modal">
         <div class="modal-content">
-            <div class="card">
-                <div class="card-title">جادوگر ایجاد قبض</div>
-                
-                <!-- Step 1 -->
-                <div class="wizard-step active" id="step1">
-                    <div class="form-group">
-                        <label class="form-label">نام قبض</label>
-                        <input type="text" id="bill-name" class="form-control" placeholder="مثال: قبض خرداد">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">تاریخ صدور (فرمت: YYYY/MM/DD)</label>
-                        <input type="text" id="bill-date" class="form-control" placeholder="مثال: 1403/03/15">
-                    </div>
-                    <button class="btn btn-primary" onclick="nextStep(2)">بعدی</button>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="wizard-step" id="step2">
-                    <div class="card-title">هزینه‌های ثابت</div>
-                    <div class="form-group">
-                        <label class="form-label">آب (نفری)</label>
-                        <input type="number" id="water-cost" class="form-control" value="10000">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">برق (واحدی)</label>
-                        <input type="number" id="electricity-cost" class="form-control" value="20000">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">گاز</label>
-                        <input type="number" id="gas-cost" class="form-control" value="15000">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">نظافت (واحدی)</label>
-                        <input type="number" id="cleaning-cost" class="form-control" value="8000">
-                    </div>
-                    <button class="btn btn-primary" onclick="nextStep(3)">بعدی</button>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="wizard-step" id="step3">
-                    <div class="card-title">هزینه‌های متغیر</div>
-                    <div id="variable-expenses-list"></div>
-                    <div class="form-group">
-                        <input type="text" id="new-expense-name" class="form-control" placeholder="نام هزینه">
-                    </div>
-                    <div class="form-group">
-                        <input type="number" id="new-expense-amount" class="form-control" placeholder="مبلغ">
-                    </div>
-                    <div class="form-group">
-                        <label><input type="checkbox" id="archive-expense"> آرشیو کن</label>
-                    </div>
-                    <button class="btn btn-success" onclick="addVariableExpense()">افزودن</button>
-                    <button class="btn btn-primary" onclick="nextStep(4)">بعدی</button>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="wizard-step" id="step4">
-                    <div class="card-title">انتقال بدهی</div>
-                    <div id="debt-transfer-list"></div>
-                    <button class="btn btn-primary" onclick="nextStep(5)">بعدی</button>
-                </div>
-
-                <!-- Step 5 -->
-                <div class="wizard-step" id="step5">
-                    <div class="card-title">پیش‌نمایش</div>
-                    <div id="preview-content"></div>
-                    <button class="btn btn-success" onclick="finalizeBill()">تایید نهایی</button>
-                </div>
+            <div class="wizard-step active" id="step1">
+                <h3>اطلاعات قبض</h3>
+                <input type="text" id="bill-name" class="form-control" placeholder="مثال: قبض تیر">
+                <input type="text" id="bill-date" class="form-control" placeholder="تاریخ: 1404/04/01">
+                <button class="btn btn-primary" onclick="nextStep(2)">بعدی</button>
+            </div>
+            <div class="wizard-step" id="step2">
+                <h3>مبالغ کل (به ریال)</h3>
+                <input type="number" id="w-water" class="form-control" placeholder="کل آب (نفراتی)">
+                <input type="number" id="w-elec" class="form-control" placeholder="کل برق (واحدی)">
+                <input type="number" id="w-gas" class="form-control" placeholder="کل گاز (واحدی)">
+                <input type="number" id="w-clean" class="form-control" placeholder="کل نظافت (واحدی)">
+                <button class="btn btn-primary" onclick="nextStep(5)">پیش‌نمایش نهایی</button>
+            </div>
+            <div class="wizard-step" id="step5">
+                <h3>تایید نهایی</h3>
+                <div id="preview-area"></div>
+                <button class="btn btn-success" onclick="finalizeBill()">صدور قبض</button>
             </div>
         </div>
     </div>
@@ -164,7 +80,6 @@
     <script>
         let db = JSON.parse(localStorage.getItem('plaque3_db')) || {
             units: Array.from({length: 10}, (_, i) => ({ id: i + 1, name: `واحد ${i + 1}`, people: 2, balanceCarryover: 0, paid: 0 })),
-            archiveExpenses: { fixed: [], variable: [] },
             bills: []
         };
 
@@ -172,229 +87,78 @@
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content-section').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            if (tabId === 'dashboard') {
-                document.getElementById('tab-dashboard').style.display = 'block';
-                document.querySelector('[onclick="switchTab(\'dashboard\')"]').classList.add('active');
-                renderDashboard();
-            } else if (tabId === 'units') {
-                document.getElementById('tab-units').style.display = 'block';
-                document.querySelector('[onclick="switchTab(\'units\')"]').classList.add('active');
-                renderUnits();
-            } else if (tabId === 'settings') {
-                document.getElementById('tab-settings').style.display = 'block';
-                document.querySelector('[onclick="switchTab(\'settings\')"]').classList.add('active');
-                renderSettings();
-            }
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+            if(tabId === 'units') renderUnits();
+            if(tabId === 'dashboard') renderDashboard();
         }
 
-        function openWizard() {
-            currentBill = {};
-            document.getElementById('wizard-modal').classList.add('active');
-            renderStep(1);
-        }
-
-        function renderStep(step) {
-            document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
-            document.getElementById(`step${step}`).classList.add('active');
-            
-            if (step === 3) {
-                renderVariableExpenses();
-            } else if (step === 4) {
-                renderDebtTransfer();
-            } else if (step === 5) {
-                renderPreview();
-            }
-        }
+        function openWizard() { document.getElementById('wizard-modal').classList.add('active'); }
 
         function nextStep(step) {
-            // Save current step data
-            if (step === 2) {
+            if(step === 2) {
                 currentBill.name = document.getElementById('bill-name').value;
                 currentBill.date = document.getElementById('bill-date').value;
-            } else if (step === 3) {
-                currentBill.water = parseInt(document.getElementById('water-cost').value) || 0;
-                currentBill.electricity = parseInt(document.getElementById('electricity-cost').value) || 0;
-                currentBill.gas = parseInt(document.getElementById('gas-cost').value) || 0;
-                currentBill.cleaning = parseInt(document.getElementById('cleaning-cost').value) || 0;
+            } else if (step === 5) {
+                currentBill.water = parseInt(document.getElementById('w-water').value) || 0;
+                currentBill.elec = parseInt(document.getElementById('w-elec').value) || 0;
+                currentBill.gas = parseInt(document.getElementById('w-gas').value) || 0;
+                currentBill.clean = parseInt(document.getElementById('w-clean').value) || 0;
+                renderPreview();
             }
-            renderStep(step);
-        }
-
-        function renderVariableExpenses() {
-            const container = document.getElementById('variable-expenses-list');
-            container.innerHTML = '';
-            currentBill.variableExpenses = currentBill.variableExpenses || [];
-            currentBill.variableExpenses.forEach((e, i) => {
-                const div = document.createElement('div');
-                div.style.padding = "8px 0";
-                div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between;">
-                        <span>${e.name}</span>
-                        <span>${e.amount.toLocaleString()} ریال</span>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function addVariableExpense() {
-            const name = document.getElementById('new-expense-name').value;
-            const amount = parseInt(document.getElementById('new-expense-amount').value) || 0;
-            const archive = document.getElementById('archive-expense').checked;
-            
-            if (name && amount > 0) {
-                currentBill.variableExpenses = currentBill.variableExpenses || [];
-                currentBill.variableExpenses.push({ name, amount });
-                
-                if (archive) {
-                    db.archiveExpenses.variable.push({ name, amount });
-                    localStorage.setItem('plaque3_db', JSON.stringify(db));
-                }
-                
-                document.getElementById('new-expense-name').value = '';
-                document.getElementById('new-expense-amount').value = '';
-                renderVariableExpenses();
-            }
-        }
-
-        function renderDebtTransfer() {
-            const container = document.getElementById('debt-transfer-list');
-            container.innerHTML = '';
-            db.units.forEach(u => {
-                const balanceClass = u.balanceCarryover > 0 ? 'debt' : 'credit';
-                const balanceText = u.balanceCarryover > 0 ? `بدهکار: ${u.balanceCarryover.toLocaleString()}` : `بستانکار: ${Math.abs(u.balanceCarryover).toLocaleString()}`;
-                
-                const div = document.createElement('div');
-                div.style.padding = "8px 0";
-                div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>${u.name}</span>
-                        <span class="badge ${balanceClass}">${balanceText}</span>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+            document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step'+step).classList.add('active');
         }
 
         function renderPreview() {
-            const container = document.getElementById('preview-content');
-            container.innerHTML = '';
-            
-            container.innerHTML += `<div style="margin-bottom:16px;"><strong>نام قبض:</strong> ${currentBill.name}</div>`;
-            container.innerHTML += `<div style="margin-bottom:16px;"><strong>تاریخ:</strong> ${currentBill.date}</div>`;
-            
-            container.innerHTML += `<div style="margin-bottom:16px;"><strong>هزینه‌های ثابت:</strong></div>`;
-            container.innerHTML += `<div style="margin-bottom:8px;">آب: ${currentBill.water.toLocaleString()} × ${db.units.length} واحد = ${(currentBill.water * db.units.length).toLocaleString()} ریال</div>`;
-            container.innerHTML += `<div style="margin-bottom:8px;">برق: ${currentBill.electricity.toLocaleString()} × ${db.units.length} واحد = ${(currentBill.electricity * db.units.length).toLocaleString()} ریال</div>`;
-            container.innerHTML += `<div style="margin-bottom:8px;">گاز: ${currentBill.gas.toLocaleString()} × ${db.units.length} واحد = ${(currentBill.gas * db.units.length).toLocaleString()} ریال</div>`;
-            container.innerHTML += `<div style="margin-bottom:8px;">نظافت: ${currentBill.cleaning.toLocaleString()} × ${db.units.length} واحد = ${(currentBill.cleaning * db.units.length).toLocaleString()} ریال</div>`;
-            
-            if (currentBill.variableExpenses && currentBill.variableExpenses.length > 0) {
-                container.innerHTML += `<div style="margin-bottom:16px;"><strong>هزینه‌های متغیر:</strong></div>`;
-                currentBill.variableExpenses.forEach(e => {
-                    container.innerHTML += `<div style="margin-bottom:8px;">${e.name}: ${e.amount.toLocaleString()} × ${db.units.length} واحد = ${(e.amount * db.units.length).toLocaleString()} ریال</div>`;
-                });
-            }
-            
-            const totalFixed = (currentBill.water + currentBill.electricity + currentBill.gas + currentBill.cleaning) * db.units.length;
-            const totalVariable = (currentBill.variableExpenses || []).reduce((sum, e) => sum + (e.amount * db.units.length), 0);
-            const total = totalFixed + totalVariable;
-            
-            container.innerHTML += `<div style="margin-top:16px; font-weight:bold;">جمع کل: ${total.toLocaleString()} ریال</div>`;
-            
-            currentBill.total = total;
+            const totalResidents = db.units.reduce((sum, u) => sum + parseInt(u.people), 0);
+            const totalUnits = db.units.length;
+            const area = document.getElementById('preview-area');
+            area.innerHTML = `<p>آب (نفراتی): ${currentBill.water.toLocaleString()} برای ${totalResidents} نفر</p>
+                              <p>سایر (واحدی): ${(currentBill.elec + currentBill.gas + currentBill.clean).toLocaleString()} برای ${totalUnits} واحد</p>`;
         }
 
         function finalizeBill() {
-            currentBill.unitsBill = db.units.map(u => {
-                const fixedCost = (currentBill.water * u.people) + (currentBill.electricity + currentBill.gas + currentBill.cleaning);
-                const variableCost = (currentBill.variableExpenses || []).reduce((sum, e) => sum + e.amount, 0);
-                const totalUnitCost = fixedCost + variableCost;
-                return {
-                    name: u.name,
-                    payable: totalUnitCost,
-                    paid: u.paid,
-                    balance: totalUnitCost - u.paid
-                };
-            });
+            const totalResidents = db.units.reduce((sum, u) => sum + parseInt(u.people), 0);
+            const totalUnits = db.units.length;
             
-            db.bills.push(currentBill);
-            localStorage.setItem('plaque3_db', JSON.stringify(db));
-            
-            document.getElementById('wizard-modal').classList.remove('active');
-            renderDashboard();
-        }
+            // فرمول محاسبه
+            const waterPerPerson = totalResidents > 0 ? (currentBill.water / totalResidents) : 0;
+            const otherPerUnit = (currentBill.elec + currentBill.gas + currentBill.clean) / totalUnits;
 
-        function renderDashboard() {
-            const container = document.getElementById('previous-bills-list');
-            if (db.bills.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:20px;">قبضی وجود ندارد.</p>';
-                return;
-            }
-            container.innerHTML = db.bills.map(bill => `
-                <div style="padding:10px 0; border-bottom:1px solid #eee;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <span>${bill.name}</span>
-                        <span>جمع: ${bill.total.toLocaleString()} ریال</span>
-                    </div>
-                </div>
-            `).join('');
+            db.units.forEach(u => {
+                const share = (waterPerPerson * parseInt(u.people)) + otherPerUnit;
+                u.balanceCarryover += Math.round(share);
+            });
+
+            db.bills.push({...currentBill, date: new Date().toISOString()});
+            localStorage.setItem('plaque3_db', JSON.stringify(db));
+            document.getElementById('wizard-modal').classList.remove('active');
+            alert('قبض با موفقیت صادر شد.');
+            renderDashboard();
         }
 
         function renderUnits() {
             const container = document.getElementById('units-list');
-            container.innerHTML = '';
-            db.units.forEach((u, index) => {
-                const balanceClass = u.balanceCarryover > 0 ? 'debt' : 'credit';
-                const balanceText = u.balanceCarryover > 0 ? `بدهکار: ${u.balanceCarryover.toLocaleString()}` : `بستانکار: ${Math.abs(u.balanceCarryover).toLocaleString()}`;
-                
-                const div = document.createElement('div');
-                div.style.padding = "10px 0";
-                div.style.borderBottom = "1px solid #f1f5f9";
-                div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-weight:bold;">${u.name}</span>
-                        <span class="badge ${balanceClass}">${balanceText}</span>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="unit-paid-${index}" class="form-control" value="${u.paid}" placeholder="مبلغ پرداختی" style="padding:8px;">
-                        <button class="btn btn-success" style="width:auto; padding:8px 12px;" onclick="makePayment(${index})">✅ پرداخت</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+            container.innerHTML = db.units.map((u, i) => `
+                <div class="card">
+                    <p>${u.name} - ${u.people} نفر</p>
+                    <p>مانده بدهی: ${u.balanceCarryover.toLocaleString()} ریال</p>
+                    <input type="number" id="pay-${i}" placeholder="مبلغ پرداختی">
+                    <button class="btn btn-success" onclick="makePayment(${i})">ثبت پرداخت</button>
+                </div>`).join('');
         }
 
-        function makePayment(index) {
-            const paid = parseInt(document.getElementById(`unit-paid-${index}`).value) || 0;
-            db.units[index].paid += paid;
-            db.units[index].balanceCarryover -= paid;
+        function makePayment(i) {
+            const val = parseInt(document.getElementById('pay-'+i).value) || 0;
+            db.units[i].balanceCarryover -= val;
             localStorage.setItem('plaque3_db', JSON.stringify(db));
-            alert("پرداخت ثبت شد.");
             renderUnits();
         }
 
-        function renderSettings() {
-            const container = document.getElementById('settings-content');
-            container.innerHTML = `
-                <div class="card">
-                    <div class="card-title">هزینه‌های ثابت آرشیو شده</div>
-                    <ul style="list-style:none; padding:0;">
-                        ${db.archiveExpenses.fixed.map(e => `<li>${e.name}: ${e.amount.toLocaleString()} ریال</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="card">
-                    <div class="card-title">هزینه‌های متغیر آرشیو شده</div>
-                    <ul style="list-style:none; padding:0;">
-                        ${db.archiveExpenses.variable.map(e => `<li>${e.name}: ${e.amount.toLocaleString()} ریال</li>`).join('')}
-                    </ul>
-                </div>
-            `;
+        function renderDashboard() {
+            document.getElementById('bills-list').innerHTML = db.bills.map(b => `<p>${b.name} (${b.date.split('T')[0]})</p>`).join('');
         }
 
-        // اجرای اولیه
         switchTab('dashboard');
     </script>
 </body>
