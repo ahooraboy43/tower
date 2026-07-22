@@ -196,10 +196,13 @@ if(typeof html2canvas==="undefined"){alert("امکان دانلود عکس در 
 const controls=el.querySelector(".zoom-controls"),prevDisplay=controls?controls.style.display:null;
 const layout=document.getElementById("layout-"+uid),prevZoom=layout?layout.style.zoom:null;
 const scrollEl=document.getElementById("scroll-"+uid),prevOverflow=scrollEl?scrollEl.style.overflow:null,prevWidth=scrollEl?scrollEl.style.width:null,prevMaxWidth=scrollEl?scrollEl.style.maxWidth:null;
-function restore(){if(controls)controls.style.display=prevDisplay||"";if(layout)layout.style.zoom=prevZoom||"";if(scrollEl){scrollEl.style.overflow=prevOverflow||"";scrollEl.style.width=prevWidth||"";scrollEl.style.maxWidth=prevMaxWidth||""}}
+const modalContent=el.closest(".modal-content");
+const mPrev=modalContent?{overflow:modalContent.style.overflow,overflowY:modalContent.style.overflowY,overflowX:modalContent.style.overflowX,maxWidth:modalContent.style.maxWidth,maxHeight:modalContent.style.maxHeight,width:modalContent.style.width}:null;
+function restore(){if(controls)controls.style.display=prevDisplay||"";if(layout)layout.style.zoom=prevZoom||"";if(scrollEl){scrollEl.style.overflow=prevOverflow||"";scrollEl.style.width=prevWidth||"";scrollEl.style.maxWidth=prevMaxWidth||""}if(modalContent&&mPrev){modalContent.style.overflow=mPrev.overflow||"";modalContent.style.overflowY=mPrev.overflowY||"";modalContent.style.overflowX=mPrev.overflowX||"";modalContent.style.maxWidth=mPrev.maxWidth||"";modalContent.style.maxHeight=mPrev.maxHeight||"";modalContent.style.width=mPrev.width||""}}
 if(controls)controls.style.display="none";if(layout)layout.style.zoom=1;
 if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.width="max-content"}
-html2canvas(el,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:el.scrollWidth,height:el.scrollHeight,windowWidth:el.scrollWidth,windowHeight:el.scrollHeight}).then(canvas=>{
+if(modalContent){modalContent.style.overflow="visible";modalContent.style.overflowY="visible";modalContent.style.overflowX="visible";modalContent.style.maxWidth="none";modalContent.style.maxHeight="none";modalContent.style.width="max-content"}
+html2canvas(el,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:el.scrollWidth,height:el.scrollHeight,windowWidth:el.scrollWidth+40,windowHeight:el.scrollHeight+40}).then(canvas=>{
 restore();
 const link=document.createElement("a");link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";link.href=canvas.toDataURL("image/png");link.click()
 }).catch(()=>{restore();alert("خطا در ساخت تصویر.")})}
