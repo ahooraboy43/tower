@@ -23,10 +23,11 @@ button,input,select,textarea{font-family:inherit}
 .bill-item,.unit-item,.expense-item{border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px;background:#fff}.bill-header,.unit-header,.expense-header{display:flex;justify-content:space-between;align-items:center;gap:10px}.bill-name,.unit-name{font-weight:800}.muted{color:var(--muted);font-size:.82rem}.action-row{display:flex;gap:8px;margin-top:10px}.action-row .btn{flex:1}.unit-actions{display:flex;gap:6px;margin-top:10px}.unit-actions .btn{width:auto;flex:1;margin:0;padding:8px 6px;font-size:.75rem;white-space:nowrap}.info-box{background:var(--primary-light);color:#1e40af;border-radius:10px;padding:12px;font-size:.85rem;margin-bottom:14px}.total-box{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:14px;font-weight:800}
 .modal{display:none;position:fixed;inset:0;background:#0f172a99;z-index:1000;align-items:flex-end;justify-content:center}.modal.active{display:flex}.modal-content{background:#fff;width:100%;max-width:1100px;max-height:94vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:18px}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.close-btn{border:none;background:#f1f5f9;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1.2rem}
 .wizard-step{display:none}.wizard-step.active{display:block}.preview-scroll{overflow-x:auto;padding-bottom:10px}.preview-layout{display:flex;direction:ltr;align-items:stretch;gap:20px;min-width:max-content}.main-table-wrap,.summary-table-wrap{direction:rtl}.main-table-wrap{flex:1}.summary-table-wrap{width:260px}.preview-table{border-collapse:collapse;width:100%;font-size:.78rem;background:#fff}.preview-table th,.preview-table td{border:1px solid #cbd5e1;padding:8px;text-align:center;white-space:nowrap;height:48px}.preview-table th{background:#e2e8f0;font-weight:800}.preview-table tfoot td{background:#eff6ff;font-weight:800;height:52px}.summary-table th{background:#dbeafe}.summary-table td{font-weight:700}.summary-value{font-size:.85rem}.expense-row{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}.fixed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.archive-select-row{display:flex;gap:8px;align-items:end}.archive-select-row>div{flex:1}.bill-detail-container{background:#fff;padding:10px}
-.note-box{background:#fffbea;border:1px solid #fde68a;border-radius:10px;padding:10px;color:#92400e;text-align:center;width:100%;max-width:640px}
-.notes-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:10px}
+.note-box{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;color:#64748b;text-align:center;width:100%;max-width:640px;font-size:.76rem;line-height:1.5}
+.notes-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:8px}
 .table-date-label{text-align:center;font-weight:800;font-size:.9rem;margin-bottom:10px;color:var(--text)}
 .zoom-controls{display:flex;gap:6px;justify-content:flex-end;margin-bottom:8px}
+.date-picker-row{display:flex;gap:8px}.date-picker-row select{flex:1;min-width:0}
 .zoom-btn{border:1px solid var(--border);background:#f8fafc;border-radius:8px;width:34px;height:34px;font-size:1rem;cursor:pointer;flex:none}
 .preview-scroll{touch-action:pan-x}
 @media(max-width:650px){.fixed-grid{grid-template-columns:1fr}.action-row{flex-direction:column}.unit-actions{gap:4px}.unit-actions .btn{font-size:.68rem;padding:7px 3px}.preview-table{font-size:.7rem}.summary-table-wrap{width:220px}.stats-grid{grid-template-columns:1fr}}
@@ -70,7 +71,14 @@ button,input,select,textarea{font-family:inherit}
 <div class="modal-header"><strong id="bill-modal-title">ایجاد لیست هزینه جدید</strong><button class="close-btn" onclick="closeModal('bill-modal')">×</button></div>
 <div class="wizard-step active" id="bill-step-1">
 <div class="form-group"><label class="form-label">عنوان لیست</label><input id="bill-title" class="form-control" placeholder="مثلاً هزینه‌های تیر ۱۴۰۵"></div>
-<div class="form-group"><label class="form-label">تاریخ شمسی روز</label><input id="bill-date" class="form-control" readonly></div>
+<div class="form-group"><label class="form-label">تاریخ شمسی روز</label>
+<div class="date-picker-row">
+<select id="bill-date-day" class="form-control" onchange="onDateSelectChange()"></select>
+<select id="bill-date-month" class="form-control" onchange="onDateSelectChange()"></select>
+<select id="bill-date-year" class="form-control" onchange="onDateSelectChange()"></select>
+</div>
+<input type="hidden" id="bill-date">
+</div>
 <button class="btn btn-primary" onclick="goBillStep(2)">ادامه</button>
 </div>
 <div class="wizard-step" id="bill-step-2">
@@ -81,14 +89,14 @@ button,input,select,textarea{font-family:inherit}
 <div class="expense-row"><strong>🔥 گاز</strong><div class="form-group"><label class="form-label">مبلغ کل قبض گاز</label><input type="number" id="gas-amount" class="form-control" value="0"></div></div>
 <div class="expense-row"><strong>🧹 نظافت</strong><div class="form-group"><label class="form-label">مبلغ هر بار نظافت</label><input type="number" id="cleaning-amount" class="form-control" value="0"></div><div class="form-group"><label class="form-label">تعداد دفعات</label><input type="number" id="cleaning-count" class="form-control" value="1" min="1"></div></div>
 </div>
-<button class="btn btn-primary" onclick="goBillStep(3)">ادامه به هزینه‌های متغیر</button>
+<div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(1)">⬅ بازگشت</button><button class="btn btn-primary" onclick="goBillStep(3)">ادامه به هزینه‌های متغیر</button></div>
 </div>
 <div class="wizard-step" id="bill-step-3">
 <div class="info-box">هزینه متغیر را از آرشیو انتخاب کنید یا نام جدید وارد کنید.</div><div id="variable-expenses"></div>
 <button class="btn btn-secondary" onclick="addVariableExpenseRow()">➕ افزودن هزینه متغیر</button>
-<button class="btn btn-primary" onclick="goBillStep(4)">ادامه و پیش‌نمایش</button>
+<div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(2)">⬅ بازگشت</button><button class="btn btn-primary" onclick="goBillStep(4)">ادامه و پیش‌نمایش</button></div>
 </div>
-<div class="wizard-step" id="bill-step-4"><div id="bill-preview"></div><div class="action-row"><button class="btn btn-primary" onclick="downloadImage('wizard',currentBill.title)">📥 دانلود عکس</button><button class="btn btn-secondary" onclick="printCurrentBill()">🖨 چاپ</button><button class="btn btn-success" onclick="saveBill()">✅ ذخیره قبض</button></div></div>
+<div class="wizard-step" id="bill-step-4"><div id="bill-preview"></div><div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(3)">⬅ بازگشت</button><button class="btn btn-primary" onclick="downloadImage('wizard',currentBill.title)">📥 دانلود عکس</button><button class="btn btn-secondary" onclick="printCurrentBill()">🖨 چاپ</button><button class="btn btn-success" onclick="saveBill()">✅ ذخیره قبض</button></div></div>
 </div></div>
 
 <div class="modal" id="unit-modal"><div class="modal-content">
@@ -124,7 +132,20 @@ let currentBill={},editingBillId=null,viewedBillId=null;
 function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db))}
 function money(n){return Number(n||0).toLocaleString("fa-IR")+" تومان"}
 function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
-function todayJalali(){try{return new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"long",day:"numeric"}).format(new Date())}catch(e){return new Date().toLocaleDateString("fa-IR")}}
+const JALALI_MONTHS=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+function faDigits(n){return Number(n).toLocaleString("fa-IR")}
+function faDigitsToEn(str){return String(str).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d))}
+function isJalaliLeap(jy){return [1,5,9,13,17,22,26,30].includes(((jy%33)+33)%33)}
+function daysInJalaliMonth(y,m){if(m<=6)return 31;if(m<=11)return 30;return isJalaliLeap(y)?30:29}
+function todayJalaliParts(){try{const parts=new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn",{year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date());const o={};parts.forEach(p=>{if(p.type!=="literal")o[p.type]=parseInt(p.value,10)});return{y:o.year,m:o.month,d:o.day}}catch(e){return{y:1404,m:1,d:1}}}
+function parseJalaliDateString(s){if(!s)return null;const t=faDigitsToEn(s);const nums=t.match(/\d+/g);if(!nums||nums.length<2)return null;let mIdx=-1;JALALI_MONTHS.forEach((name,i)=>{if(s.indexOf(name)>-1)mIdx=i+1});if(mIdx===-1)return null;const d=parseInt(nums[0],10),y=parseInt(nums[nums.length-1],10);if(!d||!y)return null;return{d,m:mIdx,y}}
+function formatJalaliDate(d,m,y){return `${faDigits(d)} ${JALALI_MONTHS[m-1]} ${faDigits(y)}`}
+function fillYearSelect(selectedYear){const sel=document.getElementById("bill-date-year"),base=todayJalaliParts().y;let opts="";for(let y=base-3;y<=base+3;y++)opts+=`<option value="${y}" ${y===selectedYear?"selected":""}>${faDigits(y)}</option>`;sel.innerHTML=opts}
+function fillMonthSelect(selectedMonth){document.getElementById("bill-date-month").innerHTML=JALALI_MONTHS.map((n,i)=>`<option value="${i+1}" ${i+1===selectedMonth?"selected":""}>${n}</option>`).join("")}
+function fillDaySelect(y,m,selectedDay){const sel=document.getElementById("bill-date-day"),max=daysInJalaliMonth(y,m),d0=Math.min(selectedDay,max);let opts="";for(let d=1;d<=max;d++)opts+=`<option value="${d}" ${d===d0?"selected":""}>${faDigits(d)}</option>`;sel.innerHTML=opts}
+function setDateSelects(parts){fillYearSelect(parts.y);fillMonthSelect(parts.m);fillDaySelect(parts.y,parts.m,parts.d);syncBillDateHidden()}
+function onDateSelectChange(){const y=Number(document.getElementById("bill-date-year").value),m=Number(document.getElementById("bill-date-month").value),d=Number(document.getElementById("bill-date-day").value)||1;fillDaySelect(y,m,d);syncBillDateHidden()}
+function syncBillDateHidden(){const y=Number(document.getElementById("bill-date-year").value),m=Number(document.getElementById("bill-date-month").value),d=Number(document.getElementById("bill-date-day").value);document.getElementById("bill-date").value=formatJalaliDate(d,m,y)}
 function roundUp(n){const r=Number(db.settings.round)||1;return Math.ceil(Number(n||0)/r)*r}
 function switchTab(tab,b){document.querySelectorAll("main>section").forEach(x=>x.style.display="none");document.getElementById("tab-"+tab).style.display="block";document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(tab==="dashboard")renderDashboard();if(tab==="units")renderUnits();if(tab==="settings")renderSettings()}
 function openModal(id){document.getElementById(id).classList.add("active")} function closeModal(id){document.getElementById(id).classList.remove("active")}
@@ -139,7 +160,7 @@ box.innerHTML=db.bills.slice().reverse().map(b=>`<div class="bill-item"><div cla
 
 function openBillWizard(bill=null){
 editingBillId=bill?bill.id:null;document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";
-document.getElementById("bill-title").value=bill?bill.title:"";document.getElementById("bill-date").value=bill?bill.date:todayJalali();
+document.getElementById("bill-title").value=bill?bill.title:"";setDateSelects(bill?(parseJalaliDateString(bill.date)||todayJalaliParts()):todayJalaliParts());
 document.getElementById("water-amount").value=bill?.fixed?.water?.amount||0;document.getElementById("electricity-amount").value=bill?.fixed?.electricity?.amount||0;document.getElementById("gas-amount").value=bill?.fixed?.gas?.amount||0;document.getElementById("cleaning-amount").value=bill?.fixed?.cleaning?.amountPerTime||0;document.getElementById("cleaning-count").value=bill?.fixed?.cleaning?.count||1;document.getElementById("variable-expenses").innerHTML="";
 if(bill?.variables)bill.variables.forEach(v=>addVariableExpenseRow(v.name,v.amount));else addVariableExpenseRow();goBillStep(1);openModal("bill-modal")
 }
