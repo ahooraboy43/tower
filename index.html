@@ -3,2091 +3,4165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>مدیریت ساختمان پلاک ۳</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 <style>
+
 :root{
---primary:#2563eb;
---primary-dark:#1d4ed8;
---success:#10b981;
---warning:#f59e0b;
---danger:#ef4444;
---bg:#f8fafc;
---card:#fff;
---text:#0f172a;
---muted:#64748b;
---border:#e2e8f0;
---radius:12px;
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --primary-light:#eff6ff;
+
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+
+    --bg:#f8fafc;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+
+    --border:#e2e8f0;
+    --radius:14px;
 }
 
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:'Vazirmatn',sans-serif;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:'Vazirmatn',sans-serif;
 }
 
 body{
-background:var(--bg);
-color:var(--text);
-padding-bottom:70px;
+    background:var(--bg);
+    color:var(--text);
+    padding-bottom:80px;
+}
+
+button,
+input,
+select{
+    font-family:inherit;
 }
 
 .app-header{
-background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-color:white;
-padding:18px 20px;
-box-shadow:0 4px 12px rgba(0,0,0,.12);
-position:sticky;
-top:0;
-z-index:100;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    padding:18px 20px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 4px 15px #0002;
+}
+
+.header-title{
+    font-size:1.25rem;
+    font-weight:800;
+}
+
+.header-subtitle{
+    font-size:.8rem;
+    opacity:.85;
 }
 
 .container{
-max-width:1200px;
-margin:auto;
-padding:16px;
+    max-width:1000px;
+    margin:auto;
+    padding:16px;
 }
 
 .card{
-background:var(--card);
-border:1px solid var(--border);
-border-radius:var(--radius);
-padding:16px;
-margin-bottom:16px;
-box-shadow:0 1px 3px rgba(0,0,0,.05);
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:16px;
+    box-shadow:0 2px 5px #00000008;
 }
 
 .card-title{
-font-weight:800;
-margin-bottom:14px;
-padding-bottom:10px;
-border-bottom:1px dashed var(--border);
-display:flex;
-justify-content:space-between;
-align-items:center;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:800;
+    margin-bottom:14px;
+    padding-bottom:10px;
+    border-bottom:1px dashed var(--border);
 }
 
 .btn{
-border:0;
-border-radius:9px;
-padding:8px 12px;
-font-weight:700;
-cursor:pointer;
-font-size:.82rem;
+    width:100%;
+    border:none;
+    border-radius:var(--radius);
+    padding:12px;
+    font-size:.95rem;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:8px;
 }
 
-.btn-primary{background:var(--primary);color:#fff}
-.btn-success{background:var(--success);color:#fff}
-.btn-warning{background:var(--warning);color:#fff}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-secondary{background:#e2e8f0;color:#334155}
+.btn-primary{
+    background:var(--primary);
+    color:#fff;
+}
 
-.btn-full{
-width:100%;
-padding:12px;
-margin-top:8px;
-font-size:.95rem;
+.btn-success{
+    background:var(--success);
+    color:#fff;
+}
+
+.btn-danger{
+    background:var(--danger);
+    color:#fff;
+}
+
+.btn-secondary{
+    background:#e2e8f0;
+    color:var(--text);
 }
 
 .form-group{
-margin-bottom:14px;
+    margin-bottom:14px;
 }
 
 .form-label{
-display:block;
-font-weight:600;
-margin-bottom:6px;
-font-size:.9rem;
+    display:block;
+    font-size:.88rem;
+    font-weight:700;
+    margin-bottom:6px;
 }
 
 .form-control{
-width:100%;
-padding:11px;
-border:1px solid var(--border);
-border-radius:9px;
-background:#f8fafc;
-font-size:1rem;
-outline:none;
+    width:100%;
+    padding:11px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:#f8fafc;
+    font-size:1rem;
+    outline:none;
 }
 
 .form-control:focus{
-border-color:var(--primary);
+    border-color:var(--primary);
+    background:#fff;
 }
 
 .bottom-nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-height:62px;
-background:white;
-border-top:1px solid var(--border);
-display:flex;
-z-index:999;
+    position:fixed;
+    bottom:0;
+    right:0;
+    left:0;
+    height:66px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    display:flex;
+    z-index:200;
 }
 
 .nav-item{
-flex:1;
-border:0;
-background:none;
-color:var(--muted);
-font-size:.75rem;
-cursor:pointer;
+    flex:1;
+    border:none;
+    background:none;
+    color:var(--muted);
+    cursor:pointer;
+    font-size:.75rem;
 }
 
 .nav-item.active{
-color:var(--primary);
-font-weight:700;
+    color:var(--primary);
+    font-weight:700;
 }
 
 .nav-icon{
-font-size:1.3rem;
-display:block;
-}
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.55);
-z-index:2000;
-align-items:flex-end;
-justify-content:center;
-}
-
-.modal.active{
-display:flex;
-}
-
-.modal-content{
-background:white;
-width:100%;
-max-width:1200px;
-max-height:95vh;
-overflow:auto;
-border-radius:20px 20px 0 0;
-padding:18px;
-}
-
-.wizard-step{
-display:none;
-}
-
-.wizard-step.active{
-display:block;
+    display:block;
+    font-size:1.35rem;
+    margin-bottom:2px;
 }
 
 .badge{
-padding:5px 8px;
-border-radius:8px;
-font-size:.75rem;
-font-weight:700;
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:8px;
+    font-size:.75rem;
+    font-weight:700;
 }
 
-.debt{
-background:#fee2e2;
-color:#dc2626;
+.badge-danger{
+    background:#fef2f2;
+    color:var(--danger);
 }
 
-.credit{
-background:#dcfce7;
-color:#15803d;
+.badge-success{
+    background:#ecfdf5;
+    color:var(--success);
 }
 
-.unit-row{
-padding:12px 0;
-border-bottom:1px solid #f1f5f9;
+.badge-primary{
+    background:var(--primary-light);
+    color:var(--primary);
 }
+
+.empty{
+    text-align:center;
+    padding:24px;
+    color:var(--muted);
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:16px;
+}
+
+.stat-box{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px;
+}
+
+.stat-title{
+    color:var(--muted);
+    font-size:.78rem;
+}
+
+.stat-value{
+    font-size:1.15rem;
+    font-weight:800;
+    margin-top:5px;
+}
+
+.bill-item,
+.unit-item,
+.expense-item{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:13px;
+    margin-bottom:10px;
+    background:#fff;
+}
+
+.bill-header,
+.unit-header,
+.expense-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.bill-name,
+.unit-name{
+    font-weight:800;
+}
+
+.muted{
+    color:var(--muted);
+    font-size:.82rem;
+}
+
+.action-row{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.action-row .btn{
+    flex:1;
+}
+
+/* دکمه‌های واحدها کوچک و کنار هم */
 
 .unit-actions{
-display:flex;
-gap:6px;
-flex-wrap:wrap;
-margin-top:8px;
+    display:flex;
+    gap:6px;
+    margin-top:10px;
 }
 
 .unit-actions .btn{
-font-size:.75rem;
-padding:6px 9px;
+    width:auto;
+    flex:1;
+    margin:0;
+    padding:8px 6px;
+    font-size:.75rem;
+    white-space:nowrap;
 }
 
-.bill-card{
-border:1px solid var(--border);
-border-radius:10px;
-padding:12px;
-margin-bottom:10px;
+.info-box{
+    background:var(--primary-light);
+    color:#1e40af;
+    border-radius:10px;
+    padding:12px;
+    font-size:.85rem;
+    margin-bottom:14px;
 }
 
-.bill-actions{
-display:flex;
-gap:6px;
-flex-wrap:wrap;
-margin-top:9px;
+.total-box{
+    background:#f8fafc;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    margin-top:14px;
+    font-weight:800;
 }
 
-.bill-actions .btn{
-font-size:.75rem;
-padding:6px 9px;
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#0f172a99;
+    z-index:1000;
+    align-items:flex-end;
+    justify-content:center;
 }
 
-.expense-row{
-display:flex;
-gap:8px;
-align-items:center;
-margin-bottom:8px;
+.modal.active{
+    display:flex;
 }
 
-.expense-row input{
-flex:1;
+.modal-content{
+    background:#fff;
+    width:100%;
+    max-width:1100px;
+    max-height:94vh;
+    overflow-y:auto;
+    border-radius:22px 22px 0 0;
+    padding:18px;
 }
 
-.table-wrapper{
-overflow-x:auto;
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+}
+
+.close-btn{
+    border:none;
+    background:#f1f5f9;
+    border-radius:50%;
+    width:36px;
+    height:36px;
+    cursor:pointer;
+    font-size:1.2rem;
+}
+
+.wizard-step{
+    display:none;
+}
+
+.wizard-step.active{
+    display:block;
+}
+
+.preview-scroll{
+    overflow-x:auto;
+    padding-bottom:10px;
 }
 
 .preview-layout{
-display:flex;
-gap:18px;
-align-items:stretch;
-direction:rtl;
+    display:flex;
+    direction:ltr;
+    align-items:stretch;
+    gap:14px;
+    min-width:max-content;
 }
 
-.main-preview-table{
-flex:1;
-min-width:800px;
+.main-table-wrap,
+.summary-table-wrap{
+    direction:rtl;
 }
 
-.side-preview-table{
-width:280px;
-min-width:280px;
+.main-table-wrap{
+    flex:1;
+}
+
+.summary-table-wrap{
+    width:260px;
 }
 
 .preview-table{
-border-collapse:collapse;
-width:100%;
-font-size:.78rem;
+    border-collapse:collapse;
+    width:100%;
+    font-size:.78rem;
+    background:#fff;
 }
 
 .preview-table th,
 .preview-table td{
-border:1px solid #cbd5e1;
-padding:7px 5px;
-text-align:center;
-white-space:nowrap;
+    border:1px solid #cbd5e1;
+    padding:8px;
+    text-align:center;
+    white-space:nowrap;
+    height:48px;
 }
 
 .preview-table th{
-background:#eff6ff;
-font-weight:800;
+    background:#e2e8f0;
+    font-weight:800;
 }
 
 .preview-table tfoot td{
-font-weight:800;
-background:#f1f5f9;
+    background:#eff6ff;
+    font-weight:800;
+    height:52px;
 }
 
-.list-title{
-text-align:center;
-font-size:1.25rem;
-font-weight:800;
-margin:10px 0 18px;
+.summary-table th{
+    background:#dbeafe;
 }
 
-.notes-area{
-display:flex;
-gap:20px;
-margin-top:10px;
+.summary-table td{
+    font-weight:700;
 }
 
-.note-box{
-flex:1;
-text-align:center;
-font-weight:700;
-min-height:55px;
+.summary-value{
+    font-size:.85rem;
 }
 
-.note-box span{
-display:block;
-border-bottom:1px solid #94a3b8;
-padding:10px;
-min-height:40px;
+.expense-row{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+    background:#fff;
 }
 
-@media(max-width:800px){
-.preview-layout{
-overflow-x:auto;
+.fixed-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
 }
 
-.main-preview-table{
-min-width:760px;
+.archive-select-row{
+    display:flex;
+    gap:8px;
+    align-items:end;
 }
 
-.side-preview-table{
-min-width:250px;
+.archive-select-row>div{
+    flex:1;
 }
 
-.notes-area{
-gap:10px;
-}
-}
-
-@media print{
-body{
-background:white;
-padding:0;
+.bill-detail-container{
+    background:#fff;
+    padding:10px;
 }
 
-.no-print,
-.bottom-nav,
-.app-header,
-.modal-close{
-display:none!important;
+@media(max-width:650px){
+
+    .fixed-grid{
+        grid-template-columns:1fr;
+    }
+
+    .action-row{
+        flex-direction:column;
+    }
+
+    .unit-actions{
+        gap:4px;
+    }
+
+    .unit-actions .btn{
+        font-size:.68rem;
+        padding:7px 3px;
+    }
+
+    .preview-table{
+        font-size:.7rem;
+    }
+
+    .summary-table-wrap{
+        width:220px;
+    }
+
 }
 
-.modal{
-position:static;
-display:block!important;
-background:white;
-}
-
-.modal-content{
-max-width:none;
-max-height:none;
-overflow:visible;
-box-shadow:none;
-}
-
-.preview-layout{
-display:flex;
-}
-
-.card{
-box-shadow:none;
-}
-}
 </style>
 </head>
 
 <body>
 
 <header class="app-header">
-<div style="font-size:1.2rem;font-weight:800">مدیریت ساختمان پلاک ۳</div>
+
+    <div class="header-title">
+        پلاک ۳
+    </div>
+
+    <div class="header-subtitle">
+        مدیریت هزینه و شارژ ساختمان
+    </div>
+
 </header>
 
-<div class="container">
+<main class="container">
 
-<!-- DASHBOARD -->
-<section id="tab-dashboard" class="tab-content-section">
+<!-- داشبورد -->
 
-<div class="card">
-<div class="card-title">داشبورد</div>
-<button class="btn btn-primary btn-full" onclick="openWizard()">
-➕ ایجاد لیست هزینه جدید
-</button>
-</div>
+<section id="tab-dashboard">
 
-<div class="card">
-<div class="card-title">آرشیو لیست هزینه‌ها</div>
-<div id="previous-bills-list"></div>
-</div>
+    <div class="stats-grid">
 
-</section>
+        <div class="stat-box">
 
-<!-- UNITS -->
-<section id="tab-units" class="tab-content-section" style="display:none">
+            <div class="stat-title">
+                تعداد واحدها
+            </div>
 
-<div class="card">
-<div class="card-title">
-<span>مدیریت واحدها</span>
-<button class="btn btn-primary" onclick="openUnitModal()">➕ واحد جدید</button>
-</div>
+            <div class="stat-value" id="stat-units">
+                ۰
+            </div>
 
-<div id="units-list"></div>
-</div>
+        </div>
 
-</section>
+        <div class="stat-box">
 
-<!-- SETTINGS -->
-<section id="tab-settings" class="tab-content-section" style="display:none">
+            <div class="stat-title">
+                قبض‌های آرشیو شده
+            </div>
 
-<div class="card">
+            <div class="stat-value" id="stat-bills">
+                ۰
+            </div>
 
-<div class="card-title">تنظیمات</div>
+        </div>
 
-<div class="form-group">
-<label class="form-label">مقدار رندینگ به بالا</label>
-<input
-type="number"
-id="rounding-value"
-class="form-control"
-placeholder="مثلاً 10000"
-onchange="saveSettings()">
-</div>
+    </div>
 
-<div class="card-title">یادداشت‌های زیر جدول</div>
+    <div class="card">
 
-<div class="notes-area">
+        <div class="card-title">
 
-<div class="note-box">
-یادداشت ۱
-<input
-type="text"
-id="note1"
-class="form-control"
-onchange="saveSettings()">
-</div>
+            <span>
+                ایجاد لیست هزینه جدید
+            </span>
 
-<div class="note-box">
-یادداشت ۲
-<input
-type="text"
-id="note2"
-class="form-control"
-onchange="saveSettings()">
-</div>
+            <span>
+                ➕
+            </span>
 
-</div>
+        </div>
 
-</div>
+        <button
+            class="btn btn-primary"
+            onclick="openBillWizard()">
 
-<div class="card">
-<div class="card-title">آرشیو هزینه‌های متغیر</div>
-<div id="archive-expenses-list"></div>
-</div>
+            ایجاد هزینه ماهانه جدید
+
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">
+
+            <span>
+                آرشیو هزینه‌های ماه‌های قبلی
+            </span>
+
+            <span>
+                📁
+            </span>
+
+        </div>
+
+        <div id="bills-list"></div>
+
+    </div>
 
 </section>
 
-</div>
 
-<!-- NAVIGATION -->
+<!-- واحدها -->
+
+<section
+    id="tab-units"
+    style="display:none">
+
+    <div class="card">
+
+        <div class="card-title">
+
+            <span>
+                مدیریت واحدها
+            </span>
+
+            <button
+                class="btn btn-primary"
+                style="width:auto;margin:0;padding:8px 12px"
+                onclick="openUnitModal()">
+
+                ➕ واحد
+
+            </button>
+
+        </div>
+
+        <div id="units-list"></div>
+
+    </div>
+
+</section>
+
+
+<!-- تنظیمات -->
+
+<section
+    id="tab-settings"
+    style="display:none">
+
+    <div class="card">
+
+        <div class="card-title">
+
+            <span>
+                تنظیمات
+            </span>
+
+            <span>
+                ⚙️
+            </span>
+
+        </div>
+
+        <div class="info-box">
+
+            در این قسمت نام هزینه‌های متغیر آرشیو شده نگهداری می‌شود.
+            مبلغ هر ماه جداگانه وارد خواهد شد.
+
+        </div>
+
+        <div id="archive-expenses-list"></div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- منوی پایین -->
+
 <nav class="bottom-nav">
 
-<button class="nav-item active" onclick="switchTab('dashboard')">
-<span class="nav-icon">📊</span>
-داشبورد
-</button>
+    <button
+        class="nav-item active"
+        onclick="switchTab('dashboard',this)">
 
-<button class="nav-item" onclick="switchTab('units')">
-<span class="nav-icon">🏠</span>
-واحدها
-</button>
+        <span class="nav-icon">
+            📊
+        </span>
 
-<button class="nav-item" onclick="switchTab('settings')">
-<span class="nav-icon">⚙️</span>
-تنظیمات
-</button>
+        داشبورد
+
+    </button>
+
+    <button
+        class="nav-item"
+        onclick="switchTab('units',this)">
+
+        <span class="nav-icon">
+            🏠
+        </span>
+
+        واحدها
+
+    </button>
+
+    <button
+        class="nav-item"
+        onclick="switchTab('settings',this)">
+
+        <span class="nav-icon">
+            ⚙️
+        </span>
+
+        تنظیمات
+
+    </button>
 
 </nav>
 
-<!-- WIZARD -->
-<div class="modal" id="wizard-modal">
 
-<div class="modal-content">
+<!-- ویزارد قبض -->
 
-<div class="card">
+<div
+    class="modal"
+    id="bill-modal">
 
-<div class="card-title">
-<span>جادوگر ایجاد لیست هزینه</span>
-<button class="btn btn-danger modal-close" onclick="closeWizard()">✖</button>
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <strong id="bill-modal-title">
+
+                ایجاد لیست هزینه جدید
+
+            </strong>
+
+            <button
+                class="close-btn"
+                onclick="closeModal('bill-modal')">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <!-- مرحله اول -->
+
+        <div
+            class="wizard-step active"
+            id="bill-step-1">
+
+            <div class="form-group">
+
+                <label class="form-label">
+
+                    عنوان لیست
+
+                </label>
+
+                <input
+                    id="bill-title"
+                    class="form-control"
+                    placeholder="مثلاً هزینه‌های خرداد ۱۴۰۵">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+
+                    ماه / تاریخ
+
+                </label>
+
+                <input
+                    id="bill-date"
+                    class="form-control"
+                    placeholder="مثلاً خرداد ۱۴۰۵">
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="goBillStep(2)">
+
+                ادامه
+
+            </button>
+
+        </div>
+
+
+        <!-- مرحله دوم -->
+
+        <div
+            class="wizard-step"
+            id="bill-step-2">
+
+            <div class="info-box">
+
+                مبلغی که برای هر هزینه وارد می‌کنید،
+                مبلغ کل همان هزینه برای کل ساختمان است.
+
+                <br><br>
+
+                آب بر اساس مجموع نفرات تقسیم می‌شود.
+
+                <br>
+
+                برق، گاز و نظافت بر اساس تعداد واحدها تقسیم می‌شوند.
+
+                <br>
+
+                نظافت امکان ثبت تعداد دفعات انجام را دارد.
+
+            </div>
+
+            <div class="fixed-grid">
+
+
+                <div class="expense-row">
+
+                    <strong>
+                        💧 آب
+                    </strong>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            مبلغ کل قبض آب
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="water-amount"
+                            class="form-control"
+                            value="0">
+
+                    </div>
+
+                </div>
+
+
+                <div class="expense-row">
+
+                    <strong>
+                        ⚡ برق
+                    </strong>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            مبلغ کل قبض برق
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="electricity-amount"
+                            class="form-control"
+                            value="0">
+
+                    </div>
+
+                </div>
+
+
+                <div class="expense-row">
+
+                    <strong>
+                        🔥 گاز
+                    </strong>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            مبلغ کل قبض گاز
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="gas-amount"
+                            class="form-control"
+                            value="0">
+
+                    </div>
+
+                </div>
+
+
+                <div class="expense-row">
+
+                    <strong>
+                        🧹 نظافت
+                    </strong>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            مبلغ هر بار نظافت
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="cleaning-amount"
+                            class="form-control"
+                            value="0">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            تعداد دفعات انجام
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="cleaning-count"
+                            class="form-control"
+                            value="1"
+                            min="1">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="goBillStep(3)">
+
+                ادامه به هزینه‌های متغیر
+
+            </button>
+
+        </div>
+
+
+        <!-- مرحله سوم -->
+
+        <div
+            class="wizard-step"
+            id="bill-step-3">
+
+            <div class="info-box">
+
+                هزینه‌های متغیر را از آرشیو انتخاب کنید
+                و مبلغ این ماه را دستی وارد کنید.
+
+                <br><br>
+
+                اگر هزینه جدیدی وارد کنید،
+                نام آن برای ماه‌های بعد در آرشیو ذخیره می‌شود.
+
+            </div>
+
+            <div id="variable-expenses"></div>
+
+            <button
+                class="btn btn-secondary"
+                onclick="addVariableExpenseRow()">
+
+                ➕ افزودن هزینه متغیر
+
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="goBillStep(4)">
+
+                ادامه و پیش‌نمایش
+
+            </button>
+
+        </div>
+
+
+        <!-- مرحله چهارم -->
+
+        <div
+            class="wizard-step"
+            id="bill-step-4">
+
+            <div id="bill-preview"></div>
+
+            <div class="action-row">
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="printCurrentBill()">
+
+                    🖨 چاپ
+
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="downloadCurrentBillImage()">
+
+                    📸 دانلود عکس
+
+                </button>
+
+                <button
+                    class="btn btn-success"
+                    onclick="saveBill()">
+
+                    ✅ ذخیره قبض
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
-<!-- STEP 1 -->
-<div class="wizard-step active" id="step1">
 
-<div class="form-group">
-<label class="form-label">نام لیست هزینه</label>
-<input
-type="text"
-id="bill-name"
-class="form-control"
-placeholder="مثلاً لیست هزینه ساختمان">
-</div>
+<!-- مودال واحد -->
 
-<div class="form-group">
-<label class="form-label">تاریخ صدور شمسی</label>
-<input
-type="text"
-id="bill-date"
-class="form-control"
-placeholder="1405/05/09">
-</div>
+<div
+    class="modal"
+    id="unit-modal">
 
-<button class="btn btn-primary btn-full" onclick="nextStep(2)">
-بعدی
-</button>
+    <div class="modal-content">
 
-</div>
+        <div class="modal-header">
 
-<!-- STEP 2 -->
-<div class="wizard-step" id="step2">
+            <strong id="unit-modal-title">
 
-<div class="card-title">هزینه‌های ثابت ماهانه</div>
+                افزودن واحد
 
-<div class="form-group">
-<label class="form-label">آب - مبلغ کل قبض ساختمان</label>
-<input type="number" id="water-cost" class="form-control" value="0">
-</div>
+            </strong>
 
-<div class="form-group">
-<label class="form-label">برق - مبلغ کل قبض ساختمان</label>
-<input type="number" id="electricity-cost" class="form-control" value="0">
-</div>
+            <button
+                class="close-btn"
+                onclick="closeModal('unit-modal')">
 
-<div class="form-group">
-<label class="form-label">گاز - مبلغ کل قبض ساختمان</label>
-<input type="number" id="gas-cost" class="form-control" value="0">
-</div>
+                ×
 
-<div class="form-group">
-<label class="form-label">نظافت - مبلغ هر مرتبه</label>
-<input type="number" id="cleaning-cost" class="form-control" value="0">
-</div>
+            </button>
 
-<div class="form-group">
-<label class="form-label">تعداد دفعات نظافت</label>
-<input type="number" id="cleaning-count" class="form-control" value="1" min="0">
-</div>
+        </div>
 
-<button class="btn btn-primary btn-full" onclick="nextStep(3)">
-بعدی
-</button>
+        <input
+            type="hidden"
+            id="editing-unit-id">
 
-</div>
+        <div class="form-group">
 
-<!-- STEP 3 -->
-<div class="wizard-step" id="step3">
+            <label class="form-label">
 
-<div class="card-title">هزینه‌های متغیر</div>
+                شماره واحد
 
-<div id="variable-expenses-list"></div>
+            </label>
 
-<div class="form-group">
-<label class="form-label">انتخاب هزینه از آرشیو</label>
+            <input
+                id="unit-number"
+                type="number"
+                class="form-control">
 
-<select id="archive-expense-select" class="form-control">
-<option value="">-- انتخاب کنید --</option>
-</select>
+        </div>
 
-</div>
+        <div class="form-group">
 
-<div class="form-group">
-<label class="form-label">نام هزینه</label>
-<input
-type="text"
-id="new-expense-name"
-class="form-control"
-placeholder="مثلاً تعمیر آسانسور">
-</div>
+            <label class="form-label">
 
-<div class="form-group">
-<label class="form-label">مبلغ کل هزینه</label>
-<input
-type="number"
-id="new-expense-amount"
-class="form-control"
-placeholder="مبلغ کل">
-</div>
+                نام ساکن
 
-<button class="btn btn-success btn-full" onclick="addVariableExpense()">
-➕ افزودن هزینه
-</button>
+            </label>
 
-<button class="btn btn-primary btn-full" onclick="nextStep(4)">
-بعدی
-</button>
+            <input
+                id="resident-name"
+                class="form-control">
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="form-label">
+
+                تعداد نفرات
+
+            </label>
+
+            <input
+                id="unit-people"
+                type="number"
+                min="1"
+                class="form-control">
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="saveUnit()">
+
+            💾 ذخیره اطلاعات
+
+        </button>
+
+    </div>
 
 </div>
 
-<!-- STEP 4 -->
-<div class="wizard-step" id="step4">
 
-<div class="card-title">انتقال بدهی قبلی</div>
+<!-- پرداخت -->
 
-<p style="margin-bottom:15px;color:#64748b">
-بدهی قبلی هر واحد در جدول پیش‌نمایش محاسبه و نمایش داده خواهد شد.
-</p>
+<div
+    class="modal"
+    id="payment-modal">
 
-<div id="debt-transfer-list"></div>
+    <div class="modal-content">
 
-<button class="btn btn-primary btn-full" onclick="nextStep(5)">
-پیش‌نمایش
-</button>
+        <div class="modal-header">
 
-</div>
+            <strong>
+                ثبت پرداخت
+            </strong>
 
-<!-- STEP 5 -->
-<div class="wizard-step" id="step5">
+            <button
+                class="close-btn"
+                onclick="closeModal('payment-modal')">
 
-<div class="card-title no-print">
+                ×
 
-<span>پیش‌نمایش نهایی</span>
+            </button>
 
-<div style="display:flex;gap:6px">
+        </div>
 
-<button class="btn btn-primary" onclick="printPreview()">
-🖨 چاپ
-</button>
+        <input
+            type="hidden"
+            id="payment-unit-id">
 
-<button class="btn btn-success" onclick="downloadPreviewImage()">
-🖼 دانلود عکس
-</button>
+        <div id="payment-info"></div>
 
-</div>
+        <div class="form-group">
 
-</div>
+            <label class="form-label">
 
-<div id="preview-content"></div>
+                مبلغ پرداخت
 
-<button
-class="btn btn-success btn-full no-print"
-onclick="finalizeBill()">
+            </label>
 
-✅ ذخیره نهایی لیست هزینه
+            <input
+                id="payment-amount"
+                type="number"
+                class="form-control">
 
-</button>
+        </div>
 
-</div>
+        <button
+            class="btn btn-success"
+            onclick="savePayment()">
 
-</div>
+            ✅ ثبت پرداخت
 
-</div>
+        </button>
 
-</div>
-
-<!-- VIEW BILL MODAL -->
-<div class="modal" id="view-modal">
-
-<div class="modal-content">
-
-<div class="card-title no-print">
-
-<span>نمایش لیست هزینه</span>
-
-<div style="display:flex;gap:6px">
-
-<button class="btn btn-primary" onclick="printPreview()">
-🖨 چاپ
-</button>
-
-<button class="btn btn-success" onclick="downloadPreviewImage()">
-🖼 عکس
-</button>
-
-<button class="btn btn-danger" onclick="closeViewModal()">
-✖
-</button>
+    </div>
 
 </div>
 
+
+<!-- نمایش قبض -->
+
+<div
+    class="modal"
+    id="view-bill-modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <strong id="view-bill-title">
+
+                نمایش قبض
+
+            </strong>
+
+            <button
+                class="close-btn"
+                onclick="closeModal('view-bill-modal')">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <div id="view-bill-content"></div>
+
+        <div class="action-row">
+
+            <button
+                class="btn btn-secondary"
+                onclick="printViewedBill()">
+
+                🖨 چاپ
+
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="downloadViewedBillImage()">
+
+                📸 دانلود عکس
+
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="editViewedBill()">
+
+                ✏️ ویرایش
+
+            </button>
+
+            <button
+                class="btn btn-danger"
+                onclick="deleteViewedBill()">
+
+                🗑 حذف
+
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div id="view-content"></div>
 
-</div>
+<div id="print-area"></div>
 
-</div>
-
-<!-- UNIT MODAL -->
-<div class="modal" id="unit-modal">
-
-<div class="modal-content">
-
-<div class="card">
-
-<div class="card-title">
-
-<span id="unit-modal-title">ویرایش واحد</span>
-
-<button class="btn btn-danger" onclick="closeUnitModal()">
-✖
-</button>
-
-</div>
-
-<input type="hidden" id="edit-unit-index">
-
-<div class="form-group">
-<label class="form-label">شماره واحد</label>
-<input type="text" id="unit-number" class="form-control">
-</div>
-
-<div class="form-group">
-<label class="form-label">نام ساکن</label>
-<input type="text" id="unit-name" class="form-control">
-</div>
-
-<div class="form-group">
-<label class="form-label">تعداد نفرات</label>
-<input type="number" id="unit-people" class="form-control">
-</div>
-
-<div class="form-group">
-<label class="form-label">مبلغ صندوق</label>
-<input type="number" id="unit-fund" class="form-control">
-</div>
-
-<button class="btn btn-success btn-full" onclick="saveUnit()">
-💾 ذخیره
-</button>
-
-</div>
-
-</div>
-
-</div>
 
 <script>
 
-let db = JSON.parse(localStorage.getItem('plaque3_db')) || {
 
-units:Array.from({length:10},(_,i)=>({
+/* ================================
+   دیتابیس
+================================ */
 
-number:i+1,
-name:`واحد ${i+1}`,
-people:2,
-fund:0,
-balance:0
+const STORAGE_KEY =
+"plaque3_final_database_v3";
 
-})),
 
-archiveExpenses:[],
-
-bills:[],
-
-settings:{
-
-rounding:1000,
-
-note1:'',
-
-note2:''
-
-}
-
+let db =
+JSON.parse(localStorage.getItem(STORAGE_KEY))
+||
+{
+    units:[],
+    bills:[],
+    payments:[],
+    expenseArchive:[]
 };
 
-let currentBill={};
 
-let editingBillIndex=null;
+let currentBill = {};
+
+let editingBillId = null;
+
+let viewedBillId = null;
+
+
+/* ================================
+   ذخیره دیتابیس
+================================ */
 
 function saveDB(){
 
-localStorage.setItem(
-'plaque3_db',
-JSON.stringify(db)
-);
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(db)
+    );
 
 }
 
-function getTodayJalali(){
 
-const d=new Date();
+/* ================================
+   فرمت پول
+================================ */
 
-const gy=d.getFullYear();
+function money(number){
 
-const gm=d.getMonth()+1;
-
-const gd=d.getDate();
-
-const g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
-
-let jy;
-
-if(gy<=1600){
-
-jy=0;
-
-}else{
-
-jy=979;
+    return Number(number || 0)
+    .toLocaleString("fa-IR")
+    + " تومان";
 
 }
 
-let gy2=(gm>2)?gy+1:gy;
 
-let days=365*gy+
-Math.floor((gy2+3)/4)-
-Math.floor((gy2+99)/100)+
-Math.floor((gy2+399)/400)-
-80+
-gd+
-g_d_m[gm-1];
+function esc(value){
 
-jy+=33*Math.floor(days/12053);
-
-days%=12053;
-
-jy+=4*Math.floor(days/1461);
-
-days%=1461;
-
-if(days>365){
-
-jy+=Math.floor((days-1)/365);
-
-days=(days-1)%365;
+    return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
-let jm=days<186?
-1+Math.floor(days/31):
-7+Math.floor((days-186)/30);
 
-let jd=1+(days<186?days%31:(days-186)%30);
+/* ================================
+   تغییر تب
+================================ */
 
-return `${jy}/${String(jm).padStart(2,'0')}/${String(jd).padStart(2,'0')}`;
+function switchTab(tab,button){
 
-}
+    document
+    .querySelectorAll("main>section")
+    .forEach(x=>x.style.display="none");
 
-function switchTab(tab){
+    document
+    .getElementById("tab-"+tab)
+    .style.display="block";
 
-document.querySelectorAll('.tab-content-section')
-.forEach(x=>x.style.display='none');
+    document
+    .querySelectorAll(".nav-item")
+    .forEach(x=>x.classList.remove("active"));
 
-document.querySelectorAll('.nav-item')
-.forEach(x=>x.classList.remove('active'));
+    button.classList.add("active");
 
-if(tab==='dashboard'){
+    if(tab==="dashboard")
+        renderDashboard();
 
-document.getElementById('tab-dashboard').style.display='block';
+    if(tab==="units")
+        renderUnits();
 
-document.querySelectorAll('.nav-item')[0].classList.add('active');
-
-renderDashboard();
-
-}
-
-if(tab==='units'){
-
-document.getElementById('tab-units').style.display='block';
-
-document.querySelectorAll('.nav-item')[1].classList.add('active');
-
-renderUnits();
+    if(tab==="settings")
+        renderSettings();
 
 }
 
-if(tab==='settings'){
 
-document.getElementById('tab-settings').style.display='block';
+/* ================================
+   مودال
+================================ */
 
-document.querySelectorAll('.nav-item')[2].classList.add('active');
+function openModal(id){
 
-renderSettings();
-
-}
-
-}
-
-function openWizard(){
-
-currentBill={};
-
-editingBillIndex=null;
-
-document.getElementById('bill-name').value='';
-
-document.getElementById('bill-date').value=getTodayJalali();
-
-document.getElementById('water-cost').value=0;
-
-document.getElementById('electricity-cost').value=0;
-
-document.getElementById('gas-cost').value=0;
-
-document.getElementById('cleaning-cost').value=0;
-
-document.getElementById('cleaning-count').value=1;
-
-document.getElementById('wizard-modal').classList.add('active');
-
-renderStep(1);
+    document
+    .getElementById(id)
+    .classList.add("active");
 
 }
 
-function closeWizard(){
 
-document.getElementById('wizard-modal')
-.classList.remove('active');
+function closeModal(id){
 
-}
-
-function renderStep(step){
-
-document.querySelectorAll('.wizard-step')
-.forEach(x=>x.classList.remove('active'));
-
-document.getElementById(`step${step}`)
-.classList.add('active');
-
-if(step===3){
-
-renderVariableExpenses();
+    document
+    .getElementById(id)
+    .classList.remove("active");
 
 }
 
-if(step===4){
 
-renderDebtTransfer();
-
-}
-
-if(step===5){
-
-renderPreview();
-
-}
-
-}
-
-function nextStep(step){
-
-if(step===2){
-
-currentBill.name=document.getElementById('bill-name').value.trim();
-
-currentBill.date=document.getElementById('bill-date').value.trim();
-
-if(!currentBill.name){
-
-alert('نام لیست هزینه را وارد کنید');
-
-return;
-
-}
-
-if(!currentBill.date){
-
-alert('تاریخ شمسی را وارد کنید');
-
-return;
-
-}
-
-}
-
-if(step===3){
-
-currentBill.water=
-Number(document.getElementById('water-cost').value)||0;
-
-currentBill.electricity=
-Number(document.getElementById('electricity-cost').value)||0;
-
-currentBill.gas=
-Number(document.getElementById('gas-cost').value)||0;
-
-currentBill.cleaning=
-Number(document.getElementById('cleaning-cost').value)||0;
-
-currentBill.cleaningCount=
-Number(document.getElementById('cleaning-count').value)||0;
-
-}
-
-renderStep(step);
-
-}
-
-function renderVariableExpenses(){
-
-const list=document.getElementById('variable-expenses-list');
-
-list.innerHTML='';
-
-currentBill.variableExpenses=
-currentBill.variableExpenses||[];
-
-currentBill.variableExpenses.forEach((e,i)=>{
-
-const div=document.createElement('div');
-
-div.className='expense-row';
-
-div.innerHTML=`
-
-<input class="form-control" value="${e.name}" disabled>
-
-<input class="form-control" value="${e.amount.toLocaleString()} ریال" disabled>
-
-<button class="btn btn-danger" onclick="removeVariableExpense(${i})">
-حذف
-</button>
-
-`;
-
-list.appendChild(div);
-
-});
-
-const select=document.getElementById('archive-expense-select');
-
-select.innerHTML='<option value="">-- انتخاب هزینه آرشیوی --</option>';
-
-db.archiveExpenses.forEach(name=>{
-
-const option=document.createElement('option');
-
-option.value=name;
-
-option.textContent=name;
-
-select.appendChild(option);
-
-});
-
-select.onchange=function(){
-
-if(this.value){
-
-document.getElementById('new-expense-name').value=this.value;
-
-}
-
-};
-
-}
-
-function addVariableExpense(){
-
-const name=document
-.getElementById('new-expense-name')
-.value.trim();
-
-const amount=Number(
-document.getElementById('new-expense-amount')
-.value
-)||0;
-
-if(!name){
-
-alert('نام هزینه را وارد کنید');
-
-return;
-
-}
-
-if(amount<=0){
-
-alert('مبلغ هزینه را وارد کنید');
-
-return;
-
-}
-
-currentBill.variableExpenses=
-currentBill.variableExpenses||[];
-
-currentBill.variableExpenses.push({
-
-name:name,
-
-amount:amount
-
-});
-
-if(!db.archiveExpenses.includes(name)){
-
-db.archiveExpenses.push(name);
-
-saveDB();
-
-}
-
-document.getElementById('new-expense-name').value='';
-
-document.getElementById('new-expense-amount').value='';
-
-renderVariableExpenses();
-
-}
-
-function removeVariableExpense(index){
-
-currentBill.variableExpenses.splice(index,1);
-
-renderVariableExpenses();
-
-}
-
-function renderDebtTransfer(){
-
-const container=
-document.getElementById('debt-transfer-list');
-
-container.innerHTML='';
-
-db.units.forEach(u=>{
-
-const div=document.createElement('div');
-
-div.style.padding='8px 0';
-
-div.style.borderBottom='1px solid #eee';
-
-div.innerHTML=`
-
-<div style="display:flex;justify-content:space-between">
-
-<span>${u.number} - ${u.name}</span>
-
-<span class="badge ${u.balance>0?'debt':'credit'}">
-
-${u.balance>0?'بدهی: ':'بستانکاری: '}
-
-${Math.abs(u.balance).toLocaleString()} ریال
-
-</span>
-
-</div>
-
-`;
-
-container.appendChild(div);
-
-});
-
-}
-
-function roundUp(value){
-
-const r=Number(db.settings.rounding)||0;
-
-if(!r)return Math.ceil(value);
-
-return Math.ceil(value/r)*r;
-
-}
-
-function renderPreview(){
-
-const container=document.getElementById('preview-content');
-
-let totalPeople=db.units.reduce((s,u)=>s+Number(u.people||0),0);
-
-let waterPerPerson=totalPeople?
-currentBill.water/totalPeople:0;
-
-let electricityPerUnit=
-currentBill.electricity/db.units.length;
-
-let gasPerUnit=
-currentBill.gas/db.units.length;
-
-let cleaningTotal=
-currentBill.cleaning*currentBill.cleaningCount;
-
-let cleaningPerUnit=
-cleaningTotal/db.units.length;
-
-let variableTotal=
-(currentBill.variableExpenses||[])
-.reduce((s,e)=>s+Number(e.amount||0),0);
-
-let variablePerUnit=
-variableTotal/db.units.length;
-
-let grandReal=
-currentBill.water+
-currentBill.electricity+
-currentBill.gas+
-cleaningTotal+
-variableTotal;
-
-let totalRounded=0;
-
-let rows='';
-
-db.units.forEach(u=>{
-
-let water=u.people*waterPerPerson;
-
-let electricity=electricityPerUnit;
-
-let gas=gasPerUnit;
-
-let cleaning=cleaningPerUnit;
-
-let variable=variablePerUnit;
-
-let currentCost=
-water+electricity+gas+cleaning+variable;
-
-let debt=Number(u.balance)||0;
-
-let sum=currentCost+debt;
-
-let rounded=roundUp(sum);
-
-totalRounded+=rounded;
-
-rows+=`
-
-<tr>
-
-<td>${u.number}</td>
-
-<td>${u.name}</td>
-
-<td>${u.people}</td>
-
-<td>${water.toLocaleString()}</td>
-
-<td>${electricity.toLocaleString()}</td>
-
-<td>${gas.toLocaleString()}</td>
-
-<td>${cleaning.toLocaleString()}</td>
-
-<td>${variable.toLocaleString()}</td>
-
-<td>${debt.toLocaleString()}</td>
-
-<td><b>${rounded.toLocaleString()}</b></td>
-
-</tr>
-
-`;
-
-});
-
-let realFund=
-db.units.reduce((s,u)=>s+Number(u.fund||0),0);
-
-let remainingFund=
-realFund+totalRounded-grandReal;
-
-container.innerHTML=`
-
-<div id="capture-area">
-
-<div class="list-title">
-
-${currentBill.name} تا تاریخ ${currentBill.date}
-
-</div>
-
-<div class="preview-layout">
-
-<div class="main-preview-table">
-
-<table class="preview-table">
-
-<thead>
-
-<tr>
-
-<th>شماره واحد</th>
-
-<th>نام ساکن</th>
-
-<th>نفرات</th>
-
-<th>آب</th>
-
-<th>برق</th>
-
-<th>گاز</th>
-
-<th>نظافت</th>
-
-<th>متغیر</th>
-
-<th>بدهی قبلی</th>
-
-<th>جمع رند شده</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-${rows}
-
-</tbody>
-
-<tfoot>
-
-<tr>
-
-<td colspan="3">جمع کل ستون‌ها</td>
-
-<td>${currentBill.water.toLocaleString()}</td>
-
-<td>${currentBill.electricity.toLocaleString()}</td>
-
-<td>${currentBill.gas.toLocaleString()}</td>
-
-<td>${cleaningTotal.toLocaleString()}</td>
-
-<td>${variableTotal.toLocaleString()}</td>
-
-<td>—</td>
-
-<td>${totalRounded.toLocaleString()}</td>
-
-</tr>
-
-</tfoot>
-
-</table>
-
-<div class="notes-area">
-
-<div class="note-box">
-
-${db.settings.note1||'یادداشت ۱'}
-
-</div>
-
-<div class="note-box">
-
-${db.settings.note2||'یادداشت ۲'}
-
-</div>
-
-</div>
-
-</div>
-
-<div class="side-preview-table">
-
-<table class="preview-table">
-
-<thead>
-
-<tr>
-
-<th>شرح مالی</th>
-
-<th>مبلغ</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td>جمع واقعی هزینه‌ها</td>
-
-<td>${grandReal.toLocaleString()}</td>
-
-</tr>
-
-<tr>
-
-<td>جمع رند شده</td>
-
-<td>${totalRounded.toLocaleString()}</td>
-
-</tr>
-
-<tr>
-
-<td>صندوق واحدها</td>
-
-<td>${realFund.toLocaleString()}</td>
-
-</tr>
-
-<tr>
-
-<td>مانده صندوق</td>
-
-<td>${remainingFund.toLocaleString()}</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-currentBill.totalReal=grandReal;
-
-currentBill.totalRounded=totalRounded;
-
-currentBill.realFund=realFund;
-
-currentBill.remainingFund=remainingFund;
-
-currentBill.unitsBill=db.units.map(u=>({
-
-number:u.number,
-
-name:u.name,
-
-people:u.people,
-
-fund:u.fund,
-
-previousDebt:u.balance,
-
-currentCost:0,
-
-payable:0
-
-}));
-
-}
-
-function finalizeBill(){
-
-if(editingBillIndex!==null){
-
-db.bills[editingBillIndex]=currentBill;
-
-}else{
-
-db.bills.push(currentBill);
-
-}
-
-saveDB();
-
-closeWizard();
-
-renderDashboard();
-
-alert('لیست هزینه با موفقیت ذخیره شد');
-
-}
+/* ================================
+   داشبورد
+================================ */
 
 function renderDashboard(){
 
-const container=
-document.getElementById('previous-bills-list');
+    document
+    .getElementById("stat-units")
+    .textContent =
+    db.units.length.toLocaleString("fa-IR");
 
-if(!db.bills.length){
+    document
+    .getElementById("stat-bills")
+    .textContent =
+    db.bills.length.toLocaleString("fa-IR");
 
-container.innerHTML=
-'<p style="text-align:center;padding:20px">لیست هزینه‌ای وجود ندارد.</p>';
 
-return;
+    const box =
+    document.getElementById("bills-list");
 
-}
 
-container.innerHTML=db.bills.map((b,i)=>`
+    if(!db.bills.length){
 
-<div class="bill-card">
+        box.innerHTML =
+        '<div class="empty">هنوز قبضی ذخیره نشده است.</div>';
 
-<div style="display:flex;justify-content:space-between;gap:10px">
+        return;
 
-<strong>${b.name}</strong>
+    }
 
-<span>${b.date}</span>
 
-</div>
+    box.innerHTML =
+    db.bills
+    .slice()
+    .reverse()
+    .map(b=>`
 
-<div style="margin-top:7px;color:#64748b">
+        <div class="bill-item">
 
-جمع واقعی:
+            <div class="bill-header">
 
-${(b.totalReal||0).toLocaleString()} ریال
+                <div>
 
-</div>
+                    <div class="bill-name">
 
-<div class="bill-actions">
+                        ${esc(b.title)}
 
-<button class="btn btn-primary" onclick="viewBill(${i})">
+                    </div>
 
-👁 نمایش
+                    <div class="muted">
 
-</button>
+                        ${esc(b.date)}
 
-<button class="btn btn-warning" onclick="editBill(${i})">
+                    </div>
 
-✏ ویرایش
+                </div>
 
-</button>
+                <span class="badge badge-primary">
 
-<button class="btn btn-success" onclick="printBill(${i})">
+                    ${b.unitShares.length} واحد
 
-🖨 چاپ
+                </span>
 
-</button>
+            </div>
 
-<button class="btn btn-secondary" onclick="downloadBillImage(${i})">
 
-🖼 عکس
+            <div class="total-box">
 
-</button>
+                جمع واقعی هزینه‌ها:
 
-<button class="btn btn-danger" onclick="deleteBill(${i})">
+                ${money(b.realTotal)}
 
-🗑 حذف
+                <br>
 
-</button>
+                جمع مبالغ قابل دریافت:
 
-</div>
+                ${money(b.roundedTotal)}
 
-</div>
+            </div>
 
-`).join('');
 
-}
+            <div class="action-row">
 
-function deleteBill(index){
+                <button
+                    class="btn btn-primary"
+                    onclick="viewBill(${b.id})">
 
-if(confirm('آیا از حذف این لیست مطمئن هستید؟')){
+                    👁 نمایش
 
-db.bills.splice(index,1);
+                </button>
 
-saveDB();
+                <button
+                    class="btn btn-secondary"
+                    onclick="editBill(${b.id})">
 
-renderDashboard();
+                    ✏️ ویرایش
 
-}
+                </button>
 
-}
+                <button
+                    class="btn btn-danger"
+                    onclick="deleteBill(${b.id})">
 
-function editBill(index){
+                    🗑 حذف
 
-const b=db.bills[index];
+                </button>
 
-editingBillIndex=index;
+            </div>
 
-currentBill=JSON.parse(JSON.stringify(b));
+        </div>
 
-document.getElementById('bill-name').value=b.name;
-
-document.getElementById('bill-date').value=b.date;
-
-document.getElementById('water-cost').value=b.water||0;
-
-document.getElementById('electricity-cost').value=b.electricity||0;
-
-document.getElementById('gas-cost').value=b.gas||0;
-
-document.getElementById('cleaning-cost').value=b.cleaning||0;
-
-document.getElementById('cleaning-count').value=b.cleaningCount||1;
-
-document.getElementById('wizard-modal').classList.add('active');
-
-renderStep(1);
+    `)
+    .join("");
 
 }
 
-function viewBill(index){
 
-const b=db.bills[index];
+/* ================================
+   باز کردن ویزارد قبض
+================================ */
 
-currentBill=b;
+function openBillWizard(bill=null){
 
-document.getElementById('view-modal').classList.add('active');
+    editingBillId =
+    bill
+    ?
+    bill.id
+    :
+    null;
 
-document.getElementById('view-content').innerHTML='';
 
-renderViewBill(b);
+    document
+    .getElementById("bill-modal-title")
+    .textContent =
+    bill
+    ?
+    "ویرایش قبض"
+    :
+    "ایجاد لیست هزینه جدید";
+
+
+    document
+    .getElementById("bill-title")
+    .value =
+    bill
+    ?
+    bill.title
+    :
+    "";
+
+
+    document
+    .getElementById("bill-date")
+    .value =
+    bill
+    ?
+    bill.date
+    :
+    "";
+
+
+    document
+    .getElementById("water-amount")
+    .value =
+    bill?.fixed?.water?.amount || 0;
+
+
+    document
+    .getElementById("electricity-amount")
+    .value =
+    bill?.fixed?.electricity?.amount || 0;
+
+
+    document
+    .getElementById("gas-amount")
+    .value =
+    bill?.fixed?.gas?.amount || 0;
+
+
+    document
+    .getElementById("cleaning-amount")
+    .value =
+    bill?.fixed?.cleaning?.amountPerTime || 0;
+
+
+    document
+    .getElementById("cleaning-count")
+    .value =
+    bill?.fixed?.cleaning?.count || 1;
+
+
+    document
+    .getElementById("variable-expenses")
+    .innerHTML = "";
+
+
+    if(bill?.variables){
+
+        bill.variables.forEach(v=>{
+
+            addVariableExpenseRow(
+                v.name,
+                v.amount
+            );
+
+        });
+
+    }
+
+
+    if(!bill){
+
+        addVariableExpenseRow();
+
+    }
+
+
+    goBillStep(1);
+
+    openModal("bill-modal");
 
 }
 
-function renderViewBill(b){
 
-const container=document.getElementById('view-content');
+/* ================================
+   رفتن بین مراحل
+================================ */
 
-let rows='';
+function goBillStep(step){
 
-let totalRounded=b.totalRounded||0;
 
-(b.unitsBill||[]).forEach(u=>{
+    if(step === 2){
 
-rows+=`
+        const title =
+        document
+        .getElementById("bill-title")
+        .value
+        .trim();
 
-<tr>
 
-<td>${u.number}</td>
+        const date =
+        document
+        .getElementById("bill-date")
+        .value
+        .trim();
 
-<td>${u.name}</td>
 
-<td>${u.people}</td>
+        if(!title || !date){
 
-<td>—</td>
+            alert(
+                "عنوان و تاریخ را وارد کنید."
+            );
 
-<td>—</td>
+            return;
 
-<td>—</td>
+        }
 
-<td>—</td>
+    }
 
-<td>—</td>
 
-<td>${(u.previousDebt||0).toLocaleString()}</td>
+    if(step === 4){
 
-<td>${(u.payable||0).toLocaleString()}</td>
+        if(!db.units.length){
 
-</tr>
+            alert(
+                "ابتدا واحدها را ثبت کنید."
+            );
 
-`;
+            return;
 
-});
+        }
 
-container.innerHTML=`
 
-<div id="capture-area">
+        currentBill = {
 
-<div class="list-title">
+            title:
+            document
+            .getElementById("bill-title")
+            .value
+            .trim(),
 
-${b.name} تا تاریخ ${b.date}
+            date:
+            document
+            .getElementById("bill-date")
+            .value
+            .trim(),
 
-</div>
 
-<div class="preview-layout">
+            fixed:{
 
-<div class="main-preview-table">
+                water:{
 
-<table class="preview-table">
+                    amount:
+                    Number(
+                        document
+                        .getElementById("water-amount")
+                        .value
+                    )
+                    ||
+                    0
 
-<thead>
+                },
 
-<tr>
 
-<th>شماره واحد</th>
+                electricity:{
 
-<th>نام ساکن</th>
+                    amount:
+                    Number(
+                        document
+                        .getElementById("electricity-amount")
+                        .value
+                    )
+                    ||
+                    0
 
-<th>نفرات</th>
+                },
 
-<th>آب</th>
 
-<th>برق</th>
+                gas:{
 
-<th>گاز</th>
+                    amount:
+                    Number(
+                        document
+                        .getElementById("gas-amount")
+                        .value
+                    )
+                    ||
+                    0
 
-<th>نظافت</th>
+                },
 
-<th>متغیر</th>
 
-<th>بدهی قبلی</th>
+                cleaning:{
 
-<th>جمع رند شده</th>
+                    amountPerTime:
+                    Number(
+                        document
+                        .getElementById("cleaning-amount")
+                        .value
+                    )
+                    ||
+                    0,
 
-</tr>
 
-</thead>
+                    count:
+                    Number(
+                        document
+                        .getElementById("cleaning-count")
+                        .value
+                    )
+                    ||
+                    1
 
-<tbody>
+                }
 
-${rows}
+            },
 
-</tbody>
 
-<tfoot>
+            variables:
+            readVariables()
 
-<tr>
+        };
 
-<td colspan="3">جمع کل</td>
 
-<td>${(b.water||0).toLocaleString()}</td>
+        renderPreview();
 
-<td>${(b.electricity||0).toLocaleString()}</td>
+    }
 
-<td>${(b.gas||0).toLocaleString()}</td>
 
-<td>${((b.cleaning||0)*(b.cleaningCount||0)).toLocaleString()}</td>
+    document
+    .querySelectorAll(".wizard-step")
+    .forEach(
+        x=>x.classList.remove("active")
+    );
 
-<td>${(b.variableExpenses||[]).reduce((s,e)=>s+e.amount,0).toLocaleString()}</td>
 
-<td>—</td>
+    const nextStep =
+    document
+    .getElementById(
+        "bill-step-"+step
+    );
 
-<td>${totalRounded.toLocaleString()}</td>
 
-</tr>
+    if(nextStep){
 
-</tfoot>
+        nextStep
+        .classList
+        .add("active");
 
-</table>
-
-<div class="notes-area">
-
-<div class="note-box">${db.settings.note1||'یادداشت ۱'}</div>
-
-<div class="note-box">${db.settings.note2||'یادداشت ۲'}</div>
-
-</div>
-
-</div>
-
-<div class="side-preview-table">
-
-<table class="preview-table">
-
-<tr>
-
-<th>شرح</th>
-
-<th>مبلغ</th>
-
-</tr>
-
-<tr>
-
-<td>جمع واقعی</td>
-
-<td>${(b.totalReal||0).toLocaleString()}</td>
-
-</tr>
-
-<tr>
-
-<td>جمع رند شده</td>
-
-<td>${(b.totalRounded||0).toLocaleString()}</td>
-
-</tr>
-
-<tr>
-
-<td>صندوق</td>
-
-<td>${(b.realFund||0).toLocaleString()}</td>
-
-</tr>
-
-<tr>
-
-<td>مانده صندوق</td>
-
-<td>${(b.remainingFund||0).toLocaleString()}</td>
-
-</tr>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-`;
+    }
 
 }
 
-function closeViewModal(){
 
-document.getElementById('view-modal')
-.classList.remove('active');
+/* ================================
+   افزودن هزینه متغیر
+================================ */
+
+function addVariableExpenseRow(
+    name="",
+    amount=""
+){
+
+    const box =
+    document
+    .getElementById(
+        "variable-expenses"
+    );
+
+
+    const row =
+    document
+    .createElement("div");
+
+
+    row.className =
+    "expense-row";
+
+
+    let options =
+    '<option value="">انتخاب هزینه از آرشیو</option>';
+
+
+    db.expenseArchive
+    .forEach(n=>{
+
+        options += `
+
+            <option
+                value="${esc(n)}"
+                ${n===name?"selected":""}>
+
+                ${esc(n)}
+
+            </option>
+
+        `;
+
+    });
+
+
+    row.innerHTML = `
+
+        <div class="archive-select-row">
+
+            <div>
+
+                <label class="form-label">
+
+                    نام هزینه
+
+                </label>
+
+                <select
+                    class="form-control variable-name">
+
+                    ${options}
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="form-label">
+
+                    مبلغ این ماه
+
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control variable-amount"
+                    value="${amount}"
+                    placeholder="مبلغ">
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="form-group"
+            style="margin-top:10px">
+
+            <label class="form-label">
+
+                اگر هزینه جدید است،
+                نام آن را وارد کنید
+
+            </label>
+
+            <input
+                class="form-control new-variable-name"
+                placeholder="نام هزینه جدید">
+
+        </div>
+
+
+        <button
+            class="btn btn-danger"
+            onclick="this.parentElement.remove()">
+
+            🗑 حذف
+
+        </button>
+
+    `;
+
+
+    box.appendChild(row);
 
 }
 
-function printPreview(){
 
-window.print();
+/* ================================
+   خواندن هزینه‌های متغیر
+================================ */
+
+function readVariables(){
+
+    const result = [];
+
+
+    document
+    .querySelectorAll(
+        "#variable-expenses .expense-row"
+    )
+    .forEach(row=>{
+
+
+        const selectedName =
+        row
+        .querySelector(".variable-name")
+        ?.value
+        .trim()
+        ||
+        "";
+
+
+        const newName =
+        row
+        .querySelector(".new-variable-name")
+        ?.value
+        .trim()
+        ||
+        "";
+
+
+        const amount =
+        Number(
+            row
+            .querySelector(".variable-amount")
+            ?.value
+        )
+        ||
+        0;
+
+
+        const name =
+        newName
+        ||
+        selectedName;
+
+
+        // ردیف کاملاً خالی نادیده گرفته شود
+
+        if(!name && amount===0){
+
+            return;
+
+        }
+
+
+        if(!name){
+
+            alert(
+                "برای یکی از هزینه‌های متغیر نام هزینه را وارد کنید."
+            );
+
+            return;
+
+        }
+
+
+        if(amount<=0){
+
+            alert(
+                "برای هزینه «"+
+                name+
+                "» مبلغ صحیح وارد کنید."
+            );
+
+            return;
+
+        }
+
+
+        result.push({
+
+            name:name,
+
+            amount:amount
+
+        });
+
+
+        if(
+            !db.expenseArchive
+            .includes(name)
+        ){
+
+            db
+            .expenseArchive
+            .push(name);
+
+        }
+
+    });
+
+
+    saveDB();
+
+
+    return result;
 
 }
 
-function printBill(index){
 
-viewBill(index);
+/* ================================
+   مجموع نفرات
+================================ */
 
-setTimeout(()=>window.print(),300);
+function totalPeople(){
 
-}
-
-function downloadPreviewImage(){
-
-const area=document.getElementById('capture-area');
-
-if(!area)return;
-
-html2canvas(area,{scale:2}).then(canvas=>{
-
-const link=document.createElement('a');
-
-link.download='لیست-هزینه.png';
-
-link.href=canvas.toDataURL('image/png');
-
-link.click();
-
-});
+    return db.units
+    .reduce(
+        (sum,u)=>
+        sum+
+        Number(u.people||0),
+        0
+    );
 
 }
 
-function downloadBillImage(index){
 
-viewBill(index);
+/* ================================
+   محاسبه سهم
+================================ */
 
-setTimeout(()=>downloadPreviewImage(),500);
+function share(expense,unit){
+
+    if(
+        expense.type ===
+        "per_person"
+    ){
+
+        return (
+            expense.amount
+            /
+            totalPeople()
+        )
+        *
+        unit.people;
+
+    }
+
+
+    return (
+        expense.amount
+        /
+        db.units.length
+    );
 
 }
+
+
+/* ================================
+   لیست هزینه‌ها
+================================ */
+
+function createExpenseList(){
+
+    const expenses = [];
+
+
+    expenses.push({
+
+        key:"water",
+
+        name:"آب",
+
+        amount:
+        currentBill
+        .fixed
+        .water
+        .amount,
+
+        type:"per_person"
+
+    });
+
+
+    expenses.push({
+
+        key:"electricity",
+
+        name:"برق",
+
+        amount:
+        currentBill
+        .fixed
+        .electricity
+        .amount,
+
+        type:"per_unit"
+
+    });
+
+
+    expenses.push({
+
+        key:"gas",
+
+        name:"گاز",
+
+        amount:
+        currentBill
+        .fixed
+        .gas
+        .amount,
+
+        type:"per_unit"
+
+    });
+
+
+    const cleaningTotal =
+    currentBill
+    .fixed
+    .cleaning
+    .amountPerTime
+    *
+    currentBill
+    .fixed
+    .cleaning
+    .count;
+
+
+    expenses.push({
+
+        key:"cleaning",
+
+        name:"نظافت",
+
+        amount:cleaningTotal,
+
+        type:"per_unit",
+
+        count:
+        currentBill
+        .fixed
+        .cleaning
+        .count
+
+    });
+
+
+    currentBill
+    .variables
+    .forEach((v,i)=>{
+
+        expenses.push({
+
+            key:"variable_"+i,
+
+            name:v.name,
+
+            amount:v.amount,
+
+            type:"per_unit"
+
+        });
+
+    });
+
+
+    return expenses;
+
+}
+
+
+/* ================================
+   بدهی قبلی
+================================ */
+
+function previousDebt(unitId){
+
+    let charges = 0;
+
+
+    db.bills.forEach(b=>{
+
+        const unit =
+        b.unitShares
+        .find(
+            x=>x.unitId===unitId
+        );
+
+
+        if(unit){
+
+            charges +=
+            unit.roundedTotal;
+
+        }
+
+    });
+
+
+    const paid =
+    db.payments
+    .filter(
+        x=>x.unitId===unitId
+    )
+    .reduce(
+        (sum,x)=>
+        sum+x.amount,
+        0
+    );
+
+
+    return Math.max(
+        0,
+        Math.round(
+            charges-paid
+        )
+    );
+
+}
+
+
+/* ================================
+   ساخت اطلاعات قبض
+================================ */
+
+function buildBillData(){
+
+    const expenses =
+    createExpenseList();
+
+
+    const realTotal =
+    expenses
+    .reduce(
+        (sum,e)=>
+        sum+e.amount,
+        0
+    );
+
+
+    const shares =
+    db.units
+    .map(unit=>{
+
+
+        const columns = {};
+
+        let currentTotal = 0;
+
+
+        expenses
+        .forEach(e=>{
+
+
+            const value =
+            Math.round(
+                share(e,unit)
+            );
+
+
+            columns[e.key] =
+            value;
+
+
+            currentTotal +=
+            value;
+
+        });
+
+
+        const oldDebt =
+        previousDebt(
+            unit.id
+        );
+
+
+        return{
+
+            unitId:
+            unit.id,
+
+            unitNumber:
+            unit.unitNumber,
+
+            residentName:
+            unit.residentName,
+
+            people:
+            unit.people,
+
+            columns:
+
+            columns,
+
+            oldDebt:
+
+            oldDebt,
+
+            roundedTotal:
+
+            currentTotal+
+            oldDebt
+
+        };
+
+    });
+
+
+    const roundedTotal =
+    shares
+    .reduce(
+        (sum,u)=>
+        sum+
+        u.roundedTotal,
+        0
+    );
+
+
+    return{
+
+        id:
+        editingBillId
+        ||
+        Date.now(),
+
+        title:
+        currentBill.title,
+
+        date:
+        currentBill.date,
+
+        fixed:
+        currentBill.fixed,
+
+        variables:
+        currentBill.variables,
+
+        expenses:
+        expenses,
+
+        realTotal:
+        realTotal,
+
+        roundedTotal:
+        roundedTotal,
+
+        unitShares:
+        shares
+
+    };
+
+}
+
+
+/* ================================
+   نمایش پیش‌نمایش
+================================ */
+
+function renderPreview(){
+
+    const bill =
+    buildBillData();
+
+
+    const expenseColumns =
+    bill.expenses;
+
+
+    let html = `
+
+        <div class="card">
+
+            <div class="card-title">
+
+                <span>
+                    پیش‌نمایش قبض
+                </span>
+
+                <span>
+                    ${esc(bill.title)}
+                </span>
+
+            </div>
+
+
+            <div class="preview-scroll">
+
+                <div class="preview-layout">
+
+
+                    <div class="main-table-wrap">
+
+                        <table
+                            class="preview-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        شماره واحد
+                                    </th>
+
+                                    <th>
+                                        نام ساکن
+                                    </th>
+
+                                    <th>
+                                        نفرات
+                                    </th>
+
+
+                                    ${
+                                        expenseColumns
+                                        .map(e=>
+                                            `
+                                            <th>
+                                                ${esc(e.name)}
+                                            </th>
+                                            `
+                                        )
+                                        .join("")
+                                    }
+
+
+                                    <th>
+                                        بدهی قبلی
+                                    </th>
+
+                                    <th>
+                                        جمع رند شده
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${
+                                    bill.unitShares
+                                    .map(u=>`
+
+                                        <tr>
+
+                                            <td>
+                                                ${esc(u.unitNumber)}
+                                            </td>
+
+                                            <td>
+                                                ${esc(
+                                                    u.residentName
+                                                    ||
+                                                    "-"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${u.people}
+                                            </td>
+
+
+                                            ${
+                                                expenseColumns
+                                                .map(e=>
+
+                                                    `
+                                                    <td>
+                                                        ${
+                                                            money(
+                                                                u
+                                                                .columns
+                                                                [e.key]
+                                                            )
+                                                        }
+                                                    </td>
+                                                    `
+
+                                                )
+                                                .join("")
+                                            }
+
+
+                                            <td>
+                                                ${money(u.oldDebt)}
+                                            </td>
+
+
+                                            <td>
+
+                                                <strong>
+
+                                                    ${
+                                                        money(
+                                                            u.roundedTotal
+                                                        )
+                                                    }
+
+                                                </strong>
+
+                                            </td>
+
+                                        </tr>
+
+                                    `)
+                                    .join("")
+                                }
+
+                            </tbody>
+
+
+                            <tfoot>
+
+                                <tr>
+
+                                    <td colspan="2">
+
+                                        جمع کل
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${
+                                            db.units
+                                            .reduce(
+                                                (s,u)=>
+                                                s+u.people,
+                                                0
+                                            )
+                                        }
+
+                                    </td>
+
+
+                                    ${
+                                        expenseColumns
+                                        .map(e=>`
+
+                                            <td>
+
+                                                ${
+                                                    money(
+                                                        bill
+                                                        .unitShares
+                                                        .reduce(
+                                                            (s,u)=>
+                                                            s+
+                                                            u
+                                                            .columns
+                                                            [e.key],
+                                                            0
+                                                        )
+                                                    )
+                                                }
+
+                                            </td>
+
+                                        `)
+                                        .join("")
+                                    }
+
+
+                                    <td>
+                                        —
+                                    </td>
+
+
+                                    <td>
+
+                                        ${
+                                            money(
+                                                bill.roundedTotal
+                                            )
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                            </tfoot>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="summary-table-wrap">
+
+                        <table
+                            class="preview-table summary-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        خلاصه مالی
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${
+                                    bill.unitShares
+                                    .map(()=>
+                                        `
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                        `
+                                    )
+                                    .join("")
+                                }
+
+                            </tbody>
+
+
+                            <tfoot>
+
+                                <tr>
+
+                                    <td>
+
+                                        جمع واقعی هزینه‌ها
+
+                                        <br>
+
+                                        <span
+                                            class="summary-value">
+
+                                            ${
+                                                money(
+                                                    bill.realTotal
+                                                )
+                                            }
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        مانده صندوق
+
+                                        <br>
+
+                                        <span
+                                            class="summary-value">
+
+                                            ${
+                                                money(
+                                                    getFundBalance()
+                                                )
+                                            }
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            </tfoot>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document
+    .getElementById(
+        "bill-preview"
+    )
+    .innerHTML =
+    html;
+
+}
+
+
+/* ================================
+   مانده صندوق
+================================ */
+
+function getFundBalance(){
+
+    const totalPaid =
+    db.payments
+    .reduce(
+        (sum,p)=>
+        sum+p.amount,
+        0
+    );
+
+
+    const totalExpenses =
+    db.bills
+    .reduce(
+        (sum,b)=>
+        sum+b.realTotal,
+        0
+    );
+
+
+    return totalPaid-totalExpenses;
+
+}
+
+
+/* ================================
+   ذخیره قبض
+================================ */
+
+function saveBill(){
+
+    const bill =
+    buildBillData();
+
+
+    if(editingBillId){
+
+        const index =
+        db.bills
+        .findIndex(
+            x=>x.id===editingBillId
+        );
+
+
+        if(index>=0){
+
+            db.bills[index] =
+            bill;
+
+        }
+
+    }
+
+    else{
+
+        db.bills
+        .push(bill);
+
+    }
+
+
+    saveDB();
+
+
+    closeModal(
+        "bill-modal"
+    );
+
+
+    renderDashboard();
+
+
+    alert(
+        "قبض با موفقیت ذخیره شد."
+    );
+
+
+    editingBillId =
+    null;
+
+}
+
+
+/* ================================
+   واحدها
+================================ */
 
 function renderUnits(){
 
-const container=document.getElementById('units-list');
+    const box =
+    document
+    .getElementById(
+        "units-list"
+    );
 
-container.innerHTML='';
 
-db.units.forEach((u,i)=>{
+    if(!db.units.length){
 
-const div=document.createElement('div');
+        box.innerHTML =
+        '<div class="empty">هنوز واحدی ثبت نشده است.</div>';
 
-div.className='unit-row';
+        return;
 
-div.innerHTML=`
+    }
 
-<div style="display:flex;justify-content:space-between;align-items:center">
 
-<div>
+    box.innerHTML =
+    db.units
+    .map(u=>{
 
-<strong>واحد ${u.number}</strong>
 
-<br>
+        const debt =
+        previousDebt(
+            u.id
+        );
 
-<span style="color:#64748b">
 
-${u.name} - ${u.people} نفر
+        return `
 
-</span>
+            <div class="unit-item">
 
-</div>
 
-<div style="text-align:left">
+                <div class="unit-header">
 
-<span class="badge ${u.balance>0?'debt':'credit'}">
 
-${u.balance>0?'بدهی':'بستانکاری'}:
+                    <div>
 
-${Math.abs(u.balance).toLocaleString()}
+                        <div class="unit-name">
 
-</span>
+                            واحد
+                            ${esc(u.unitNumber)}
 
-<br>
+                        </div>
 
-<small>
 
-صندوق: ${(u.fund||0).toLocaleString()} ریال
+                        <div class="muted">
 
-</small>
+                            ${esc(
+                                u.residentName
+                                ||
+                                "نام ثبت نشده"
+                            )}
 
-</div>
+                        </div>
 
-</div>
 
-<div class="unit-actions">
+                        <div class="muted">
 
-<button class="btn btn-success" onclick="makePayment(${i})">
+                            👥
+                            ${u.people}
+                            نفر
 
-💰 پرداخت
+                        </div>
 
-</button>
+                    </div>
 
-<button class="btn btn-primary" onclick="openUnitModal(${i})">
 
-✏ ویرایش
+                    <span
+                        class="
+                            badge
+                            ${
+                                debt>0
+                                ?
+                                "badge-danger"
+                                :
+                                "badge-success"
+                            }
+                        ">
 
-</button>
+                        ${
+                            debt>0
+                            ?
+                            "بدهکار: "+money(debt)
+                            :
+                            "تسویه"
+                        }
 
-</div>
+                    </span>
 
-`;
 
-container.appendChild(div);
+                </div>
 
-});
+
+                <div class="unit-actions">
+
+
+                    <button
+                        class="btn btn-success"
+                        onclick="openPaymentModal(${u.id})">
+
+                        💳 پرداخت
+
+                    </button>
+
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="editUnit(${u.id})">
+
+                        ✏️ ویرایش
+
+                    </button>
+
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="deleteUnit(${u.id})">
+
+                        🗑 حذف
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+        `;
+
+    })
+    .join("");
 
 }
 
-function makePayment(index){
 
-const u=db.units[index];
+/* ================================
+   افزودن واحد
+================================ */
 
-let amount=prompt(
+function openUnitModal(){
 
-`مبلغ پرداختی برای ${u.name} را وارد کنید:`,
+    document
+    .getElementById(
+        "unit-modal-title"
+    )
+    .textContent =
+    "افزودن واحد";
 
-Math.max(u.balance,0)
 
-);
+    document
+    .getElementById(
+        "editing-unit-id"
+    )
+    .value =
+    "";
 
-if(amount===null)return;
 
-amount=Number(amount)||0;
+    document
+    .getElementById(
+        "unit-number"
+    )
+    .value =
+    "";
 
-if(amount<=0)return;
 
-u.balance-=amount;
+    document
+    .getElementById(
+        "resident-name"
+    )
+    .value =
+    "";
 
-saveDB();
 
-renderUnits();
+    document
+    .getElementById(
+        "unit-people"
+    )
+    .value =
+    1;
 
-alert('پرداخت ثبت شد');
 
-}
-
-function openUnitModal(index=null){
-
-document.getElementById('unit-modal')
-.classList.add('active');
-
-if(index===null){
-
-document.getElementById('unit-modal-title')
-.textContent='افزودن واحد';
-
-document.getElementById('edit-unit-index').value='';
-
-document.getElementById('unit-number').value='';
-
-document.getElementById('unit-name').value='';
-
-document.getElementById('unit-people').value=1;
-
-document.getElementById('unit-fund').value=0;
-
-}else{
-
-const u=db.units[index];
-
-document.getElementById('unit-modal-title')
-.textContent='ویرایش واحد';
-
-document.getElementById('edit-unit-index').value=index;
-
-document.getElementById('unit-number').value=u.number;
-
-document.getElementById('unit-name').value=u.name;
-
-document.getElementById('unit-people').value=u.people;
-
-document.getElementById('unit-fund').value=u.fund||0;
+    openModal(
+        "unit-modal"
+    );
 
 }
 
+
+/* ================================
+   ویرایش واحد
+================================ */
+
+function editUnit(id){
+
+    const unit =
+    db.units
+    .find(
+        x=>x.id===id
+    );
+
+
+    if(!unit)
+        return;
+
+
+    document
+    .getElementById(
+        "unit-modal-title"
+    )
+    .textContent =
+    "ویرایش اطلاعات واحد";
+
+
+    document
+    .getElementById(
+        "editing-unit-id"
+    )
+    .value =
+    unit.id;
+
+
+    document
+    .getElementById(
+        "unit-number"
+    )
+    .value =
+    unit.unitNumber;
+
+
+    document
+    .getElementById(
+        "resident-name"
+    )
+    .value =
+    unit.residentName;
+
+
+    document
+    .getElementById(
+        "unit-people"
+    )
+    .value =
+    unit.people;
+
+
+    openModal(
+        "unit-modal"
+    );
+
 }
 
-function closeUnitModal(){
 
-document.getElementById('unit-modal')
-.classList.remove('active');
-
-}
+/* ================================
+   ذخیره واحد
+================================ */
 
 function saveUnit(){
 
-const index=document.getElementById('edit-unit-index').value;
+    const id =
+    Number(
+        document
+        .getElementById(
+            "editing-unit-id"
+        )
+        .value
+    );
 
-const unit={
 
-number:document.getElementById('unit-number').value,
+    const unitNumber =
+    Number(
+        document
+        .getElementById(
+            "unit-number"
+        )
+        .value
+    );
 
-name:document.getElementById('unit-name').value,
 
-people:Number(document.getElementById('unit-people').value)||1,
+    const residentName =
+    document
+    .getElementById(
+        "resident-name"
+    )
+    .value
+    .trim();
 
-fund:Number(document.getElementById('unit-fund').value)||0,
 
-balance:index===''?0:db.units[index].balance
+    const people =
+    Number(
+        document
+        .getElementById(
+            "unit-people"
+        )
+        .value
+    );
 
-};
 
-if(index===''){
+    if(!unitNumber || !people){
 
-db.units.push(unit);
+        alert(
+            "شماره واحد و تعداد نفرات الزامی است."
+        );
 
-}else{
+        return;
 
-db.units[index]=unit;
+    }
+
+
+    if(id){
+
+        const unit =
+        db.units
+        .find(
+            x=>x.id===id
+        );
+
+
+        unit.unitNumber =
+        unitNumber;
+
+
+        unit.residentName =
+        residentName;
+
+
+        unit.people =
+        people;
+
+    }
+
+    else{
+
+        db.units
+        .push({
+
+            id:
+            Date.now(),
+
+            unitNumber:
+            unitNumber,
+
+            residentName:
+            residentName,
+
+            people:
+            people
+
+        });
+
+    }
+
+
+    saveDB();
+
+
+    closeModal(
+        "unit-modal"
+    );
+
+
+    renderUnits();
+
+
+    renderDashboard();
 
 }
 
-saveDB();
 
-closeUnitModal();
+/* ================================
+   حذف واحد
+================================ */
 
-renderUnits();
+function deleteUnit(id){
+
+    if(
+        previousDebt(id)>0
+    ){
+
+        alert(
+            "این واحد بدهی دارد و فعلاً قابل حذف نیست."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            "این واحد حذف شود؟"
+        )
+    )
+        return;
+
+
+    db.units =
+    db.units
+    .filter(
+        x=>x.id!==id
+    );
+
+
+    saveDB();
+
+
+    renderUnits();
+
+
+    renderDashboard();
 
 }
+
+
+/* ================================
+   پرداخت
+================================ */
+
+function openPaymentModal(unitId){
+
+    const debt =
+    previousDebt(
+        unitId
+    );
+
+
+    document
+    .getElementById(
+        "payment-unit-id"
+    )
+    .value =
+    unitId;
+
+
+    document
+    .getElementById(
+        "payment-amount"
+    )
+    .value =
+    debt;
+
+
+    document
+    .getElementById(
+        "payment-info"
+    )
+    .innerHTML = `
+
+        <div class="info-box">
+
+            بدهی فعلی:
+
+            <strong>
+
+                ${money(debt)}
+
+            </strong>
+
+
+            <br><br>
+
+            مبلغ به‌صورت خودکار پر شده است،
+            اما می‌توانید آن را تغییر دهید.
+
+        </div>
+
+    `;
+
+
+    openModal(
+        "payment-modal"
+    );
+
+}
+
+
+function savePayment(){
+
+    const unitId =
+    Number(
+        document
+        .getElementById(
+            "payment-unit-id"
+        )
+        .value
+    );
+
+
+    const amount =
+    Number(
+        document
+        .getElementById(
+            "payment-amount"
+        )
+        .value
+    );
+
+
+    if(
+        !amount ||
+        amount<=0
+    ){
+
+        alert(
+            "مبلغ پرداخت صحیح نیست."
+        );
+
+        return;
+
+    }
+
+
+    db.payments
+    .push({
+
+        id:
+        Date.now(),
+
+        unitId:
+        unitId,
+
+        amount:
+        amount,
+
+        date:
+        new Date()
+        .toISOString()
+
+    });
+
+
+    saveDB();
+
+
+    closeModal(
+        "payment-modal"
+    );
+
+
+    renderUnits();
+
+
+    alert(
+        "پرداخت با موفقیت ثبت شد."
+    );
+
+}
+
+
+/* ================================
+   تنظیمات
+================================ */
 
 function renderSettings(){
 
-document.getElementById('rounding-value').value=
-db.settings.rounding||0;
+    const box =
+    document
+    .getElementById(
+        "archive-expenses-list"
+    );
 
-document.getElementById('note1').value=
-db.settings.note1||'';
 
-document.getElementById('note2').value=
-db.settings.note2||'';
+    if(
+        !db.expenseArchive.length
+    ){
 
-const container=
-document.getElementById('archive-expenses-list');
+        box.innerHTML =
+        '<div class="empty">هزینه متغیری در آرشیو وجود ندارد.</div>';
 
-if(!db.archiveExpenses.length){
+        return;
 
-container.innerHTML=
-'<p>هزینه آرشیوی وجود ندارد.</p>';
+    }
 
-return;
 
-}
+    box.innerHTML =
+    db.expenseArchive
+    .map(
+        (name,index)=>`
 
-container.innerHTML=db.archiveExpenses.map((e,i)=>`
+            <div class="expense-item">
 
-<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #eee">
+                <div class="expense-header">
 
-<span>${e}</span>
+                    <strong>
 
-<button class="btn btn-danger" onclick="deleteArchiveExpense(${i})">
+                        📌
+                        ${esc(name)}
 
-حذف
+                    </strong>
 
-</button>
 
-</div>
+                    <button
+                        class="btn btn-danger"
+                        style="
+                            width:auto;
+                            margin:0;
+                            padding:7px 10px
+                        "
+                        onclick="
+                            deleteArchivedExpense(${index})
+                        ">
 
-`).join('');
+                        حذف
 
-}
+                    </button>
 
-function saveSettings(){
+                </div>
 
-db.settings.rounding=
-Number(document.getElementById('rounding-value').value)||0;
+            </div>
 
-db.settings.note1=
-document.getElementById('note1').value;
-
-db.settings.note2=
-document.getElementById('note2').value;
-
-saveDB();
-
-}
-
-function deleteArchiveExpense(index){
-
-if(confirm('این هزینه از آرشیو حذف شود؟')){
-
-db.archiveExpenses.splice(index,1);
-
-saveDB();
-
-renderSettings();
+        `
+    )
+    .join("");
 
 }
 
+
+function deleteArchivedExpense(index){
+
+    if(
+        !confirm(
+            "این هزینه از آرشیو حذف شود؟"
+        )
+    )
+        return;
+
+
+    db.expenseArchive
+    .splice(
+        index,
+        1
+    );
+
+
+    saveDB();
+
+
+    renderSettings();
+
 }
 
-switchTab('dashboard');
+
+/* ================================
+   نمایش قبض
+================================ */
+
+function viewBill(id){
+
+    viewedBillId =
+    id;
+
+
+    const bill =
+    db.bills
+    .find(
+        x=>x.id===id
+    );
+
+
+    if(!bill)
+        return;
+
+
+    document
+    .getElementById(
+        "view-bill-title"
+    )
+    .textContent =
+    bill.title;
+
+
+    document
+    .getElementById(
+        "view-bill-content"
+    )
+    .innerHTML =
+    buildBillHTML(
+        bill
+    );
+
+
+    openModal(
+        "view-bill-modal"
+    );
+
+}
+
+
+function buildBillHTML(bill){
+
+    const expenseColumns =
+    bill.expenses;
+
+
+    return `
+
+        <div class="bill-detail-container">
+
+            <div class="info-box">
+
+                <strong>
+
+                    ${esc(bill.title)}
+
+                </strong>
+
+
+                <br>
+
+                ${esc(bill.date)}
+
+            </div>
+
+
+            <div class="preview-scroll">
+
+                <div class="preview-layout">
+
+
+                    <div class="main-table-wrap">
+
+                        <table
+                            class="preview-table">
+
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        شماره واحد
+                                    </th>
+
+                                    <th>
+                                        نام ساکن
+                                    </th>
+
+                                    <th>
+                                        نفرات
+                                    </th>
+
+
+                                    ${
+                                        expenseColumns
+                                        .map(e=>`
+
+                                            <th>
+
+                                                ${esc(e.name)}
+
+                                            </th>
+
+                                        `)
+                                        .join("")
+                                    }
+
+
+                                    <th>
+                                        بدهی قبلی
+                                    </th>
+
+                                    <th>
+                                        جمع رند شده
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${
+                                    bill.unitShares
+                                    .map(u=>`
+
+                                        <tr>
+
+                                            <td>
+                                                ${esc(u.unitNumber)}
+                                            </td>
+
+                                            <td>
+                                                ${esc(
+                                                    u.residentName
+                                                    ||
+                                                    "-"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${u.people}
+                                            </td>
+
+
+                                            ${
+                                                expenseColumns
+                                                .map(e=>`
+
+                                                    <td>
+
+                                                        ${
+                                                            money(
+                                                                u
+                                                                .columns
+                                                                [e.key]
+                                                            )
+                                                        }
+
+                                                    </td>
+
+                                                `)
+                                                .join("")
+                                            }
+
+
+                                            <td>
+
+                                                ${
+                                                    money(
+                                                        u.oldDebt
+                                                    )
+                                                }
+
+                                            </td>
+
+
+                                            <td>
+
+                                                <strong>
+
+                                                    ${
+                                                        money(
+                                                            u.roundedTotal
+                                                        )
+                                                    }
+
+                                                </strong>
+
+                                            </td>
+
+                                        </tr>
+
+                                    `)
+                                    .join("")
+                                }
+
+                            </tbody>
+
+
+                            <tfoot>
+
+                                <tr>
+
+                                    <td colspan="2">
+
+                                        جمع کل
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${
+                                            bill.unitShares
+                                            .reduce(
+                                                (s,u)=>
+                                                s+
+                                                u.people,
+                                                0
+                                            )
+                                        }
+
+                                    </td>
+
+
+                                    ${
+                                        expenseColumns
+                                        .map(e=>`
+
+                                            <td>
+
+                                                ${
+                                                    money(
+                                                        bill
+                                                        .unitShares
+                                                        .reduce(
+                                                            (s,u)=>
+                                                            s+
+                                                            u
+                                                            .columns
+                                                            [e.key],
+                                                            0
+                                                        )
+                                                    )
+                                                }
+
+                                            </td>
+
+                                        `)
+                                        .join("")
+                                    }
+
+
+                                    <td>
+                                        —
+                                    </td>
+
+
+                                    <td>
+
+                                        ${
+                                            money(
+                                                bill.roundedTotal
+                                            )
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                            </tfoot>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="summary-table-wrap">
+
+                        <table
+                            class="preview-table summary-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        خلاصه مالی
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${
+                                    bill.unitShares
+                                    .map(()=>
+                                        `
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                        `
+                                    )
+                                    .join("")
+                                }
+
+                            </tbody>
+
+
+                            <tfoot>
+
+                                <tr>
+
+                                    <td>
+
+                                        جمع واقعی هزینه‌ها
+
+                                        <br>
+
+                                        <strong>
+
+                                            ${
+                                                money(
+                                                    bill.realTotal
+                                                )
+                                            }
+
+                                        </strong>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        مانده صندوق
+
+                                        <br>
+
+                                        <strong>
+
+                                            ${
+                                                money(
+                                                    getFundBalance()
+                                                )
+                                            }
+
+                                        </strong>
+
+                                    </td>
+
+                                </tr>
+
+                            </tfoot>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ================================
+   ویرایش قبض
+================================ */
+
+function editBill(id){
+
+    const bill =
+    db.bills
+    .find(
+        x=>x.id===id
+    );
+
+
+    if(!bill)
+        return;
+
+
+    openBillWizard(
+        bill
+    );
+
+}
+
+
+function editViewedBill(){
+
+    const bill =
+    db.bills
+    .find(
+        x=>x.id===viewedBillId
+    );
+
+
+    if(!bill)
+        return;
+
+
+    closeModal(
+        "view-bill-modal"
+    );
+
+
+    openBillWizard(
+        bill
+    );
+
+}
+
+
+/* ================================
+   حذف قبض
+================================ */
+
+function deleteBill(id){
+
+    if(
+        !confirm(
+            "این قبض حذف شود؟"
+        )
+    )
+        return;
+
+
+    db.bills =
+    db.bills
+    .filter(
+        x=>x.id!==id
+    );
+
+
+    saveDB();
+
+
+    renderDashboard();
+
+}
+
+
+function deleteViewedBill(){
+
+    if(
+        !confirm(
+            "این قبض حذف شود؟"
+        )
+    )
+        return;
+
+
+    deleteBill(
+        viewedBillId
+    );
+
+
+    closeModal(
+        "view-bill-modal"
+    );
+
+}
+
+
+/* ================================
+   چاپ
+================================ */
+
+function printCurrentBill(){
+
+    const bill =
+    buildBillData();
+
+
+    printBill(
+        bill
+    );
+
+}
+
+
+function printViewedBill(){
+
+    const bill =
+    db.bills
+    .find(
+        x=>x.id===viewedBillId
+    );
+
+
+    if(bill)
+        printBill(
+            bill
+        );
+
+}
+
+
+function printBill(bill){
+
+    const area =
+    document
+    .getElementById(
+        "print-area"
+    );
+
+
+    area.innerHTML = `
+
+        <h2>
+
+            ${esc(bill.title)}
+
+        </h2>
+
+
+        <p>
+
+            ${esc(bill.date)}
+
+        </p>
+
+
+        ${buildBillHTML(bill)}
+
+    `;
+
+
+    window.print();
+
+}
+
+
+/* ================================
+   دانلود / چاپ به شکل تصویر
+================================ */
+
+function downloadCurrentBillImage(){
+
+    const bill =
+    buildBillData();
+
+
+    downloadBillImage(
+        bill
+    );
+
+}
+
+
+function downloadViewedBillImage(){
+
+    const bill =
+    db.bills
+    .find(
+        x=>x.id===viewedBillId
+    );
+
+
+    if(bill)
+        downloadBillImage(
+            bill
+        );
+
+}
+
+
+function downloadBillImage(bill){
+
+    const html =
+    buildBillHTML(
+        bill
+    );
+
+
+    const win =
+    window.open(
+        "",
+        "_blank"
+    );
+
+
+    if(!win){
+
+        alert(
+            "لطفاً اجازه باز شدن پنجره جدید را بدهید."
+        );
+
+        return;
+
+    }
+
+
+    win.document.write(`
+
+        <html
+            lang="fa"
+            dir="rtl">
+
+
+            <head>
+
+                <meta charset="UTF-8">
+
+
+                <title>
+
+                    ${esc(bill.title)}
+
+                </title>
+
+
+                <style>
+
+                    body{
+
+                        font-family:Arial,sans-serif;
+
+                        padding:20px;
+
+                        direction:rtl;
+
+                        background:white;
+
+                    }
+
+
+                    table{
+
+                        border-collapse:collapse;
+
+                        width:100%;
+
+                        font-size:12px;
+
+                    }
+
+
+                    td,
+                    th{
+
+                        border:1px solid #555;
+
+                        padding:8px;
+
+                        text-align:center;
+
+                    }
+
+
+                    th{
+
+                        background:#e5e7eb;
+
+                    }
+
+
+                    .preview-layout{
+
+                        display:flex;
+
+                        direction:ltr;
+
+                        gap:15px;
+
+                        align-items:stretch;
+
+                    }
+
+
+                    .main-table-wrap,
+                    .summary-table-wrap{
+
+                        direction:rtl;
+
+                    }
+
+
+                    .main-table-wrap{
+
+                        flex:1;
+
+                    }
+
+
+                    .summary-table-wrap{
+
+                        width:220px;
+
+                    }
+
+                </style>
+
+            </head>
+
+
+            <body>
+
+                <h2>
+
+                    ${esc(bill.title)}
+
+                </h2>
+
+
+                <p>
+
+                    ${esc(bill.date)}
+
+                </p>
+
+
+                ${html}
+
+            </body>
+
+        </html>
+
+    `);
+
+
+    win.document.close();
+
+
+    setTimeout(
+
+        ()=>{
+
+            win.print();
+
+        },
+
+        500
+
+    );
+
+}
+
+
+/* ================================
+   اجرای اولیه
+================================ */
+
+renderDashboard();
 
 </script>
 
