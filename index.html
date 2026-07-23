@@ -93,6 +93,11 @@ button,input,select,textarea{font-family:inherit}
 <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
 <div class="card-title">آرشیو هزینه‌های متغیر</div><div id="archive-expenses-list"></div>
 <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+<div class="card-title">ابزار تعمیر و بروزرسانی</div>
+<div class="info-box">اگر بعد از ویرایش یک واحد، یک واحد تکراری ساخته شد یا اعداد قبض‌های قبلی به‌هم ریخت، اول دکمه «بروزرسانی برنامه» را بزنید تا آخرین نسخه اصلاح‌شده لود شود، سپس دکمه «اصلاح واحدهای تکراری» را بزنید.</div>
+<button class="btn btn-secondary" onclick="repairDuplicateUnits()">🩹 اصلاح واحدهای تکراری و قبض‌های قبلی</button>
+<button class="btn btn-secondary" onclick="forceAppUpdate()">🔄 پاکسازی کش و دریافت آخرین نسخه برنامه</button>
+<hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
 <button class="btn btn-danger" onclick="logout()">🚪 خروج از حساب</button>
 </div></section>
 </main>
@@ -296,8 +301,92 @@ box.appendChild(btnCall);box.appendChild(btnSms);box.appendChild(btnWa);openModa
 function openPaymentHistory(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;document.getElementById("payment-history-title").textContent="تاریخچه پرداخت‌های واحد "+u.unitNumber;const debtPays=db.payments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"debt"})),fundPays=db.fundPayments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"fund"})),all=[...debtPays,...fundPays].sort((a,b)=>new Date(b.date)-new Date(a.date));const box=document.getElementById("payment-history-content");box.innerHTML=all.length?all.map(p=>`<div class="unit-item"><div class="unit-header"><div><div class="unit-name">${p.kind==="debt"?"💳 پرداخت بدهی":"🏦 واریز صندوق"}</div><div class="muted">${formatPaymentDate(p.date)}</div></div><span class="badge ${p.kind==="debt"?"badge-success":"badge-primary"}">${money(p.amount)}</span></div></div>`).join(""):'<div class="empty">پرداختی ثبت نشده است.</div>';openModal("payment-history-modal")}
 function openUnitModal(){document.getElementById("unit-modal-title").textContent="افزودن واحد";document.getElementById("editing-unit-id").value="";document.getElementById("unit-number").value="";document.getElementById("resident-name").value="";document.getElementById("resident-phone").value="";document.getElementById("unit-people").value=1;openModal("unit-modal")}
 function editUnit(id){const u=db.units.find(x=>x.id===id);if(!u)return;document.getElementById("unit-modal-title").textContent="ویرایش اطلاعات واحد";document.getElementById("editing-unit-id").value=u.id;document.getElementById("unit-number").value=u.unitNumber;document.getElementById("resident-name").value=u.residentName;document.getElementById("resident-phone").value=u.phone||"";document.getElementById("unit-people").value=u.people;openModal("unit-modal")}
-function saveUnit(){const id=Number(document.getElementById("editing-unit-id").value),unitNumber=Number(document.getElementById("unit-number").value),residentName=document.getElementById("resident-name").value.trim(),phone=document.getElementById("resident-phone").value.trim(),people=Number(document.getElementById("unit-people").value);if(!unitNumber||!people){toast("شماره واحد و تعداد نفرات الزامی است.","error");return}if(id){const u=db.units.find(x=>x.id===id);Object.assign(u,{unitNumber,residentName,phone,people})}else db.units.push({id:Date.now(),unitNumber,residentName,phone,people});saveDB();closeModal("unit-modal");renderUnits();renderDashboard()}
+let savingUnit=false;
+function saveUnit(){
+if(savingUnit)return;savingUnit=true;
+try{
+const idRaw=document.getElementById("editing-unit-id").value,id=idRaw?Number(idRaw):0,unitNumber=Number(document.getElementById("unit-number").value),residentName=document.getElementById("resident-name").value.trim(),phone=document.getElementById("resident-phone").value.trim(),people=Number(document.getElementById("unit-people").value);
+if(!unitNumber||!people){toast("شماره واحد و تعداد نفرات الزامی است.","error");return}
+if(idRaw&&!id){toast("شناسه واحد نامعتبر است؛ لطفاً صفحه را بروزرسانی کرده و دوباره ویرایش را باز کنید.","error");return}
+if(id){
+const u=db.units.find(x=>x.id===id);
+if(!u){toast("این واحد دیگر در سیستم پیدا نشد (احتمالاً حذف یا اصلاح شده)؛ صفحه را بروزرسانی کنید تا دوباره تلاش کنید.","error");return}
+const dup=db.units.find(x=>x.id!==id&&x.unitNumber===unitNumber);
+if(dup){toast("واحد شماره "+unitNumber+" قبلاً ثبت شده است؛ به جای ساخت مورد جدید، همان واحد را ویرایش کنید.","error");return}
+Object.assign(u,{unitNumber,residentName,phone,people})
+}else{
+const dup=db.units.find(x=>x.unitNumber===unitNumber);
+if(dup){toast("واحد شماره "+unitNumber+" قبلاً وجود دارد.","error");return}
+db.units.push({id:Date.now(),unitNumber,residentName,phone,people})
+}
+saveDB();closeModal("unit-modal");renderUnits();renderDashboard()
+}finally{savingUnit=false}
+}
 function deleteUnit(id){if(previousDebt(id)>0){toast("این واحد بدهی دارد و قابل حذف نیست.","error");return}if(!confirm("این واحد حذف شود؟"))return;db.units=db.units.filter(x=>x.id!==id);saveDB();renderUnits();renderDashboard()}
+function repairDuplicateUnits(){
+const groups={};
+db.units.forEach(u=>{const key=String(u.unitNumber);(groups[key]=groups[key]||[]).push(u)});
+const dupGroups=Object.values(groups).filter(g=>g.length>1);
+if(!dupGroups.length){toast("هیچ واحد تکراری پیدا نشد؛ همه چیز مرتب است.","success");return}
+const summary=dupGroups.map(g=>"واحد "+g[0].unitNumber+" ("+g.length+" مورد تکراری)").join("\n");
+if(!confirm("موارد زیر پیدا شد و ادغام خواهند شد:\n\n"+summary+"\n\nقدیمی‌ترین/فعال‌ترین رکورد هر واحد نگه داشته می‌شود و بقیه در آن ادغام می‌شوند. پرداخت‌ها، صندوق و قبض‌های قبلی نیز اصلاح می‌شوند.\n\nادامه می‌دهید؟"))return;
+const report=[];
+dupGroups.forEach(group=>{
+function activity(id){
+let score=0;
+db.bills.forEach(b=>{if(b.unitShares.some(x=>x.unitId===id))score++});
+score+=db.payments.filter(p=>p.unitId===id).length;
+score+=db.fundPayments.filter(p=>p.unitId===id).length;
+return score
+}
+const sorted=group.slice().sort((a,b)=>{const diff=activity(b.id)-activity(a.id);if(diff!==0)return diff;return a.id-b.id});
+const keeper=sorted[0],dups=sorted.slice(1);
+dups.forEach(dupUnit=>{
+if(!keeper.residentName&&dupUnit.residentName)keeper.residentName=dupUnit.residentName;
+if(!keeper.phone&&dupUnit.phone)keeper.phone=dupUnit.phone;
+if(!keeper.people&&dupUnit.people)keeper.people=dupUnit.people;
+db.payments.forEach(p=>{if(p.unitId===dupUnit.id)p.unitId=keeper.id});
+db.fundPayments.forEach(p=>{if(p.unitId===dupUnit.id)p.unitId=keeper.id});
+db.bills.forEach(b=>{
+const keeperIdx=b.unitShares.findIndex(x=>x.unitId===keeper.id);
+const dupIdx=b.unitShares.findIndex(x=>x.unitId===dupUnit.id);
+if(dupIdx===-1)return;
+const dupRow=b.unitShares[dupIdx];
+if(keeperIdx!==-1){
+const keeperRow=b.unitShares[keeperIdx];
+Object.keys(dupRow.columns||{}).forEach(k=>{keeperRow.columns[k]=(keeperRow.columns[k]||0)+(dupRow.columns[k]||0)});
+keeperRow.oldDebt=(keeperRow.oldDebt||0)+(dupRow.oldDebt||0);
+keeperRow.roundedTotal=(keeperRow.roundedTotal||0)+(dupRow.roundedTotal||0);
+b.unitShares.splice(dupIdx,1)
+}else{
+dupRow.unitId=keeper.id;dupRow.unitNumber=keeper.unitNumber
+}
+b.roundedTotal=b.unitShares.reduce((s,x)=>s+x.roundedTotal,0)
+});
+report.push("واحد "+dupUnit.unitNumber+" (شناسه "+dupUnit.id+") در واحد اصلی (شناسه "+keeper.id+") ادغام شد.")
+});
+db.units=db.units.filter(u=>!dups.some(d=>d.id===u.id))
+});
+saveDB();renderUnits();renderDashboard();
+alert("اصلاح با موفقیت انجام شد:\n\n"+report.join("\n"));
+toast("واحدهای تکراری اصلاح شدند.","success")
+}
+function forceAppUpdate(){
+(async()=>{
+try{
+if("serviceWorker" in navigator){
+const regs=await navigator.serviceWorker.getRegistrations();
+for(const r of regs)await r.unregister()
+}
+if(window.caches){
+const keys=await caches.keys();
+for(const k of keys)await caches.delete(k)
+}
+toast("در حال دریافت آخرین نسخه برنامه...","success");
+setTimeout(()=>{location.reload()},700)
+}catch(e){console.error(e);toast("خطا در بروزرسانی؛ لطفاً برنامه را ببندید و دوباره باز کنید.","error")}
+})()
+}
 function openPaymentModal(unitId,type){const u=db.units.find(x=>x.id===unitId),isFund=type==="fund";document.getElementById("payment-unit-id").value=unitId;document.getElementById("payment-type").value=type;document.getElementById("payment-title").textContent=isFund?"واریز به صندوق":"ثبت پرداخت بدهی";setMoneyValue("payment-amount",isFund?0:previousDebt(unitId));document.getElementById("payment-info").innerHTML=`<div class="info-box">${isFund?"صندوق واحد کاملاً جدا از بدهی است. موجودی فعلی صندوق: ":"بدهی فعلی واحد: "}<strong>${money(isFund?unitFund(unitId):previousDebt(unitId))}</strong></div>`;setDateSelects("payment-date",todayJalaliParts());openModal("payment-modal")}
 function savePayment(){const unitId=Number(document.getElementById("payment-unit-id").value),type=document.getElementById("payment-type").value,amount=getMoneyValue("payment-amount");if(!amount||amount<=0){toast("مبلغ صحیح نیست.","error");return}const p={id:Date.now(),unitId,amount,date:dateFromJalaliSelects("payment-date").toISOString()};if(type==="fund")db.fundPayments.push(p);else db.payments.push(p);saveDB();closeModal("payment-modal");renderUnits();renderDashboard();toast(type==="fund"?"واریز صندوق ثبت شد.":"پرداخت بدهی ثبت شد.","success")}
 function saveSettings(){db.settings.note1=document.getElementById("setting-note1").value.trim();db.settings.note2=document.getElementById("setting-note2").value.trim();db.settings.round=Math.max(1,getMoneyValue("setting-round")||1);saveDB();toast("تنظیمات ذخیره شد.","success")}
@@ -357,7 +446,23 @@ const link=document.createElement("a");link.download=(filename&&filename.trim()?
 }).catch(()=>{restore();toast("خطا در ساخت تصویر.","error")})}
 
 initAuth();
-if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("service-worker.js").catch(()=>{})})}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{
+navigator.serviceWorker.register("service-worker.js").then(reg=>{
+reg.update().catch(()=>{});
+setInterval(()=>{reg.update().catch(()=>{})},60000);
+reg.addEventListener("updatefound",()=>{
+const nw=reg.installing;if(!nw)return;
+nw.addEventListener("statechange",()=>{
+if(nw.state==="installed"&&navigator.serviceWorker.controller){
+toast("نسخه جدید برنامه آماده است؛ در حال بروزرسانی...","success");
+setTimeout(()=>location.reload(),1200)
+}
+})
+})
+}).catch(()=>{});
+let swRefreshed=false;
+navigator.serviceWorker.addEventListener("controllerchange",()=>{if(swRefreshed)return;swRefreshed=true;location.reload()})
+})}
 </script>
 </body>
 </html>
