@@ -6,6 +6,7 @@
 <title>مدیریت ساختمان پلاک ۳</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#eff6ff;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--bg:#f8fafc;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--radius:14px}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Vazirmatn',sans-serif}
@@ -33,10 +34,27 @@ button,input,select,textarea{font-family:inherit}
 @media(max-width:650px){.fixed-grid{grid-template-columns:1fr}.action-row{flex-direction:column}.unit-actions{gap:4px}.unit-actions .btn{font-size:.68rem;padding:7px 3px}.preview-table{font-size:.7rem}.summary-table-wrap{width:220px}.stats-grid{grid-template-columns:1fr}}
 @media print{body>*:not(#print-area){display:none!important}#print-area{display:block!important}.zoom-controls{display:none!important}}
 #print-area{display:none}
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:26px 22px;width:100%;max-width:360px;box-shadow:0 4px 15px #0001}
+.auth-title{font-weight:800;font-size:1.15rem;margin-bottom:4px;text-align:center}
+.auth-subtitle{color:var(--muted);font-size:.82rem;text-align:center;margin-bottom:18px}
+.auth-error{color:var(--danger);font-size:.82rem;margin-bottom:10px;min-height:1em;text-align:center}
+.sync-badge{display:inline-block;font-size:.72rem;font-weight:700;margin-right:8px;padding:2px 8px;border-radius:20px;background:#ffffff30;vertical-align:middle}
 </style>
 </head>
 <body>
-<header class="app-header"><div class="header-title">پلاک ۳</div><div class="header-subtitle">مدیریت هزینه و شارژ ساختمان</div></header>
+<div id="auth-screen" class="auth-screen">
+<div class="auth-card">
+<div class="auth-title">مدیریت پلاک ۳</div>
+<div class="auth-subtitle">برای دسترسی به داده‌ها وارد حساب خود شوید</div>
+<div class="form-group"><label class="form-label">ایمیل</label><input id="auth-email" type="email" class="form-control" autocomplete="username"></div>
+<div class="form-group"><label class="form-label">رمز عبور</label><input id="auth-password" type="password" class="form-control" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+<div id="auth-error" class="auth-error"></div>
+<button class="btn btn-primary" id="auth-login-btn" onclick="doLogin()">ورود</button>
+</div>
+</div>
+<div id="app-root" style="display:none">
+<header class="app-header"><div class="header-title">پلاک ۳ <span id="sync-badge" class="sync-badge"></span></div><div class="header-subtitle">مدیریت هزینه و شارژ ساختمان</div></header>
 <main class="container">
 <section id="tab-dashboard">
 <div class="stats-grid">
@@ -58,6 +76,8 @@ button,input,select,textarea{font-family:inherit}
 <button class="btn btn-primary" onclick="saveSettings()">💾 ذخیره تنظیمات</button>
 <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
 <div class="card-title">آرشیو هزینه‌های متغیر</div><div id="archive-expenses-list"></div>
+<hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+<button class="btn btn-danger" onclick="logout()">🚪 خروج از حساب</button>
 </div></section>
 </main>
 
@@ -121,15 +141,53 @@ button,input,select,textarea{font-family:inherit}
 <div id="view-bill-content"></div>
 <div class="action-row"><button class="btn btn-primary" onclick="downloadImage('view',(db.bills.find(x=>x.id===viewedBillId)||{}).title)">📥 دانلود عکس</button><button class="btn btn-secondary" onclick="printViewedBill()">🖨 چاپ</button><button class="btn btn-primary" onclick="editViewedBill()">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteViewedBill()">🗑 حذف</button></div>
 </div></div>
+</div>
 <div id="print-area"></div>
-
 <script>
 const STORAGE_KEY="plaque3_final_database_v4";
-let db=JSON.parse(localStorage.getItem(STORAGE_KEY))||{units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],settings:{note1:"",note2:"",round:1000}};
+const SUPABASE_URL="https://fdzoacsevwjbdqnoqmmu.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkem9hY3NldndqYmRxbm9xbW11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NDkwNzcsImV4cCI6MjEwMDMyNTA3N30.9gITw6to9jduguMio-kGSLhmJUxCdJQ0GeWU76Rx95o";
+const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+function defaultDB(){return{units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],settings:{note1:"",note2:"",round:1000}}}
+let db=JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultDB();
 db.settings=db.settings||{note1:"",note2:"",round:1000}; db.fundPayments=db.fundPayments||[];
-let currentBill={},editingBillId=null,viewedBillId=null;
+let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;
 
-function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db))}
+function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
+if(status==="syncing"){el.textContent="🔄 در حال ذخیره";el.style.background="#ffffff30"}
+else if(status==="synced"){el.textContent="☁️ ذخیره شد";el.style.background="#ffffff30"}
+else if(status==="error"){el.textContent="⚠️ عدم اتصال (ذخیره محلی)";el.style.background="#7f1d1d55"}
+else{el.textContent=""}}
+
+function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db));syncToCloud()}
+function syncToCloud(){if(!currentUser)return;clearTimeout(syncTimer);setSyncStatus("syncing");
+syncTimer=setTimeout(async()=>{try{const{error}=await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}},500)}
+
+async function loadDBFromCloud(){setSyncStatus("syncing");
+try{const{data,error}=await supa.from("app_state").select("data").eq("user_id",currentUser.id).maybeSingle();
+if(error)throw error;
+if(data&&data.data){db=data.data;db.settings=db.settings||{note1:"",note2:"",round:1000};db.fundPayments=db.fundPayments||[];db.expenseArchive=db.expenseArchive||[];db.payments=db.payments||[];db.units=db.units||[];db.bills=db.bills||[]}
+else{db=defaultDB();await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()})}
+localStorage.setItem(STORAGE_KEY,JSON.stringify(db));setSyncStatus("synced")}
+catch(e){console.error("load error",e);setSyncStatus("error")}}
+
+function showAuthScreen(){document.getElementById("auth-screen").style.display="flex";document.getElementById("app-root").style.display="none"}
+function showAppRoot(){document.getElementById("auth-screen").style.display="none";document.getElementById("app-root").style.display="block"}
+
+async function doLogin(){const email=document.getElementById("auth-email").value.trim();const password=document.getElementById("auth-password").value;const errEl=document.getElementById("auth-error");errEl.textContent="";
+if(!email||!password){errEl.textContent="ایمیل و رمز عبور را وارد کنید";return}
+const btn=document.getElementById("auth-login-btn");btn.disabled=true;btn.textContent="در حال ورود...";
+try{const{data,error}=await supa.auth.signInWithPassword({email,password});if(error)throw error;
+currentUser=data.user;showAppRoot();await loadDBFromCloud();renderDashboard()}
+catch(e){errEl.textContent="ورود ناموفق بود. ایمیل یا رمز عبور اشتباه است."}
+finally{btn.disabled=false;btn.textContent="ورود"}}
+
+async function logout(){await supa.auth.signOut();currentUser=null;showAuthScreen()}
+
+async function initAuth(){const{data}=await supa.auth.getSession();
+if(data&&data.session){currentUser=data.session.user;showAppRoot();await loadDBFromCloud();renderDashboard()}
+else{showAuthScreen()}}
+
 function money(n){return Number(n||0).toLocaleString("fa-IR")+" تومان"}
 function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
 const JALALI_MONTHS=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
@@ -228,7 +286,7 @@ restore();
 const link=document.createElement("a");link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";link.href=canvas.toDataURL("image/png");link.click()
 }).catch(()=>{restore();alert("خطا در ساخت تصویر.")})}
 
-renderDashboard();
+initAuth();
 </script>
 </body>
 </html>
