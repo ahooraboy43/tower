@@ -10,6 +10,7 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="پلاک ۳">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -788,71 +789,62 @@ return totalPaid-billDues;
 
 }
 
-function shareToWhatsApp(source,title){
+function shareToWhatsApp(source, title) {
+    const container = source === "wizard" ? document.querySelector("#bill-preview .bill-detail-container") : document.querySelector("#view-bill-content .bill-detail-container");
 
-const container=source===“wizard”?document.querySelector(“#bill-preview .bill-detail-container”):document.querySelector(“#view-bill-content .bill-detail-container”);
+    if (!container) return;
 
-if(!container)return;
+    // استفاده از Backtick (`) برای رشته‌های چند خطی
+    let text = `📋 *قبض ساختمان پلاک ۳*\n`;
+    text += `*عنوان:* ${title}\n\n`;
 
-let text=📋 *قبض ساختمان پلاک ۳*\n;
+    const rows = container.querySelectorAll(".main-table-wrap tbody tr");
+    rows.forEach(r => {
+        const cols = r.querySelectorAll("td");
+        if (cols.length >= 6) {
+            const uNum = cols[0].textContent.trim();
+            const uRes = cols[1].textContent.trim();
+            const uPay = cols[cols.length - 1].textContent.trim();
+            
+            text += `🔹 واحد ${uNum} (${uRes}): ${uPay} تومان\n`;
+        }
+    });
 
-text+=*عنوان:* ${title}\n\n;
-
-const rows=container.querySelectorAll(“.main-table-wrap tbody tr”);
-
-rows.forEach(r=>{
-
-const cols=r.querySelectorAll(“td”);
-if(cols.length>=6){
-
-const uNum=cols[0].textContent.trim();
-
-const uRes=cols[1].textContent.trim();
-
-const uPay=cols[cols.length-1].textContent.trim();
-
-text+=🔹 واحد ${uNum} (${uRes}): ${uPay} تومان\n;
-
+    window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(text), "_blank");
 }
 
-});
-
-window.open(“https://api.whatsapp.com/send?text=“+encodeURIComponent(text),”_blank”);
-
-}
 
 function downloadImage(source,title){
 
-const container=source===“wizard”?document.querySelector(“#bill-preview .bill-detail-container”):document.querySelector(“#view-bill-content .bill-detail-container”);
+const container=source==="wizard"?document.querySelector("#bill-preview .bill-detail-container"):document.querySelector("#view-bill-content .bill-detail-container");
 
-if(!container){toast(“پیش‌نمایش قبض یافت نشد”,“error”);return}
+if(!container){toast("پیش‌نمایش قبض یافت نشد","error");return}
 
-toast(“در حال آماده‌سازی تصویر…”);
+toast("در حال آماده‌سازی تصویر…");
 
 const oldW=container.style.width;
 
-container.style.width=“1100px”;
+container.style.width="1100px";
 
-html2canvas(container,{scale:2,useCORS:true,backgroundColor:“#ffffff”}).then(canvas=>{
+html2canvas(container,{scale:2,useCORS:true,backgroundColor:"#ffffff"}).then(canvas=>{
 
 container.style.width=oldW;
 
-const a=document.createElement(“a”);
+const a=document.createElement("a");
 
-a.download=${title||"bill"}.png;
-
-a.href=canvas.toDataURL(“image/png”);
+a.download = `${title || "bill"}.png`; 
+a.href = canvas.toDataURL("image/png");
 
 a.click();
 
-toast(“عکس با موفقیت دانلود شد”);
+toast("عکس با موفقیت دانلود شد");
 
-}).catch(()=>{container.style.width=oldW;toast(“خطا در ایجاد تصویر”,“error”)});
+}).catch(()=>{container.style.width=oldW;toast("خطا در ایجاد تصویر","error")});
 
 }
 function printCurrentBill(){
 
-const container=document.querySelector(“#bill-preview .bill-detail-container”);
+const container=document.querySelector("#bill-preview .bill-detail-container");
 
 if(!container)return;
 
@@ -862,7 +854,7 @@ printEl(container.innerHTML);
 
 function printViewedBill(){
 
-const container=document.querySelector(“#view-bill-content .bill-detail-container”);
+const container=document.querySelector("#view-bill-content .bill-detail-container");
 
 if(!container)return;
 
@@ -872,19 +864,19 @@ printEl(container.innerHTML);
 
 function printEl(html){
 
-const area=document.getElementById(“print-area”);
+const area=document.getElementById("print-area");
 
 area.innerHTML=html;
 
 window.print();
 
-}window.addEventListener(“load”,()=>{
+}window.addEventListener("load",()=>{
 
 initAuth();
 
-if(“serviceWorker” in navigator){
+if("serviceWorker" in navigator){
 
-navigator.serviceWorker.register(“sw.js”).catch(()=>{});
+navigator.serviceWorker.register("sw.js").catch(()=>{});
 
 }
 
