@@ -97,7 +97,7 @@ button,input,select,textarea{font-family:inherit}
     font-size: 24px;
     font-weight: 500;
     display: inline;
-    color: #ad1b35;
+    color: #ef4444;
 }
 .bank-subtitle{
     margin-top:8px;
@@ -575,8 +575,6 @@ const scrollEl=holder.querySelector('[id^="scroll-"]');if(scrollEl){scrollEl.sty
 const captureEl=holder.firstElementChild;
 html2canvas(captureEl,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:captureEl.scrollWidth,height:captureEl.scrollHeight,windowWidth:captureEl.scrollWidth+40,windowHeight:captureEl.scrollHeight+40}).then(canvas=>{
 document.body.removeChild(holder);
-document.getElementById("bank-balance").textContent =
-    money(buildingFundBalance()) + " تومان";
 const link=document.createElement("a");link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";link.href=canvas.toDataURL("image/png");link.click()
 }).catch(()=>{document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")})}
 
