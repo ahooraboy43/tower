@@ -610,7 +610,9 @@ async function loadVersion() {
 
     }
 
-}function downloadImage(uid, filename) {
+}
+
+function downloadImage(uid, filename) {
 
     const sourceEl = document.getElementById("capture-" + uid);
 
@@ -627,129 +629,143 @@ async function loadVersion() {
         return;
     }
 
-    // کپی موقت
-    const holder = document.createElement("div");
+    // ذخیره استایل‌های اصلی
+    const original = {
+        position: sourceEl.style.position,
+        left: sourceEl.style.left,
+        top: sourceEl.style.top,
+        width: sourceEl.style.width,
+        minWidth: sourceEl.style.minWidth,
+        maxWidth: sourceEl.style.maxWidth,
+        height: sourceEl.style.height,
+        maxHeight: sourceEl.style.maxHeight,
+        overflow: sourceEl.style.overflow,
+        padding: sourceEl.style.padding,
+        boxSizing: sourceEl.style.boxSizing,
+        background: sourceEl.style.background
+    };
 
-    holder.style.position = "fixed";
-    holder.style.left = "-10000px";
-    holder.style.top = "0";
-    holder.style.padding = "0";
-    holder.style.margin = "0";
-    holder.style.background = "#ffffff";
-    holder.style.zIndex = "-1";
+    // آماده‌سازی خود جدول اصلی
+    sourceEl.style.position = "fixed";
+    sourceEl.style.left = "0";
+    sourceEl.style.top = "0";
 
-    holder.innerHTML = sourceEl.outerHTML;
+    sourceEl.style.width = "max-content";
+    sourceEl.style.minWidth = "max-content";
+    sourceEl.style.maxWidth = "none";
 
-    document.body.appendChild(holder);
+    sourceEl.style.height = "auto";
+    sourceEl.style.maxHeight = "none";
 
-    const captureEl = holder.firstElementChild;
+    sourceEl.style.overflow = "visible";
 
-    // حذف کنترل‌های زوم
-    const controls = captureEl.querySelector(".zoom-controls");
+    sourceEl.style.padding = "20px";
+
+    sourceEl.style.boxSizing = "border-box";
+
+    sourceEl.style.background = "#ffffff";
+
+    // حذف کنترل‌های زوم موقتاً
+    const controls = sourceEl.querySelector(".zoom-controls");
+
+    let controlsDisplay = null;
 
     if (controls) {
-        controls.remove();
+        controlsDisplay = controls.style.display;
+        controls.style.display = "none";
     }
 
-    // حذف محدودیت‌های کلی
-    captureEl.style.display = "block";
-    captureEl.style.width = "auto";
-    captureEl.style.minWidth = "0";
-    captureEl.style.maxWidth = "none";
-    captureEl.style.height = "auto";
-    captureEl.style.maxHeight = "none";
-    captureEl.style.overflow = "visible";
-    captureEl.style.padding = "20px";
-    captureEl.style.boxSizing = "border-box";
+    // تنظیم بخش layout
+    const layout = sourceEl.querySelector('[id^="layout-"]');
 
-    // اصلاح layout
-    const layout = captureEl.querySelector('[id^="layout-"]');
+    let layoutOriginal = null;
 
     if (layout) {
 
-        layout.style.zoom = "1";
+        layoutOriginal = {
+            width: layout.style.width,
+            minWidth: layout.style.minWidth,
+            maxWidth: layout.style.maxWidth,
+            overflow: layout.style.overflow,
+            zoom: layout.style.zoom
+        };
 
         layout.style.width = "max-content";
-
         layout.style.minWidth = "max-content";
-
         layout.style.maxWidth = "none";
-
-        layout.style.height = "auto";
-
-        layout.style.maxHeight = "none";
-
         layout.style.overflow = "visible";
+        layout.style.zoom = "1";
     }
 
-    // اصلاح scroll container
-    const scrollEl = captureEl.querySelector('[id^="scroll-"]');
+    // تنظیم بخش اسکرول
+    const scrollEl = sourceEl.querySelector('[id^="scroll-"]');
+
+    let scrollOriginal = null;
 
     if (scrollEl) {
 
+        scrollOriginal = {
+            width: scrollEl.style.width,
+            minWidth: scrollEl.style.minWidth,
+            maxWidth: scrollEl.style.maxWidth,
+            height: scrollEl.style.height,
+            maxHeight: scrollEl.style.maxHeight,
+            overflow: scrollEl.style.overflow
+        };
+
         scrollEl.style.width = "max-content";
-
         scrollEl.style.minWidth = "max-content";
-
         scrollEl.style.maxWidth = "none";
 
         scrollEl.style.height = "auto";
-
         scrollEl.style.maxHeight = "none";
 
         scrollEl.style.overflow = "visible";
     }
 
-    // اصلاح همه جدول‌ها
-    const tables = captureEl.querySelectorAll("table");
+    // تنظیم جدول‌ها
+    const tables = sourceEl.querySelectorAll("table");
+
+    const tableOriginals = [];
 
     tables.forEach(table => {
 
-        table.style.width = "max-content";
-
-        table.style.minWidth = "max-content";
-
-        table.style.maxWidth = "none";
-
-        table.style.tableLayout = "auto";
-
-        table.style.overflow = "visible";
-    });
-
-    // صبر برای محاسبه کامل DOM
-    requestAnimationFrame(() => {
-
-        // عرض واقعی تمام محتوا
-        let contentWidth = captureEl.scrollWidth;
-
-        let contentHeight = captureEl.scrollHeight;
-
-        // اگر جدول عریض‌تر از والد بود، عرض جدول را ملاک قرار بده
-        tables.forEach(table => {
-
-            contentWidth = Math.max(
-                contentWidth,
-                table.scrollWidth
-            );
-
-            contentHeight = Math.max(
-                contentHeight,
-                table.scrollHeight
-            );
-
+        tableOriginals.push({
+            table: table,
+            width: table.style.width,
+            minWidth: table.style.minWidth,
+            maxWidth: table.style.maxWidth,
+            tableLayout: table.style.tableLayout
         });
 
-        // کمی فضای اضافه برای جلوگیری از کراپ شدن لبه‌ها
-        contentWidth += 40;
+        table.style.width = "max-content";
+        table.style.minWidth = "max-content";
+        table.style.maxWidth = "none";
+        table.style.tableLayout = "auto";
+    });
 
-        contentHeight += 40;
+    // کمی زمان برای رندر شدن کامل
+    setTimeout(() => {
 
-        // تنظیم نهایی اندازه
-        captureEl.style.width = contentWidth + "px";
+        const rect = sourceEl.getBoundingClientRect();
 
-        captureEl.style.height = contentHeight + "px";
+        const width = Math.ceil(
+            Math.max(
+                rect.width,
+                sourceEl.scrollWidth,
+                sourceEl.offsetWidth
+            )
+        );
 
-        html2canvas(captureEl, {
+        const height = Math.ceil(
+            Math.max(
+                rect.height,
+                sourceEl.scrollHeight,
+                sourceEl.offsetHeight
+            )
+        );
+
+        html2canvas(sourceEl, {
 
             scale: 3,
 
@@ -763,19 +779,20 @@ async function loadVersion() {
 
             scrollY: 0,
 
-            width: contentWidth,
+            width: width,
 
-            height: contentHeight,
+            height: height,
 
-            windowWidth: contentWidth,
+            windowWidth: width,
 
-            windowHeight: contentHeight
+            windowHeight: height
 
         })
 
         .then(canvas => {
 
-            holder.remove();
+            // بازگرداندن استایل اصلی
+            restore();
 
             const link = document.createElement("a");
 
@@ -797,13 +814,74 @@ async function loadVersion() {
 
             console.error(err);
 
-            holder.remove();
+            restore();
 
             toast("خطا در ساخت تصویر.", "error");
 
         });
 
-    });
+    }, 300);
+
+
+    // تابع بازگردانی استایل‌ها
+    function restore() {
+
+        sourceEl.style.position = original.position;
+        sourceEl.style.left = original.left;
+        sourceEl.style.top = original.top;
+
+        sourceEl.style.width = original.width;
+        sourceEl.style.minWidth = original.minWidth;
+        sourceEl.style.maxWidth = original.maxWidth;
+
+        sourceEl.style.height = original.height;
+        sourceEl.style.maxHeight = original.maxHeight;
+
+        sourceEl.style.overflow = original.overflow;
+
+        sourceEl.style.padding = original.padding;
+        sourceEl.style.boxSizing = original.boxSizing;
+
+        sourceEl.style.background = original.background;
+
+
+        if (controls) {
+            controls.style.display = controlsDisplay;
+        }
+
+
+        if (layout && layoutOriginal) {
+
+            layout.style.width = layoutOriginal.width;
+            layout.style.minWidth = layoutOriginal.minWidth;
+            layout.style.maxWidth = layoutOriginal.maxWidth;
+            layout.style.overflow = layoutOriginal.overflow;
+            layout.style.zoom = layoutOriginal.zoom;
+        }
+
+
+        if (scrollEl && scrollOriginal) {
+
+            scrollEl.style.width = scrollOriginal.width;
+            scrollEl.style.minWidth = scrollOriginal.minWidth;
+            scrollEl.style.maxWidth = scrollOriginal.maxWidth;
+
+            scrollEl.style.height = scrollOriginal.height;
+            scrollEl.style.maxHeight = scrollOriginal.maxHeight;
+
+            scrollEl.style.overflow = scrollOriginal.overflow;
+        }
+
+
+        tableOriginals.forEach(item => {
+
+            item.table.style.width = item.width;
+            item.table.style.minWidth = item.minWidth;
+            item.table.style.maxWidth = item.maxWidth;
+            item.table.style.tableLayout = item.tableLayout;
+        });
+
+    }
 
 }
 
