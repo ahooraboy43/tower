@@ -361,7 +361,8 @@ document.getElementById("stat-bills").textContent=faDigits(overallPercent)+"٪";
 document.getElementById("stat-collect-bar").style.width=overallPercent+"%";
 document.getElementById("stat-fund").textContent=money(buildingFundBalance());// مانده بانک
 document.getElementById("stat-cash").textContent=money(db.fundPayments.reduce((s,p)=>s+p.amount,0));// کل واریز صندوق
-document.getElementById("stat-bank-deficit").textContent =money( db.fundPayments.reduce((s,p)=>s+p.amount,0)- buildingFundBalance());// کسری بانک
+    document.getElementById("stat-bank-deficit").textContent =document.getElementById("stat-bank-deficit").textContent =
+  money(buildingFundBalance() - db.fundPayments.reduce((s, p) => s + p.amount, 0));// کسری بانک
 const box=document.getElementById("bills-list"); if(!db.bills.length){box.innerHTML='<div class="empty">هنوز قبضی ذخیره نشده است.</div>';return}
 box.innerHTML=db.bills.slice().reverse().map(b=>{const st=billCollectionStats(b);return `<div class="bill-item"><div class="bill-header"><div><div class="bill-name">${esc(b.title)}</div><div class="muted">${esc(b.date)}</div></div><span class="badge badge-primary">${b.unitShares.length} واحد</span></div><div class="total-box">جمع واقعی هزینه‌ها: ${money(b.realTotal)}<br>جمع بدهی قابل دریافت: ${money(b.roundedTotal)}</div>
 <div class="progress-wrap"><div class="progress-label"><span>وصول شده: ${money(st.collectedAmount)}</span><span>${faDigits(st.percent)}٪ (${faDigits(st.settledCount)} از ${faDigits(st.totalUnits)} واحد)</span></div><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${st.percent}%"></div></div></div>
