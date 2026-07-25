@@ -126,7 +126,8 @@ button,input,select,textarea{font-family:inherit}
 </div>
 </div>
 <div id="app-root" style="display:none">
-<header class="app-header"><div class="header-title">پلاک ۳ <span id="sync-badge" class="sync-badge"></span></div><div class="header-subtitle">مدیریت هزینه و شارژ ساختمان<span id="app-version">v0.0.0</span></div></header>
+<header class="app-header"><div class="header-title">پلاک ۳ <span id="sync-badge" class="sync-badge"></span></div><div class="header-subtitle">مدیریت هزینه و شارژ ساختمان<span id="app-version">v0.0.0</span><div class="info-box">نسخه فعلی فایل (بر اساس تاریخ آپلود سرور): <strong id="app-version-label">در حال بررسی...</strong></div>
+</div></header>
 <main class="container">
 <section id="tab-dashboard">
 <div class="card bank-balance-card">
@@ -629,7 +630,6 @@ function downloadImage(uid, filename) {
         return;
     }
 
-    // ذخیره استایل‌های اصلی
     const original = {
         position: sourceEl.style.position,
         left: sourceEl.style.left,
@@ -645,43 +645,30 @@ function downloadImage(uid, filename) {
         background: sourceEl.style.background
     };
 
-    // آماده‌سازی خود جدول اصلی
     sourceEl.style.position = "fixed";
     sourceEl.style.left = "0";
     sourceEl.style.top = "0";
-
     sourceEl.style.width = "max-content";
     sourceEl.style.minWidth = "max-content";
     sourceEl.style.maxWidth = "none";
-
     sourceEl.style.height = "auto";
     sourceEl.style.maxHeight = "none";
-
     sourceEl.style.overflow = "visible";
-
-    sourceEl.style.padding = "20px";
-
+    // پدینگ راست بیشتر عمداً، چون html2canvas در RTL ستون سمت راست را کمی می‌بُرد
+    sourceEl.style.padding = "20px 40px 20px 20px";
     sourceEl.style.boxSizing = "border-box";
-
     sourceEl.style.background = "#ffffff";
 
-    // حذف کنترل‌های زوم موقتاً
     const controls = sourceEl.querySelector(".zoom-controls");
-
     let controlsDisplay = null;
-
     if (controls) {
         controlsDisplay = controls.style.display;
         controls.style.display = "none";
     }
 
-    // تنظیم بخش layout
     const layout = sourceEl.querySelector('[id^="layout-"]');
-
     let layoutOriginal = null;
-
     if (layout) {
-
         layoutOriginal = {
             width: layout.style.width,
             minWidth: layout.style.minWidth,
@@ -689,7 +676,6 @@ function downloadImage(uid, filename) {
             overflow: layout.style.overflow,
             zoom: layout.style.zoom
         };
-
         layout.style.width = "max-content";
         layout.style.minWidth = "max-content";
         layout.style.maxWidth = "none";
@@ -697,13 +683,9 @@ function downloadImage(uid, filename) {
         layout.style.zoom = "1";
     }
 
-    // تنظیم بخش اسکرول
     const scrollEl = sourceEl.querySelector('[id^="scroll-"]');
-
     let scrollOriginal = null;
-
     if (scrollEl) {
-
         scrollOriginal = {
             width: scrollEl.style.width,
             minWidth: scrollEl.style.minWidth,
@@ -712,24 +694,17 @@ function downloadImage(uid, filename) {
             maxHeight: scrollEl.style.maxHeight,
             overflow: scrollEl.style.overflow
         };
-
         scrollEl.style.width = "max-content";
         scrollEl.style.minWidth = "max-content";
         scrollEl.style.maxWidth = "none";
-
         scrollEl.style.height = "auto";
         scrollEl.style.maxHeight = "none";
-
         scrollEl.style.overflow = "visible";
     }
 
-    // تنظیم جدول‌ها
     const tables = sourceEl.querySelectorAll("table");
-
     const tableOriginals = [];
-
     tables.forEach(table => {
-
         tableOriginals.push({
             table: table,
             width: table.style.width,
@@ -737,121 +712,74 @@ function downloadImage(uid, filename) {
             maxWidth: table.style.maxWidth,
             tableLayout: table.style.tableLayout
         });
-
         table.style.width = "max-content";
         table.style.minWidth = "max-content";
         table.style.maxWidth = "none";
         table.style.tableLayout = "auto";
     });
 
-    // کمی زمان برای رندر شدن کامل
     setTimeout(() => {
 
         const rect = sourceEl.getBoundingClientRect();
 
+        // بافر امنیتی: html2canvas در حالت RTL معمولاً چند پیکسل از لبه سمت راست را
+        // اشتباه محاسبه و حذف می‌کند؛ با این بافر جلوی بریده‌شدن ستون آخر گرفته می‌شود.
+        const SAFETY_BUFFER = 80;
+
         const width = Math.ceil(
-            Math.max(
-                rect.width,
-                sourceEl.scrollWidth,
-                sourceEl.offsetWidth
-            )
-        );
+            Math.max(rect.width, sourceEl.scrollWidth, sourceEl.offsetWidth)
+        ) + SAFETY_BUFFER;
 
         const height = Math.ceil(
-            Math.max(
-                rect.height,
-                sourceEl.scrollHeight,
-                sourceEl.offsetHeight
-            )
-        );
+            Math.max(rect.height, sourceEl.scrollHeight, sourceEl.offsetHeight)
+        ) + 20;
 
         html2canvas(sourceEl, {
-
             scale: 3,
-
             backgroundColor: "#ffffff",
-
             useCORS: true,
-
             allowTaint: true,
-
             scrollX: 0,
-
             scrollY: 0,
-
+            x: 0,
+            y: 0,
             width: width,
-
             height: height,
-
             windowWidth: width,
-
             windowHeight: height
-
         })
-
         .then(canvas => {
-
-            // بازگرداندن استایل اصلی
             restore();
-
             const link = document.createElement("a");
-
-            link.download =
-                (
-                    filename &&
-                    filename.trim()
-                        ? filename.trim()
-                        : "قبض"
-                ) + ".png";
-
+            link.download = (filename && filename.trim() ? filename.trim() : "قبض") + ".png";
             link.href = canvas.toDataURL("image/png");
-
             link.click();
-
         })
-
         .catch(err => {
-
             console.error(err);
-
             restore();
-
             toast("خطا در ساخت تصویر.", "error");
-
         });
 
     }, 300);
 
-
-    // تابع بازگردانی استایل‌ها
     function restore() {
-
         sourceEl.style.position = original.position;
         sourceEl.style.left = original.left;
         sourceEl.style.top = original.top;
-
         sourceEl.style.width = original.width;
         sourceEl.style.minWidth = original.minWidth;
         sourceEl.style.maxWidth = original.maxWidth;
-
         sourceEl.style.height = original.height;
         sourceEl.style.maxHeight = original.maxHeight;
-
         sourceEl.style.overflow = original.overflow;
-
         sourceEl.style.padding = original.padding;
         sourceEl.style.boxSizing = original.boxSizing;
-
         sourceEl.style.background = original.background;
 
-
-        if (controls) {
-            controls.style.display = controlsDisplay;
-        }
-
+        if (controls) controls.style.display = controlsDisplay;
 
         if (layout && layoutOriginal) {
-
             layout.style.width = layoutOriginal.width;
             layout.style.minWidth = layoutOriginal.minWidth;
             layout.style.maxWidth = layoutOriginal.maxWidth;
@@ -859,31 +787,41 @@ function downloadImage(uid, filename) {
             layout.style.zoom = layoutOriginal.zoom;
         }
 
-
         if (scrollEl && scrollOriginal) {
-
             scrollEl.style.width = scrollOriginal.width;
             scrollEl.style.minWidth = scrollOriginal.minWidth;
             scrollEl.style.maxWidth = scrollOriginal.maxWidth;
-
             scrollEl.style.height = scrollOriginal.height;
             scrollEl.style.maxHeight = scrollOriginal.maxHeight;
-
             scrollEl.style.overflow = scrollOriginal.overflow;
         }
 
-
         tableOriginals.forEach(item => {
-
             item.table.style.width = item.width;
             item.table.style.minWidth = item.minWidth;
             item.table.style.maxWidth = item.maxWidth;
             item.table.style.tableLayout = item.tableLayout;
         });
-
     }
-
 }
+
+async function checkAppVersion(){
+  try{
+    const res = await fetch(location.href, {method:'HEAD', cache:'no-store'});
+    const lastMod = res.headers.get('Last-Modified');
+    if(!lastMod) return;
+    const versionLabel = new Date(lastMod).toLocaleString('fa-IR',{dateStyle:'medium',timeStyle:'short'});
+    const el = document.getElementById('app-version-label');
+    if(el) el.textContent = versionLabel;
+    const stored = localStorage.getItem('app_last_modified');
+    if(stored && stored !== lastMod){
+      toast('نسخه جدید برنامه روی سرور شناسایی شد؛ برای دریافتش صفحه را بروزرسانی کن.','success');
+    }
+    localStorage.setItem('app_last_modified', lastMod);
+  }catch(e){console.error('version check failed',e)}
+}
+checkAppVersion();
+setInterval(checkAppVersion, 60000);
 
 initAuth();
 loadVersion();
