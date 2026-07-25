@@ -776,6 +776,11 @@ function downloadImage(uid, filename) {
         sourceEl.style.padding = original.padding;
         sourceEl.style.boxSizing = original.boxSizing;
         sourceEl.style.background = original.background;
+    sourceEl.style.background = "#ffffff";
+
+    // زوم به بیرون: جدول را ۲۰٪ کوچیک‌تر می‌کنیم تا با حاشیه‌ی خالی اضافه، هیچ‌وقت بریده نشود
+    sourceEl.style.transform = "scale(0.8)";
+    sourceEl.style.transformOrigin = "top left";
 
         if (controls) controls.style.display = controlsDisplay;
 
