@@ -566,6 +566,45 @@ toast("عکس دانلود شد؛ آن را در گروه واتساپ به‌ص
 window.open("https://wa.me/?text="+encodeURIComponent(b.title||"لیست هزینه"),"_blank")
 },"image/png")
 }catch(e){document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")}}
+async function loadVersion() {
+
+    const versionEl = document.getElementById("app-version");
+    if (!versionEl) return;
+
+    try {
+
+        const res = await fetch(
+            "https://api.github.com/repos/ahooraboy43/tower/tags",
+            { cache: "no-store" }
+        );
+
+        if (!res.ok) throw new Error();
+
+        const tags = await res.json();
+
+        if (tags.length) {
+
+            versionEl.textContent = tags[0].name;
+
+            localStorage.setItem(
+                "tower-version",
+                tags[0].name
+            );
+
+        } else {
+
+            versionEl.textContent = "v0.0.0";
+
+        }
+
+    } catch {
+
+        versionEl.textContent =
+            localStorage.getItem("tower-version") || "v0.0.0";
+
+    }
+
+}
 function downloadImage(uid, filename) {
 
     const sourceEl = document.getElementById("capture-" + uid);
@@ -585,7 +624,8 @@ function downloadImage(uid, filename) {
     holder.style.left = "-100000px";
     holder.style.top = "0";
     holder.style.background = "#fff";
-    holder.style.padding = "20px";
+    holder.style.padding = "0";
+    holder.style.background = "#ffffff";
     holder.style.zIndex = "-1";
 
     holder.innerHTML = sourceEl.outerHTML;
@@ -607,28 +647,30 @@ function downloadImage(uid, filename) {
         scrollEl.style.width = "max-content";
     }
 
-    captureEl.style.width = "max-content";
-    captureEl.style.minWidth = "1200px";
-    captureEl.style.maxWidth = "none";
-    captureEl.style.overflow = "visible";
+    captureEl.style.width = "fit-content";
+    captureEl.style.minWidth = "0";
+captureEl.style.maxWidth = "none";
+captureEl.style.overflow = "visible";
 
-    html2canvas(captureEl, {
-        scale: 3,
-        backgroundColor: "#ffffff",
-        useCORS: true,
+// فقط 20 پیکسل حاشیه اطراف
+captureEl.style.padding = "20px";
+captureEl.style.boxSizing = "border-box";
 
-        scrollX: 0,
-        scrollY: 0,
+    html2canvas(captureEl,{
+    scale:3,
+    backgroundColor:"#ffffff",
+    useCORS:true,
 
-        x: 0,
-        y: 0,
+    scrollX:0,
+    scrollY:0,
 
-        width: captureEl.scrollWidth,
-        height: captureEl.scrollHeight,
+    width:captureEl.getBoundingClientRect().width,
+    height:captureEl.getBoundingClientRect().height,
 
-        windowWidth: captureEl.scrollWidth,
-        windowHeight: captureEl.scrollHeight
-    }).then(canvas => {
+    windowWidth:captureEl.scrollWidth + 40,
+    windowHeight:captureEl.scrollHeight + 40
+})
+.then(canvas => {
 
         holder.remove();
 
@@ -650,6 +692,7 @@ function downloadImage(uid, filename) {
 }
 
 initAuth();
+loadVersion();
 if("serviceWorker" in navigator){window.addEventListener("load",()=>{
 navigator.serviceWorker.register("service-worker.js").then(reg=>{
 reg.update().catch(()=>{});
