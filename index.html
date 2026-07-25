@@ -566,41 +566,88 @@ toast("عکس دانلود شد؛ آن را در گروه واتساپ به‌ص
 window.open("https://wa.me/?text="+encodeURIComponent(b.title||"لیست هزینه"),"_blank")
 },"image/png")
 }catch(e){document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")}}
-function downloadImage(uid,filename){const sourceEl=document.getElementById("capture-"+uid);if(!sourceEl){toast("چیزی برای دانلود پیدا نشد.","error");return}
-if(typeof html2canvas==="undefined"){toast("امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");return}
-const holder=document.createElement("div");holder.style.position="fixed";holder.style.left="-9999px";holder.style.top="0";holder.innerHTML=sourceEl.outerHTML;document.body.appendChild(holder);
-const controls=holder.querySelector(".zoom-controls");if(controls)controls.style.display="none";
-const layout=holder.querySelector('[id^="layout-"]');if(layout)layout.style.zoom=1;
-const scrollEl=holder.querySelector('[id^="scroll-"]');if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.maxHeight="none";scrollEl.style.width="max-content"}
-const captureEl=holder.firstElementChild;
-html2canvas(captureEl,{
-    scale:3,
-    backgroundColor:"#ffffff",
-    useCORS:true,
+function downloadImage(uid, filename) {
 
-    scrollX: 0,
-    scrollY: 0,
+    const sourceEl = document.getElementById("capture-" + uid);
 
-    x: 0,
-    y: 0,
+    if (!sourceEl) {
+        toast("چیزی برای دانلود پیدا نشد.", "error");
+        return;
+    }
 
-    width: captureEl.scrollWidth,
-    height: captureEl.scrollHeight,
+    if (typeof html2canvas === "undefined") {
+        toast("امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.", "error");
+        return;
+    }
 
-    windowWidth: Math.max(
-        captureEl.scrollWidth,
-        document.documentElement.clientWidth
-    ),
+    const holder = document.createElement("div");
+    holder.style.position = "fixed";
+    holder.style.left = "-100000px";
+    holder.style.top = "0";
+    holder.style.background = "#fff";
+    holder.style.padding = "20px";
+    holder.style.zIndex = "-1";
 
-    windowHeight: Math.max(
-        captureEl.scrollHeight,
-        document.documentElement.clientHeight
-    )
-})
-.then(canvas=>{
-document.body.removeChild(holder);
-const link=document.createElement("a");link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";link.href=canvas.toDataURL("image/png");link.click()
-}).catch(()=>{document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")})}
+    holder.innerHTML = sourceEl.outerHTML;
+    document.body.appendChild(holder);
+
+    const captureEl = holder.firstElementChild;
+
+    const controls = captureEl.querySelector(".zoom-controls");
+    if (controls) controls.remove();
+
+    const layout = captureEl.querySelector('[id^="layout-"]');
+    if (layout) layout.style.zoom = "1";
+
+    const scrollEl = captureEl.querySelector('[id^="scroll-"]');
+    if (scrollEl) {
+        scrollEl.style.overflow = "visible";
+        scrollEl.style.maxWidth = "none";
+        scrollEl.style.maxHeight = "none";
+        scrollEl.style.width = "max-content";
+    }
+
+    captureEl.style.width = "max-content";
+    captureEl.style.minWidth = "1200px";
+    captureEl.style.maxWidth = "none";
+    captureEl.style.overflow = "visible";
+
+    html2canvas(captureEl, {
+        scale: 3,
+        backgroundColor: "#ffffff",
+        useCORS: true,
+
+        scrollX: 0,
+        scrollY: 0,
+
+        x: 0,
+        y: 0,
+
+        width: captureEl.scrollWidth,
+        height: captureEl.scrollHeight,
+
+        windowWidth: captureEl.scrollWidth,
+        windowHeight: captureEl.scrollHeight
+    }).then(canvas => {
+
+        holder.remove();
+
+        const link = document.createElement("a");
+        link.download = (filename && filename.trim() ? filename.trim() : "قبض") + ".png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+
+    }).catch(err => {
+
+        console.error(err);
+
+        holder.remove();
+
+        toast("خطا در ساخت تصویر.", "error");
+
+    });
+
+}
 
 initAuth();
 if("serviceWorker" in navigator){window.addEventListener("load",()=>{
