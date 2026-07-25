@@ -627,15 +627,15 @@ async function loadVersion() {
         return;
     }
 
-    // ساخت یک کپی موقت برای گرفتن عکس
+    // کپی موقت
     const holder = document.createElement("div");
 
     holder.style.position = "fixed";
     holder.style.left = "-10000px";
     holder.style.top = "0";
-    holder.style.background = "#ffffff";
     holder.style.padding = "0";
     holder.style.margin = "0";
+    holder.style.background = "#ffffff";
     holder.style.zIndex = "-1";
 
     holder.innerHTML = sourceEl.outerHTML;
@@ -651,7 +651,18 @@ async function loadVersion() {
         controls.remove();
     }
 
-    // تنظیم Layout
+    // حذف محدودیت‌های کلی
+    captureEl.style.display = "block";
+    captureEl.style.width = "auto";
+    captureEl.style.minWidth = "0";
+    captureEl.style.maxWidth = "none";
+    captureEl.style.height = "auto";
+    captureEl.style.maxHeight = "none";
+    captureEl.style.overflow = "visible";
+    captureEl.style.padding = "20px";
+    captureEl.style.boxSizing = "border-box";
+
+    // اصلاح layout
     const layout = captureEl.querySelector('[id^="layout-"]');
 
     if (layout) {
@@ -671,12 +682,10 @@ async function loadVersion() {
         layout.style.overflow = "visible";
     }
 
-    // تنظیم بخش اسکرول جدول
+    // اصلاح scroll container
     const scrollEl = captureEl.querySelector('[id^="scroll-"]');
 
     if (scrollEl) {
-
-        scrollEl.style.overflow = "visible";
 
         scrollEl.style.width = "max-content";
 
@@ -687,38 +696,58 @@ async function loadVersion() {
         scrollEl.style.height = "auto";
 
         scrollEl.style.maxHeight = "none";
+
+        scrollEl.style.overflow = "visible";
     }
 
-    // تنظیم خود عنصر اصلی
-    captureEl.style.width = "max-content";
+    // اصلاح همه جدول‌ها
+    const tables = captureEl.querySelectorAll("table");
 
-    captureEl.style.minWidth = "max-content";
+    tables.forEach(table => {
 
-    captureEl.style.maxWidth = "none";
+        table.style.width = "max-content";
 
-    captureEl.style.height = "auto";
+        table.style.minWidth = "max-content";
 
-    captureEl.style.maxHeight = "none";
+        table.style.maxWidth = "none";
 
-    captureEl.style.overflow = "visible";
+        table.style.tableLayout = "auto";
 
-    // حاشیه اطراف تصویر
-    captureEl.style.padding = "20px";
+        table.style.overflow = "visible";
+    });
 
-    captureEl.style.boxSizing = "border-box";
-
-    // صبر برای محاسبه کامل اندازه‌ها
+    // صبر برای محاسبه کامل DOM
     requestAnimationFrame(() => {
 
-        // اندازه واقعی محتوا
-        const width = captureEl.scrollWidth;
+        // عرض واقعی تمام محتوا
+        let contentWidth = captureEl.scrollWidth;
 
-        const height = captureEl.scrollHeight;
+        let contentHeight = captureEl.scrollHeight;
 
-        // تنظیم دقیق اندازه قبل از گرفتن عکس
-        captureEl.style.width = width + "px";
+        // اگر جدول عریض‌تر از والد بود، عرض جدول را ملاک قرار بده
+        tables.forEach(table => {
 
-        captureEl.style.height = height + "px";
+            contentWidth = Math.max(
+                contentWidth,
+                table.scrollWidth
+            );
+
+            contentHeight = Math.max(
+                contentHeight,
+                table.scrollHeight
+            );
+
+        });
+
+        // کمی فضای اضافه برای جلوگیری از کراپ شدن لبه‌ها
+        contentWidth += 40;
+
+        contentHeight += 40;
+
+        // تنظیم نهایی اندازه
+        captureEl.style.width = contentWidth + "px";
+
+        captureEl.style.height = contentHeight + "px";
 
         html2canvas(captureEl, {
 
@@ -734,22 +763,20 @@ async function loadVersion() {
 
             scrollY: 0,
 
-            width: width,
+            width: contentWidth,
 
-            height: height,
+            height: contentHeight,
 
-            windowWidth: width,
+            windowWidth: contentWidth,
 
-            windowHeight: height
+            windowHeight: contentHeight
 
         })
 
         .then(canvas => {
 
-            // حذف کپی موقت
             holder.remove();
 
-            // ساخت لینک دانلود
             const link = document.createElement("a");
 
             link.download =
@@ -768,7 +795,7 @@ async function loadVersion() {
 
         .catch(err => {
 
-            console.error("html2canvas error:", err);
+            console.error(err);
 
             holder.remove();
 
