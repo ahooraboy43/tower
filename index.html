@@ -27,7 +27,7 @@ button,input,select,textarea{font-family:inherit}
 .form-group{margin-bottom:14px}.form-label{display:block;font-size:.88rem;font-weight:700;margin-bottom:6px}.form-control{width:100%;padding:11px;border:1px solid var(--border);border-radius:var(--radius);background:#f8fafc;font-size:1rem;outline:none}.form-control:focus{border-color:var(--primary);background:#fff}
 .bottom-nav{position:fixed;bottom:0;right:0;left:0;height:66px;background:#fff;border-top:1px solid var(--border);display:flex;z-index:200}.nav-item{flex:1;border:none;background:none;color:var(--muted);cursor:pointer;font-size:.75rem}.nav-item.active{color:var(--primary);font-weight:700}.nav-icon{display:block;font-size:1.35rem;margin-bottom:2px}
 .badge{display:inline-block;padding:5px 9px;border-radius:8px;font-size:.75rem;font-weight:700}.badge-danger{background:#fef2f2;color:var(--danger)}.badge-success{background:#ecfdf5;color:var(--success)}.badge-primary{background:var(--primary-light);color:var(--primary)}.empty{text-align:center;padding:24px;color:var(--muted)}
-.stat-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px}.stat-title{color:var(--muted);font-size:.78rem}.stat-value{padding-left:10px;display:inline-table;font-size:1.15rem;font-weight:800;margin-top:5px}
+.stats-grid{ display:none;;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.stat-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px}.stat-title{color:var(--muted);font-size:.78rem}.stat-value{padding-left: 10px;display: inline-table;font-size:1.15rem;font-weight:800;margin-top:5px}
 .bill-item,.unit-item,.expense-item{border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px;background:#fff}.bill-header,.unit-header,.expense-header{display:flex;justify-content:space-between;align-items:center;gap:10px}.bill-name,.unit-name{font-weight:800}.muted{color:var(--muted);font-size:.82rem}.action-row{display:flex;gap:8px;margin-top:10px}.action-row .btn{flex:1}.unit-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.unit-actions .btn{width:auto;flex:1 1 30%;margin:0;padding:8px 6px;font-size:.75rem;white-space:nowrap}.info-box{background:var(--primary-light);color:#1e40af;border-radius:10px;padding:12px;font-size:.85rem;margin-bottom:14px}.total-box{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:14px;font-weight:800}
 .toast-container{position:fixed;bottom:80px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:9999;pointer-events:none;padding:0 16px}
 .toast{background:#0f172aee;color:#fff;padding:10px 18px;border-radius:10px;font-size:.83rem;max-width:100%;text-align:center;box-shadow:0 4px 12px #0004;opacity:0;transform:translateY(12px);transition:opacity .25s,transform .25s}
@@ -35,7 +35,7 @@ button,input,select,textarea{font-family:inherit}
 .toast.success{background:#065f46ee}
 .toast.error{background:#7f1d1dee}
 .modal{display:none;position:fixed;inset:0;background:#0f172a99;z-index:1000;align-items:flex-end;justify-content:center}.modal.active{display:flex}.modal-content{background:#fff;width:100%;max-width:1100px;max-height:94vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:18px}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.close-btn{border:none;background:#f1f5f9;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1.2rem}
-.wizard-step{display:none}.wizard-step.active{display:block}.preview-scroll{overflow-x:auto;padding-bottom:10px}.preview-layout{display:flex;direction:rtl;align-items:stretch;gap:20px;min-width:max-content}.main-table-wrap,.summary-table-wrap{padding:10px;direction:rtl}.main-table-wrap{flex:1}.summary-table-wrap{margin-top:34PX;width:260px}.preview-table{border-collapse:collapse;width:100%;font-size:.78rem;background:#fff}.preview-table th,.preview-table td{border:1px solid #cbd5e1;padding:8px;text-align:center;white-space:nowrap;height:48px}.preview-table th{background:#e2e8f0;font-weight:800}.preview-table tfoot td{background:#eff6ff;font-weight:800;height:52px}.summary-table th{background:#dbeafe}.summary-table td{font-weight:700}.summary-value{font-size:.85rem}.expense-row{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}.fixed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.archive-select-row{display:flex;gap:8px;align-items:end}.archive-select-row>div{flex:1}.bill-detail-container{background:#fff;padding:10px}
+.wizard-step{display:none}.wizard-step.active{display:block}.preview-scroll{overflow-x:auto;padding-bottom:10px}.preview-layout{display:flex;direction:rtl;align-items:stretch;gap:20px;min-width:max-content}.main-table-wrap,.summary-table-wrap{padding: 10px;direction:rtl}.main-table-wrap{flex:1}.summary-table-wrap{margin-top: 34PX;width:260px}.preview-table{border-collapse:collapse;width:100%;font-size:.78rem;background:#fff}.preview-table th,.preview-table td{border:1px solid #cbd5e1;padding:8px;text-align:center;white-space:nowrap;height:48px}.preview-table th{background:#e2e8f0;font-weight:800}.preview-table tfoot td{background:#eff6ff;font-weight:800;height:52px}.summary-table th{background:#dbeafe}.summary-table td{font-weight:700}.summary-value{font-size:.85rem}.expense-row{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}.fixed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.archive-select-row{display:flex;gap:8px;align-items:end}.archive-select-row>div{flex:1}.bill-detail-container{background:#fff;padding:10px}
 .note-box{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;color:#64748b;text-align:center;width:100%;max-width:640px;font-size:.76rem;line-height:1.5}
 .notes-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:8px}
 .table-date-label{text-align:center;font-weight:800;font-size:.9rem;margin-bottom:10px;color:var(--text)}
@@ -57,7 +57,7 @@ button,input,select,textarea{font-family:inherit}
 .bills-center-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .payment-history-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .payment-history-row .btn{width:auto;margin:0;padding:6px 10px;font-size:.72rem}
-@media(max-width:650px){.fixed-grid{grid-template-columns:1fr}.unit-actions{gap:4px}.unit-actions .btn{font-size:.68rem;padding:7px 3px}.preview-table{font-size:.7rem}.summary-table-wrap{width:220px}}
+@media(max-width:650px){.fixed-grid{grid-template-columns:1fr}.action-row{}.unit-actions{gap:4px}.unit-actions .btn{font-size:.68rem;padding:7px 3px}.preview-table{font-size:.7rem}.summary-table-wrap{width:220px}.stats-grid{grid-template-columns:1fr}}
 @media print{body>*:not(#print-area){display:none!important}#print-area{display:block!important}.zoom-controls{display:none!important}.preview-scroll{overflow:visible!important;max-height:none!important}}
 #print-area{display:none}
 .auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -66,13 +66,52 @@ button,input,select,textarea{font-family:inherit}
 .auth-subtitle{color:var(--muted);font-size:.82rem;text-align:center;margin-bottom:18px}
 .auth-error{color:var(--danger);font-size:.82rem;margin-bottom:10px;min-height:1em;text-align:center}
 .sync-badge{display:inline-block;font-size:.72rem;font-weight:700;margin-right:8px;padding:2px 8px;border-radius:20px;background:#ffffff30;vertical-align:middle}
-.bank-balance-card{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(37,99,235,.25)}
-.bank-title{font-size:.9rem;opacity:.9}
-.bank-balance-value{margin-top:12px;font-size:2rem;font-weight:800;display:inline}
-.bank-balance-cash{margin-top:12px;font-size:24px;font-weight:500;display:inline}
-.bank-balance-deficit{margin-top:12px;font-size:24px;font-weight:500;display:inline;color:#ef4444}
-.bank-subtitle{margin-top:8px;opacity:.8;font-size:.8rem;display:inline}
-.bank-Debit{margin-top:8px;opacity:.8;font-size:.8rem;display:inline}
+.bank-balance-card{
+    background:linear-gradient(135deg,#1d4ed8,#2563eb);
+    color:#fff;
+    border-radius:22px;
+    padding:22px;
+    margin-bottom:18px;
+    box-shadow:0 12px 30px rgba(37,99,235,.25);
+}
+
+.bank-title{
+    font-size:.9rem;
+    opacity:.9;
+}
+
+.bank-balance-value{
+    margin-top:12px;
+    font-size:2rem;
+    font-weight:800;
+    display: inline;
+}
+.bank-balance-cash{
+    margin-top: 12px;
+    font-size: 24px;
+    font-weight: 500;
+    display: inline;
+}
+.bank-balance-deficit{
+    margin-top: 12px;
+    font-size: 24px;
+    font-weight: 500;
+    display: inline;
+    color: #ef4444;
+}
+.bank-subtitle{
+    margin-top:8px;
+    opacity:.8;
+    font-size:.8rem;
+    display: inline;
+}
+.bank-Debit{
+    margin-top:8px;
+    margin-top:8px;
+    opacity:.8;
+    font-size:.8rem;
+    display: inline;
+}
 </style>
 </head>
 <body>
@@ -83,23 +122,41 @@ button,input,select,textarea{font-family:inherit}
 <div class="form-group"><label class="form-label">ایمیل</label><input id="auth-email" type="email" class="form-control" autocomplete="username"></div>
 <div class="form-group"><label class="form-label">رمز عبور</label><input id="auth-password" type="password" class="form-control" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
 <div id="auth-error" class="auth-error"></div>
-<button class="btn btn-primary" onclick="doLogin()">ورود</button>
+<button class="btn btn-primary" id="auth-login-btn" onclick="doLogin()">ورود</button>
 </div>
 </div>
 <div id="app-root" style="display:none">
-<header class="app-header">
-<div class="header-title">پلاک ۳ <span id="sync-badge" class="sync-badge"></span></div>
-<div class="header-subtitle">مدیریت هزینه و شارژ ساختمان</div>
-</header>
+<header class="app-header"><div class="header-title">پلاک ۳ <span id="sync-badge" class="sync-badge"></span></div><div class="header-subtitle">مدیریت هزینه و شارژ ساختمان<div class="info-box">نسخه  فایل: <strong id="app-version-label">در حال بررسی...</strong></div>
+</div></header>
 <main class="container">
 <section id="tab-dashboard">
 <div class="card bank-balance-card">
-<div class="bank-title">💳 موجودی بانک</div>
-<div id="stat-fund" class="bank-balance-value">۰ تومان</div><br>
-<div id="stat-cash" class="bank-balance-cash">۰ تومان</div>
-<div class="bank-subtitle">جمع صندوق</div><br>
-<div id="stat-bank-deficit" class="bank-balance-deficit">۰ تومان</div>
-<div class="bank-Debit">کسری بانک</div>
+    <div class="bank-title">
+        💳 موجودی بانک
+    </div>
+
+    <div  id="stat-fund" class="bank-balance-value">
+        ۰ تومان
+    </div> <br>
+    <div  id="stat-cash" class="bank-balance-cash">
+        ۰ تومان
+    </div>
+        <div class="bank-subtitle">
+      جمـع صنـدوق
+    </div><br>
+    <div  id="stat-bank-deficit" class="bank-balance-deficit">
+        ۰ تومان
+    </div>
+
+    <div class="bank-Debit">
+     کـسری بانک
+    </div>
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-box"><div class="stat-value" id="stat-bills">۰٪</div><div class="stat-value" id="stat-units">۰ از ۰</div><div class="mini-progress-track"><div class="mini-progress-fill" id="stat-collect-bar" style="width:0%"></div></div></div>
+
 </div>
 <div class="card"><div class="card-title"><span>ایجاد لیست هزینه جدید</span><span>➕</span></div><button class="btn btn-primary" onclick="openBillWizard()">ایجاد هزینه ماهانه جدید</button></div>
 <div class="card"><div class="card-title"><span>آرشیو هزینه‌های ماه‌های قبلی</span><span>📁</span></div><div id="bills-list"></div></div>
@@ -222,161 +279,536 @@ const STORAGE_KEY="plaque3_final_database_v4";
 const SUPABASE_URL="https://fdzoacsevwjbdqnoqmmu.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkem9hY3NldndqYmRxbm9xbW11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NDkwNzcsImV4cCI6MjEwMDMyNTA3N30.9gITw6to9jduguMio-kGSLhmJUxCdJQ0GeWU76Rx95o";
 const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-const defaultDB=()=>({units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],billCenters:[],settings:{note1:"",note2:"",round:1000}});
+function defaultDB(){return{units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],billCenters:[],settings:{note1:"",note2:"",round:1000}}}
 let db=JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultDB();
 db.settings=db.settings||{note1:"",note2:"",round:1000}; db.fundPayments=db.fundPayments||[]; db.billCenters=db.billCenters||[];
 let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;
 
-const money=n=>Number(n||0).toLocaleString("fa-IR")+" تومان";
-const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-const faDigits=n=>Number(n).toLocaleString("fa-IR",{useGrouping:false});
-const getMoneyValue=id=>Number((document.getElementById(id).value||"").replace(/[^\d]/g,""))||0;
-const setMoneyValue=(id,num)=>document.getElementById(id).value=Number(num||0).toLocaleString("en-US");
-const roundUp=n=>Math.ceil(Number(n||0)/(Number(db.settings.round)||1))*(Number(db.settings.round)||1);
-const buildingFundBalance=()=>db.payments.reduce((s,p)=>s+p.amount,0)+db.fundPayments.reduce((s,p)=>s+p.amount,0)-db.bills.reduce((s,b)=>s+b.realTotal,0);
-const totalPeople=()=>db.units.reduce((s,u)=>s+Number(u.people||0),0);
-const share=(e,u)=>e.type==="per_person"?(e.amount/totalPeople())*u.people:e.amount/db.units.length;
-const previousDebt=(unitId,excludeBillId=null)=>{let charges=0;db.bills.forEach(b=>{if(b.id===excludeBillId)return;const u=b.unitShares.find(x=>x.unitId===unitId);if(u)charges+=u.roundedTotal});return Math.max(0,Math.round(charges-db.payments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0)))};
-const unitFund=unitId=>db.fundPayments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0);
-const formatPaymentDate=iso=>{try{return new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso))}catch(e){return iso}};
-const JALALI_MONTHS=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
-const isJalaliLeap=jy=>[1,5,9,13,17,22,26,30].includes(((jy%33)+33)%33);
-const daysInJalaliMonth=(y,m)=>m<=6?31:m<=11?30:isJalaliLeap(y)?30:29;
-const todayJalaliParts=()=>{try{const parts=new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn",{year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date());const o={};parts.forEach(p=>{if(p.type!=="literal")o[p.type]=parseInt(p.value,10)});return{y:o.year,m:o.month,d:o.day}}catch(e){return{y:1404,m:1,d:1}}};
-const formatJalaliDate=(d,m,y)=>`${faDigits(d)} ${JALALI_MONTHS[m-1]} ${faDigits(y)}`;
-const readDateSelects=prefix=>({y:Number(document.getElementById(prefix+"-year").value),m:Number(document.getElementById(prefix+"-month").value),d:Number(document.getElementById(prefix+"-day").value)});
-const dateFromJalaliSelects=prefix=>{const p=readDateSelects(prefix);const g=jalaliToGregorian(p.y,p.m,p.d);const now=new Date();return new Date(g.gy,g.gm-1,g.gd,now.getHours(),now.getMinutes(),now.getSeconds())};
-
-function jalaliToGregorian(jy,jm,jd){jy+=1595;let days=-355668+(365*jy)+(Math.floor(jy/33)*8)+Math.floor(((jy%33)+3)/4)+jd+((jm<7)?(jm-1)*31:((jm-7)*30)+186);let gy=400*Math.floor(days/146097);days%=146097;if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++}gy+=4*Math.floor(days/1461);days%=1461;if(days>365){gy+=Math.floor((days-1)/365);days=(days-1)%365}let gd=days+1;const salA=[0,31,((gy%4===0&&gy%100!==0)||(gy%400===0))?29:28,31,30,31,30,31,31,30,31,30,31];let gm;for(gm=1;gm<=12&&gd>salA[gm];gm++){gd-=salA[gm]}return{gy,gm,gd}}
-
-function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;const statusMap={syncing:"🔄 در حال ذخیره",synced:"☁️ ذخیره شد",error:"⚠️ عدم اتصال (ذخیره محلی)"};el.textContent=statusMap[status]||"";el.style.background=status==="error"?"#7f1d1d55":"#ffffff30"}
+function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
+if(status==="syncing"){el.textContent="🔄 در حال ذخیره";el.style.background="#ffffff30"}
+else if(status==="synced"){el.textContent="☁️ ذخیره شد";el.style.background="#ffffff30"}
+else if(status==="error"){el.textContent="⚠️ عدم اتصال (ذخیره محلی)";el.style.background="#7f1d1d55"}
+else{el.textContent=""}}
 
 function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db));syncToCloud()}
-function syncToCloud(){if(!currentUser)return;clearTimeout(syncTimer);setSyncStatus("syncing");syncTimer=setTimeout(async()=>{try{const{error}=await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}},500)}
+function syncToCloud(){if(!currentUser)return;clearTimeout(syncTimer);setSyncStatus("syncing");
+syncTimer=setTimeout(async()=>{try{const{error}=await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}},500)}
 
-async function loadDBFromCloud(){setSyncStatus("syncing");try{const{data,error}=await supa.from("app_state").select("data").eq("user_id",currentUser.id).maybeSingle();if(error)throw error;if(data?.data){db=data.data;db.settings=db.settings||{note1:"",note2:"",round:1000};db.fundPayments=db.fundPayments||[];db.expenseArchive=db.expenseArchive||[];db.payments=db.payments||[];db.units=db.units||[];db.bills=db.bills||[];db.billCenters=db.billCenters||[]}else db=defaultDB();localStorage.setItem(STORAGE_KEY,JSON.stringify(db));setSyncStatus("synced")}catch(e){console.error("load error",e);setSyncStatus("error")}}
+async function loadDBFromCloud(){setSyncStatus("syncing");
+try{const{data,error}=await supa.from("app_state").select("data").eq("user_id",currentUser.id).maybeSingle();
+if(error)throw error;
+if(data&&data.data){db=data.data;db.settings=db.settings||{note1:"",note2:"",round:1000};db.fundPayments=db.fundPayments||[];db.expenseArchive=db.expenseArchive||[];db.payments=db.payments||[];db.units=db.units||[];db.bills=db.bills||[];db.billCenters=db.billCenters||[]}
+else{db=defaultDB();await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()})}
+localStorage.setItem(STORAGE_KEY,JSON.stringify(db));setSyncStatus("synced")}
+catch(e){console.error("load error",e);setSyncStatus("error")}}
 
-async function doLogin(){const email=document.getElementById("auth-email").value.trim(),password=document.getElementById("auth-password").value,errEl=document.getElementById("auth-error");errEl.textContent="";if(!email||!password){errEl.textContent="ایمیل و رمز عبور را وارد کنید";return}const btn=document.getElementById("auth-login-btn");btn.disabled=true;btn.textContent="در حال ورود...";try{const{data,error}=await supa.auth.signInWithPassword({email,password});if(error)throw error;currentUser=data.user;document.getElementById("auth-screen").style.display="none";document.getElementById("app-root").style.display="block";await loadDBFromCloud();renderDashboard()}catch(e){errEl.textContent="ورود ناموفق بود. ایمیل یا رمز عبور اشتباه است."}finally{btn.disabled=false;btn.textContent="ورود"}}
+function showAuthScreen(){document.getElementById("auth-screen").style.display="flex";document.getElementById("app-root").style.display="none"}
+function showAppRoot(){document.getElementById("auth-screen").style.display="none";document.getElementById("app-root").style.display="block"}
 
-async function logout(){await supa.auth.signOut();currentUser=null;document.getElementById("auth-screen").style.display="flex";document.getElementById("app-root").style.display="none"}
+async function doLogin(){const email=document.getElementById("auth-email").value.trim();const password=document.getElementById("auth-password").value;const errEl=document.getElementById("auth-error");errEl.textContent="";
+if(!email||!password){errEl.textContent="ایمیل و رمز عبور را وارد کنید";return}
+const btn=document.getElementById("auth-login-btn");btn.disabled=true;btn.textContent="در حال ورود...";
+try{const{data,error}=await supa.auth.signInWithPassword({email,password});if(error)throw error;
+currentUser=data.user;showAppRoot();await loadDBFromCloud();renderDashboard()}
+catch(e){errEl.textContent="ورود ناموفق بود. ایمیل یا رمز عبور اشتباه است."}
+finally{btn.disabled=false;btn.textContent="ورود"}}
 
-async function initAuth(){const{data}=await supa.auth.getSession();if(data?.session){currentUser=data.session.user;document.getElementById("auth-screen").style.display="none";document.getElementById("app-root").style.display="block";await loadDBFromCloud();renderDashboard()}}
+async function logout(){await supa.auth.signOut();currentUser=null;showAuthScreen()}
 
+async function initAuth(){const{data}=await supa.auth.getSession();
+if(data&&data.session){currentUser=data.session.user;showAppRoot();await loadDBFromCloud();renderDashboard()}
+else{showAuthScreen()}}
+
+function money(n){return Number(n||0).toLocaleString("fa-IR")+" تومان"}
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
 function toast(msg,type="success"){const c=document.getElementById("toast-container");if(!c)return;const el=document.createElement("div");el.className="toast "+type;el.textContent=msg;c.appendChild(el);requestAnimationFrame(()=>el.classList.add("show"));setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},2700)}
 function formatMoneyInput(el){const raw=el.value.replace(/[^\d]/g,"");el.value=raw?Number(raw).toLocaleString("en-US"):""}
-
-function fillDateSelects(prefix,parts){const selY=document.getElementById(prefix+"-year"),base=todayJalaliParts().y;selY.innerHTML=Array.from({length:7},(_,i)=>i-3).map(y=>`<option value="${base+y}" ${(base+y)===parts.y?"selected":""}>${faDigits(base+y)}</option>`).join("");document.getElementById(prefix+"-month").innerHTML=JALALI_MONTHS.map((n,i)=>`<option value="${i+1}" ${i+1===parts.m?"selected":""}>${n}</option>`).join("");fillDaySelect(prefix,parts.y,parts.m,parts.d)}
-function fillDaySelect(prefix,y,m,selectedDay){const sel=document.getElementById(prefix+"-day"),max=daysInJalaliMonth(y,m),d0=Math.min(selectedDay,max);sel.innerHTML=Array.from({length:max},(_,i)=>i+1).map(d=>`<option value="${d}" ${d===d0?"selected":""}>${faDigits(d)}</option>`).join("")}
-function onDateSelectChange(prefix){const y=Number(document.getElementById(prefix+"-year").value),m=Number(document.getElementById(prefix+"-month").value),d=Number(document.getElementById(prefix+"-day").value)||1;fillDaySelect(prefix,y,m,d);if(prefix==="bill-date")document.getElementById("bill-date").value=formatJalaliDate(d,m,y)}
-
+function getMoneyValue(idOrEl){const el=typeof idOrEl==="string"?document.getElementById(idOrEl):idOrEl;return Number((el.value||"").replace(/[^\d]/g,""))||0}
+function setMoneyValue(id,num){document.getElementById(id).value=Number(num||0).toLocaleString("en-US")}
+function formatPaymentDate(iso){try{return new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso))}catch(e){return iso}}
+const JALALI_MONTHS=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+function faDigits(n){return Number(n).toLocaleString("fa-IR",{useGrouping:false})}
+function faDigitsToEn(str){return String(str).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d))}
+function isJalaliLeap(jy){return [1,5,9,13,17,22,26,30].includes(((jy%33)+33)%33)}
+function daysInJalaliMonth(y,m){if(m<=6)return 31;if(m<=11)return 30;return isJalaliLeap(y)?30:29}
+function todayJalaliParts(){try{const parts=new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn",{year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date());const o={};parts.forEach(p=>{if(p.type!=="literal")o[p.type]=parseInt(p.value,10)});return{y:o.year,m:o.month,d:o.day}}catch(e){return{y:1404,m:1,d:1}}}
+function parseJalaliDateString(s){if(!s)return null;const t=faDigitsToEn(s);const nums=t.match(/\d+/g);if(!nums||nums.length<2)return null;let mIdx=-1;JALALI_MONTHS.forEach((name,i)=>{if(s.indexOf(name)>-1)mIdx=i+1});if(mIdx===-1)return null;const d=parseInt(nums[0],10),y=parseInt(nums[nums.length-1],10);if(!d||!y)return null;return{d,m:mIdx,y}}
+function formatJalaliDate(d,m,y){return `${faDigits(d)} ${JALALI_MONTHS[m-1]} ${faDigits(y)}`}
+function fillYearSelect(prefix,selectedYear){const sel=document.getElementById(prefix+"-year"),base=todayJalaliParts().y;let opts="";for(let y=base-3;y<=base+3;y++)opts+=`<option value="${y}" ${y===selectedYear?"selected":""}>${faDigits(y)}</option>`;sel.innerHTML=opts}
+function fillMonthSelect(prefix,selectedMonth){document.getElementById(prefix+"-month").innerHTML=JALALI_MONTHS.map((n,i)=>`<option value="${i+1}" ${i+1===selectedMonth?"selected":""}>${n}</option>`).join("")}
+function fillDaySelect(prefix,y,m,selectedDay){const sel=document.getElementById(prefix+"-day"),max=daysInJalaliMonth(y,m),d0=Math.min(selectedDay,max);let opts="";for(let d=1;d<=max;d++)opts+=`<option value="${d}" ${d===d0?"selected":""}>${faDigits(d)}</option>`;sel.innerHTML=opts}
+function setDateSelects(prefix,parts){fillYearSelect(prefix,parts.y);fillMonthSelect(prefix,parts.m);fillDaySelect(prefix,parts.y,parts.m,parts.d);if(prefix==="bill-date")syncBillDateHidden()}
+function onDateSelectChange(prefix){const y=Number(document.getElementById(prefix+"-year").value),m=Number(document.getElementById(prefix+"-month").value),d=Number(document.getElementById(prefix+"-day").value)||1;fillDaySelect(prefix,y,m,d);if(prefix==="bill-date")syncBillDateHidden()}
+function syncBillDateHidden(){const y=Number(document.getElementById("bill-date-year").value),m=Number(document.getElementById("bill-date-month").value),d=Number(document.getElementById("bill-date-day").value);document.getElementById("bill-date").value=formatJalaliDate(d,m,y)}
+function readDateSelects(prefix){return{y:Number(document.getElementById(prefix+"-year").value),m:Number(document.getElementById(prefix+"-month").value),d:Number(document.getElementById(prefix+"-day").value)}}
+function jalaliToGregorian(jy,jm,jd){jy+=1595;let days=-355668+(365*jy)+(Math.floor(jy/33)*8)+Math.floor(((jy%33)+3)/4)+jd+((jm<7)?(jm-1)*31:((jm-7)*30)+186);let gy=400*Math.floor(days/146097);days%=146097;if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++}gy+=4*Math.floor(days/1461);days%=1461;if(days>365){gy+=Math.floor((days-1)/365);days=(days-1)%365}let gd=days+1;const salA=[0,31,((gy%4===0&&gy%100!==0)||(gy%400===0))?29:28,31,30,31,30,31,31,30,31,30,31];let gm;for(gm=1;gm<=12&&gd>salA[gm];gm++){gd-=salA[gm]}return{gy,gm,gd}}
+function dateFromJalaliSelects(prefix){const p=readDateSelects(prefix);const g=jalaliToGregorian(p.y,p.m,p.d);const now=new Date();return new Date(g.gy,g.gm-1,g.gd,now.getHours(),now.getMinutes(),now.getSeconds())}
+function roundUp(n){const r=Number(db.settings.round)||1;return Math.ceil(Number(n||0)/r)*r}
 function switchTab(tab,b){document.querySelectorAll("main>section").forEach(x=>x.style.display="none");document.getElementById("tab-"+tab).style.display="block";document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(tab==="dashboard")renderDashboard();if(tab==="units")renderUnits();if(tab==="settings")renderSettings()}
-function openModal(id){document.getElementById(id).classList.add("active")}
-function closeModal(id){document.getElementById(id).classList.remove("active")}
+function openModal(id){document.getElementById(id).classList.add("active")} function closeModal(id){document.getElementById(id).classList.remove("active")}
 
+function buildingFundBalance(){const debtCollected=db.payments.reduce((s,p)=>s+p.amount,0);const fundCollected=db.fundPayments.reduce((s,p)=>s+p.amount,0);const totalRealCost=db.bills.reduce((s,b)=>s+b.realTotal,0);return debtCollected+fundCollected-totalRealCost}
 function billCollectionStats(b){const totalAmount=b.roundedTotal||0;let collectedAmount=0,settledCount=0;b.unitShares.forEach(u=>{if(previousDebt(u.unitId)<=0){collectedAmount+=u.roundedTotal;settledCount++}});const percent=totalAmount>0?Math.min(100,Math.round(collectedAmount/totalAmount*100)):100;return{percent,collectedAmount,totalAmount,settledCount,totalUnits:b.unitShares.length}}
-
 function renderDashboard(){
 const totalUnits=db.units.length,settledUnits=db.units.filter(u=>previousDebt(u.id)<=0).length;
-document.getElementById("stat-units").textContent=faDigits(settledUnits)+" از "+faDigits(totalUnits);
+document.getElementById("stat-units").textContent=settledUnits.toLocaleString("fa-IR")+" از "+totalUnits.toLocaleString("fa-IR");
 const totalCharged=db.bills.reduce((s,b)=>s+b.realTotal,0),totalDebtPaid=db.payments.reduce((s,p)=>s+p.amount,0);
+const bankEl = document.getElementById("bank-balance");
+if (bankEl) {
+    bankEl.textContent = money(bankBalance());
+}
 const overallPercent=totalCharged>0?Math.min(100,Math.round(totalDebtPaid/totalCharged*100)):100;
 document.getElementById("stat-bills").textContent=faDigits(overallPercent)+"٪";
 document.getElementById("stat-collect-bar").style.width=overallPercent+"%";
-const fund=db.fundPayments.reduce((s,p)=>s+p.amount,0);
-document.getElementById("stat-fund").textContent=money(buildingFundBalance());
-document.getElementById("stat-cash").textContent=money(fund);
-const deficit=buildingFundBalance()-fund;
-document.getElementById("stat-bank-deficit").textContent=money(deficit);
-document.getElementById("stat-bank-deficit").style.color=deficit>0?"green":"red";
+document.getElementById("stat-fund").textContent=money(buildingFundBalance());// مانده بانک
+document.getElementById("stat-cash").textContent=money(db.fundPayments.reduce((s,p)=>s+p.amount,0));// کل واریز صندوق
+ const deficit =
+  buildingFundBalance() -
+  db.fundPayments.reduce((s, p) => s + p.amount, 0);
+
+const element = document.getElementById("stat-bank-deficit");
+element.textContent = money(deficit);
+element.style.color = deficit > 0 ? "green" : "red";// کسری بانک
 const box=document.getElementById("bills-list"); if(!db.bills.length){box.innerHTML='<div class="empty">هنوز قبضی ذخیره نشده است.</div>';return}
-box.innerHTML=db.bills.slice().reverse().map(b=>{const st=billCollectionStats(b);return `<div class="bill-item"><div class="bill-header"><div><div class="bill-name">${esc(b.title)}</div><div class="muted">${esc(b.date)}</div></div><span class="badge badge-primary">${b.unitShares.length} واحد</span></div><div class="total-box">جمع واقعی هزینه‌ها: ${money(b.realTotal)}<br>جمع بدهی قابل دریافت: ${money(b.roundedTotal)}</div><div class="progress-wrap"><div class="progress-label"><span>وصول شده: ${money(st.collectedAmount)}</span><span>${faDigits(st.percent)}٪ (${faDigits(st.settledCount)} از ${faDigits(st.totalUnits)} واحد)</span></div><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${st.percent}%"></div></div></div><div class="action-row"><button class="btn btn-primary" onclick="viewBill(${b.id})">👁 نمایش</button></div><div class="action-row"><button class="btn btn-secondary" onclick="editBill(${b.id})">✏️ ویرایش</button><button class="btn" style="background:#25D366;color:#fff" onclick="shareBillToWhatsApp(${b.id})">📲 واتس اپ</button><button class="btn btn-danger" onclick="deleteBill(${b.id})">🗑 حذف</button></div></div>`}).join("")}
+box.innerHTML=db.bills.slice().reverse().map(b=>{const st=billCollectionStats(b);return `<div class="bill-item"><div class="bill-header"><div><div class="bill-name">${esc(b.title)}</div><div class="muted">${esc(b.date)}</div></div><span class="badge badge-primary">${b.unitShares.length} واحد</span></div><div class="total-box">جمع واقعی هزینه‌ها: ${money(b.realTotal)}<br>جمع بدهی قابل دریافت: ${money(b.roundedTotal)}</div>
+<div class="progress-wrap"><div class="progress-label"><span>وصول شده: ${money(st.collectedAmount)}</span><span>${faDigits(st.percent)}٪ (${faDigits(st.settledCount)} از ${faDigits(st.totalUnits)} واحد)</span></div><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${st.percent}%"></div></div></div>
+<div class="action-row"><button class="btn btn-primary" onclick="viewBill(${b.id})">👁 نمایش</button></div>
+<div class="action-row"><button class="btn btn-secondary" onclick="editBill(${b.id})">✏️ ویرایش</button><button class="btn" style="background:#25D366;color:#fff" onclick="shareBillToWhatsApp(${b.id})">📲 واتس اپ</button><button class="btn btn-danger" onclick="deleteBill(${b.id})">🗑 حذف</button></div>
+</div>`}).join("")
+}
+function bankBalance() {
 
-function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"بدهی: "+money(debt):"تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
+    const fund = buildingFundBalance();
 
-function renderSettings(){document.getElementById("setting-note1").value=db.settings.note1||"";document.getElementById("setting-note2").value=db.settings.note2||"";setMoneyValue("setting-round",db.settings.round||1000);renderBillCenters();const box=document.getElementById("archive-expenses-list");if(!db.expenseArchive.length){box.innerHTML='<div class="empty">هزینه متغیری در آرشیو وجود ندارد.</div>';return}box.innerHTML=db.expenseArchive.map((n,i)=>`<div class="expense-item"><div class="expense-header"><strong>📌 ${esc(n)}</strong><button class="btn btn-danger" style="width:auto;margin:0;padding:7px 10px" onclick="deleteArchivedExpense(${i})">حذف</button></div></div>`).join("")}
+    if (!db.bills.length) return fund;
 
-function renderBillCenters(){const box=document.getElementById("bill-centers-list");if(!box)return;if(!db.billCenters.length){box.innerHTML='<div class="empty">هنوز قبضی ثبت نشده است.</div>';return}box.innerHTML=db.billCenters.map(c=>`<div class="bills-center-item"><div class="bills-center-row"><div><div class="bill-name">${esc(c.name)}</div><div class="muted">شناسه: ${esc(c.subscriberId||"-")}</div><div class="muted">آخرین بررسی: ${c.lastCheckDate?esc(c.lastCheckDate):"هنوز بررسی نشده"}</div></div></div><div class="unit-actions">${c.url?`<button class="btn btn-primary" onclick="openBillCenterLink(${c.id})">🔗 باز کردن صفحه پرداخت</button>`:""}<button class="btn btn-success" onclick="markBillCenterChecked(${c.id})">✅ بررسی شد</button><button class="btn btn-secondary" onclick="openBillCenterModal(${c.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteBillCenterEntry(${c.id})">🗑 حذف</button></div></div>`).join("")}
+    // آخرین قبض
+    const lastBill = db.bills[db.bills.length - 1];
 
-function openBillWizard(bill=null){editingBillId=bill?.id||null;document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";document.getElementById("bill-title").value=bill?.title||"";const parts=bill?(()=>{const d=formatJalaliDate(1,1,1400);return todayJalaliParts()})():todayJalaliParts();fillDateSelects("bill-date",parts);setMoneyValue("water-amount",bill?.fixed?.water?.amount||0);setMoneyValue("electricity-amount",bill?.fixed?.electricity?.amount||0);setMoneyValue("gas-amount",bill?.fixed?.gas?.amount||0);setMoneyValue("cleaning-amount",bill?.fixed?.cleaning?.amountPerTime||0);document.getElementById("cleaning-count").value=bill?.fixed?.cleaning?.count||1;document.getElementById("variable-expenses").innerHTML="";if(bill?.variables)bill.variables.forEach(v=>addVariableExpenseRow(v.name,v.amount));else addVariableExpenseRow();document.querySelectorAll(".wizard-step").forEach(x=>x.classList.remove("active"));document.getElementById("bill-step-1").classList.add("active");openModal("bill-modal")}
+    // مبلغ کل قبض
+    const billTotal = Number(lastBill.realTotal || 0);
 
-function goBillStep(step){if(step===2&&!document.getElementById("bill-title").value.trim()){toast("عنوان لیست را وارد کنید.","error");return}if(step===4){if(!db.units.length){toast("ابتدا واحدها را ثبت کنید.","error");return}const vars=readVariables();if(vars===null)return;currentBill={title:document.getElementById("bill-title").value.trim(),date:document.getElementById("bill-date").value.trim(),fixed:{water:{amount:getMoneyValue("water-amount")},electricity:{amount:getMoneyValue("electricity-amount")},gas:{amount:getMoneyValue("gas-amount")},cleaning:{amountPerTime:getMoneyValue("cleaning-amount"),count:Number(document.getElementById("cleaning-count").value)||1}},variables:vars};renderPreview()}document.querySelectorAll(".wizard-step").forEach(x=>x.classList.remove("active"));document.getElementById("bill-step-"+step).classList.add("active")}
+    // مجموع پرداخت‌های ثبت‌شده
+    const paid = db.payments.reduce(
+        (sum, p) => sum + Number(p.amount || 0),
+        0
+    );
 
+    return fund - billTotal + paid;
+}
+function openBillWizard(bill=null){
+editingBillId=bill?bill.id:null;document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";
+document.getElementById("bill-title").value=bill?bill.title:"";setDateSelects("bill-date",bill?(parseJalaliDateString(bill.date)||todayJalaliParts()):todayJalaliParts());
+setMoneyValue("water-amount",bill?.fixed?.water?.amount||0);setMoneyValue("electricity-amount",bill?.fixed?.electricity?.amount||0);setMoneyValue("gas-amount",bill?.fixed?.gas?.amount||0);setMoneyValue("cleaning-amount",bill?.fixed?.cleaning?.amountPerTime||0);document.getElementById("cleaning-count").value=bill?.fixed?.cleaning?.count||1;document.getElementById("variable-expenses").innerHTML="";
+if(bill?.variables)bill.variables.forEach(v=>addVariableExpenseRow(v.name,v.amount));else addVariableExpenseRow();goBillStep(1);openModal("bill-modal")
+}
+function goBillStep(step){
+if(step===2&&!document.getElementById("bill-title").value.trim()){toast("عنوان لیست را وارد کنید.","error");return}
+if(step===4){if(!db.units.length){toast("ابتدا واحدها را ثبت کنید.","error");return}const vars=readVariables();if(vars===null)return;currentBill={title:document.getElementById("bill-title").value.trim(),date:document.getElementById("bill-date").value.trim(),fixed:{water:{amount:getMoneyValue("water-amount")},electricity:{amount:getMoneyValue("electricity-amount")},gas:{amount:getMoneyValue("gas-amount")},cleaning:{amountPerTime:getMoneyValue("cleaning-amount"),count:Number(document.getElementById("cleaning-count").value)||1}},variables:vars};renderPreview()}
+document.querySelectorAll(".wizard-step").forEach(x=>x.classList.remove("active"));document.getElementById("bill-step-"+step).classList.add("active")
+}
 function addVariableExpenseRow(name="",amount=""){const box=document.getElementById("variable-expenses"),row=document.createElement("div");row.className="expense-row";let opts='<option value="">انتخاب هزینه از آرشیو</option>';db.expenseArchive.forEach(n=>opts+=`<option value="${esc(n)}" ${n===name?"selected":""}>${esc(n)}</option>`);row.innerHTML=`<div class="archive-select-row"><div><label class="form-label">نام هزینه</label><select class="form-control variable-name">${opts}</select></div><div><label class="form-label">مبلغ این ماه</label><input type="text" inputmode="numeric" class="form-control variable-amount" value="${amount?Number(amount).toLocaleString("en-US"):""}" oninput="formatMoneyInput(this)"></div></div><div class="form-group" style="margin-top:10px"><label class="form-label">نام هزینه جدید در صورت نیاز</label><input class="form-control new-variable-name"></div><button class="btn btn-danger" onclick="this.parentElement.remove()">🗑 حذف</button>`;box.appendChild(row)}
-
-function readVariables(){const result=[];for(const row of document.querySelectorAll("#variable-expenses .expense-row")){const selected=row.querySelector(".variable-name").value.trim(),newName=row.querySelector(".new-variable-name").value.trim(),amount=getMoneyValue(row.querySelector(".variable-amount")),name=newName||selected;if(!name&&amount===0)continue;if(!name){toast("نام هزینه متغیر را وارد کنید.","error");return null}if(amount<=0){toast("مبلغ هزینه «"+name+"» صحیح نیست.","error");return null}result.push({name,amount});if(!db.expenseArchive.includes(name))db.expenseArchive.push(name)}saveDB();return result}
-
+function readVariables(){const result=[];const rows=document.querySelectorAll("#variable-expenses .expense-row");for(const row of rows){const selected=row.querySelector(".variable-name").value.trim(),newName=row.querySelector(".new-variable-name").value.trim(),amount=getMoneyValue(row.querySelector(".variable-amount")),name=newName||selected;if(!name&&amount===0)continue;if(!name){toast("نام هزینه متغیر را وارد کنید.","error");return null}if(amount<=0){toast("مبلغ هزینه «"+name+"» صحیح نیست.","error");return null}result.push({name,amount});if(!db.expenseArchive.includes(name))db.expenseArchive.push(name)}saveDB();return result}
+function totalPeople(){return db.units.reduce((s,u)=>s+Number(u.people||0),0)}
+function share(e,u){return e.type==="per_person"?(e.amount/totalPeople())*u.people:e.amount/db.units.length}
 function createExpenseList(){const c=currentBill.fixed,arr=[{key:"water",name:"آب",amount:c.water.amount,type:"per_person"},{key:"electricity",name:"برق",amount:c.electricity.amount,type:"per_unit"},{key:"gas",name:"گاز",amount:c.gas.amount,type:"per_unit"},{key:"cleaning",name:"نظافت",amount:c.cleaning.amountPerTime*c.cleaning.count,type:"per_unit"}];currentBill.variables.forEach((v,i)=>arr.push({key:"variable_"+i,name:v.name,amount:v.amount,type:"per_unit"}));return arr}
-
+function previousDebt(unitId,excludeBillId=null){let charges=0;db.bills.forEach(b=>{if(b.id===excludeBillId)return;const u=b.unitShares.find(x=>x.unitId===unitId);if(u)charges+=u.roundedTotal});let paid=db.payments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0);return Math.max(0,Math.round(charges-paid))}
+function unitFund(unitId){return db.fundPayments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0)}
 function buildBillData(){const expenses=createExpenseList(),realTotal=expenses.reduce((s,e)=>s+e.amount,0),shares=db.units.map(u=>{const columns={};let currentTotal=0;expenses.forEach(e=>{const v=roundUp(share(e,u));columns[e.key]=v;currentTotal+=v});const oldDebt=previousDebt(u.id,editingBillId);return{unitId:u.id,unitNumber:u.unitNumber,residentName:u.residentName,people:u.people,columns,oldDebt,roundedTotal:currentTotal+oldDebt}});return{id:editingBillId||Date.now(),title:currentBill.title,date:currentBill.date,fixed:currentBill.fixed,variables:currentBill.variables,expenses,realTotal,roundedTotal:shares.reduce((s,u)=>s+u.roundedTotal,0),unitShares:shares,notes:{note1:db.settings.note1,note2:db.settings.note2}}}
-
 function notesHTML(b){const n1=b.notes?.note1,n2=b.notes?.note2;if(!n1&&!n2)return"";return `<div class="notes-wrap">${n1?`<div class="note-box">📝 ${esc(n1)}</div>`:""}${n2?`<div class="note-box">📝 ${esc(n2)}</div>`:""}</div>`}
-
-function tableHTML(b,uid="preview"){const ex=b.expenses,fundTotal=b.unitShares.reduce((s,u)=>s+unitFund(u.unitId),0);return `<div class="bill-detail-container" id="capture-${uid}"><div class="zoom-controls"><label class="summary-toggle"><input type="checkbox" onchange="toggleSummaryTable('${uid}',this.checked)"> نمایش جدول دوم</label><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',0.15)">➕</button><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',-0.15)">➖</button><button type="button" class="zoom-btn" onclick="zoomReset('${uid}')">⟳</button></div><div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${previousDebt(u.unitId)<=0?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td><strong>${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td>${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td>${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div></div>`}
-
+function tableHTML(b,uid="preview"){const ex=b.expenses,fundTotal=b.unitShares.reduce((s,u)=>s+unitFund(u.unitId),0);return `<div class="bill-detail-container" id="capture-${uid}">
+<div class="zoom-controls"><label class="summary-toggle"><input type="checkbox" onchange="toggleSummaryTable('${uid}',this.checked)"> نمایش جدول دوم</label><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',0.15)">➕</button><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',-0.15)">➖</button><button type="button" class="zoom-btn" onclick="zoomReset('${uid}')">⟳</button></div>
+<div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${previousDebt(u.unitId)<=0?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td><strong>${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td>${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td>${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
+</div>`}
 function toggleSummaryTable(uid,show){const el=document.querySelector("#layout-"+uid+" .summary-table-wrap");if(el)el.style.display=show?"block":"none"}
-function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div>${tableHTML(b,"wizard")}</div>`;zoomReset("wizard")}
+function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div>${tableHTML(b,"wizard")}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
 function saveBill(){const b=buildBillData();if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0)db.bills[i]=b}else db.bills.push(b);saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null}
 
-function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId),msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;const digits=(u.phone||"").replace(/\D/g,"");const intl=digits.startsWith("0")?"98"+digits.slice(1):digits;const box=document.getElementById("contact-sheet-body");box.innerHTML="";if(!digits){const info=document.createElement("div");info.className="info-box";info.textContent="شماره موبایل این واحد ثبت نشده؛ فقط واتساپ عمومی در دسترس است.";box.appendChild(info)}const btnCall=document.createElement("button");btnCall.className="btn btn-primary";btnCall.textContent="📞 تماس تلفنی";if(digits)btnCall.onclick=()=>window.location.href="tel:"+digits;else btnCall.disabled=true;const btnSms=document.createElement("button");btnSms.className="btn btn-secondary";btnSms.textContent="💬 پیامک";if(digits)btnSms.onclick=()=>{const sep=/iPhone|iPad|iPod/.test(navigator.userAgent)?"&":"?";window.location.href="sms:"+digits+sep+"body="+encodeURIComponent(msg)};else btnSms.disabled=true;const btnWa=document.createElement("button");btnWa.className="btn";btnWa.style.background="#25D366";btnWa.style.color="#fff";btnWa.textContent="📲 واتساپ";btnWa.onclick=()=>{const url=intl?`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;window.open(url,"_blank")};box.appendChild(btnCall);box.appendChild(btnSms);box.appendChild(btnWa);openModal("contact-sheet-modal")}
-
-function openPaymentHistory(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;document.getElementById("payment-history-title").textContent="تاریخچه پرداخت‌های واحد "+u.unitNumber;const all=[...db.payments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"debt"})),...db.fundPayments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"fund"}))].sort((a,b)=>new Date(b.date)-new Date(a.date));const box=document.getElementById("payment-history-content");box.innerHTML=all.length?all.map(p=>`<div class="unit-item"><div class="payment-history-row"><div><div class="unit-name">${p.kind==="debt"?"💳 پرداخت بدهی":"🏦 واریز صندوق"}</div><div class="muted">${formatPaymentDate(p.date)}</div><span class="badge ${p.kind==="debt"?"badge-success":"badge-primary"}" style="margin-top:5px;display:inline-block">${money(p.amount)}</span></div><button class="btn btn-danger" onclick="deletePaymentRecord('${p.kind}',${p.id})">🗑 حذف</button></div></div>`).join(""):'<div class="empty">پرداختی ثبت نشده است.</div>';openModal("payment-history-modal")}
-
-function deletePaymentRecord(kind,id){if(!confirm("این پرداخت حذف شود؟"))return;if(kind==="debt")db.payments=db.payments.filter(x=>x.id!==id);else db.fundPayments=db.fundPayments.filter(x=>x.id!==id);saveDB();openPaymentHistory(db.units.find(u=>u.id===(kind==="debt"?db.payments[0]?.unitId:db.fundPayments[0]?.unitId))?.id||0);renderUnits();renderDashboard();toast("پرداخت حذف شد.","success")}
-
+function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"بدهی: "+money(debt):"تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
+function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);
+const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;
+const digits=(u.phone||"").replace(/\D/g,"");const intl=digits.startsWith("0")?"98"+digits.slice(1):digits;const box=document.getElementById("contact-sheet-body");box.innerHTML="";
+if(!digits){const info=document.createElement("div");info.className="info-box";info.textContent="شماره موبایل این واحد ثبت نشده؛ فقط واتساپ عمومی در دسترس است.";box.appendChild(info)}
+const btnCall=document.createElement("button");btnCall.className="btn btn-primary";btnCall.textContent="📞 تماس تلفنی";if(digits){btnCall.onclick=()=>{window.location.href="tel:"+digits}}else btnCall.disabled=true;
+const btnSms=document.createElement("button");btnSms.className="btn btn-secondary";btnSms.textContent="💬 پیامک";if(digits){btnSms.onclick=()=>{const sep=/iPhone|iPad|iPod/.test(navigator.userAgent)?"&":"?";window.location.href="sms:"+digits+sep+"body="+encodeURIComponent(msg)}}else btnSms.disabled=true;
+const btnWa=document.createElement("button");btnWa.className="btn";btnWa.style.background="#25D366";btnWa.style.color="#fff";btnWa.textContent="📲 واتساپ";btnWa.onclick=()=>{const url=intl?`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;window.open(url,"_blank")};
+box.appendChild(btnCall);box.appendChild(btnSms);box.appendChild(btnWa);openModal("contact-sheet-modal")}
+let paymentHistoryUnitId=null;
+function openPaymentHistory(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;paymentHistoryUnitId=unitId;document.getElementById("payment-history-title").textContent="تاریخچه پرداخت‌های واحد "+u.unitNumber;const debtPays=db.payments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"debt"})),fundPays=db.fundPayments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"fund"})),all=[...debtPays,...fundPays].sort((a,b)=>new Date(b.date)-new Date(a.date));const box=document.getElementById("payment-history-content");box.innerHTML=all.length?all.map(p=>`<div class="unit-item"><div class="payment-history-row"><div><div class="unit-name">${p.kind==="debt"?"💳 پرداخت بدهی":"🏦 واریز صندوق"}</div><div class="muted">${formatPaymentDate(p.date)}</div><span class="badge ${p.kind==="debt"?"badge-success":"badge-primary"}" style="margin-top:5px;display:inline-block">${money(p.amount)}</span></div><button class="btn btn-danger" onclick="deletePaymentRecord('${p.kind}',${p.id})">🗑 حذف</button></div></div>`).join(""):'<div class="empty">پرداختی ثبت نشده است.</div>';openModal("payment-history-modal")}
+function deletePaymentRecord(kind,id){if(!confirm("این پرداخت حذف شود؟ اگر اشتباهی ثبت شده این کار آن را برمی‌گرداند."))return;if(kind==="debt")db.payments=db.payments.filter(x=>x.id!==id);else db.fundPayments=db.fundPayments.filter(x=>x.id!==id);saveDB();if(paymentHistoryUnitId!==null)openPaymentHistory(paymentHistoryUnitId);renderUnits();renderDashboard();toast("پرداخت حذف شد.","success")}
 function openUnitModal(){document.getElementById("unit-modal-title").textContent="افزودن واحد";document.getElementById("editing-unit-id").value="";document.getElementById("unit-number").value="";document.getElementById("resident-name").value="";document.getElementById("resident-phone").value="";document.getElementById("unit-people").value=1;openModal("unit-modal")}
 function editUnit(id){const u=db.units.find(x=>x.id===id);if(!u)return;document.getElementById("unit-modal-title").textContent="ویرایش اطلاعات واحد";document.getElementById("editing-unit-id").value=u.id;document.getElementById("unit-number").value=u.unitNumber;document.getElementById("resident-name").value=u.residentName;document.getElementById("resident-phone").value=u.phone||"";document.getElementById("unit-people").value=u.people;openModal("unit-modal")}
-
-function saveUnit(){const idRaw=document.getElementById("editing-unit-id").value,id=idRaw?Number(idRaw):0,unitNumber=Number(document.getElementById("unit-number").value),residentName=document.getElementById("resident-name").value.trim(),phone=document.getElementById("resident-phone").value.trim(),people=Number(document.getElementById("unit-people").value);if(!unitNumber||!people){toast("شماره واحد و تعداد نفرات الزامی است.","error");return}if(id){const u=db.units.find(x=>x.id===id);if(!u){toast("این واحد دیگر در سیستم پیدا نشد.","error");return}const dup=db.units.find(x=>x.id!==id&&x.unitNumber===unitNumber);if(dup){toast("واحد شماره "+unitNumber+" قبلاً ثبت شده است.","error");return}Object.assign(u,{unitNumber,residentName,phone,people})}else{const dup=db.units.find(x=>x.unitNumber===unitNumber);if(dup){toast("واحد شماره "+unitNumber+" قبلاً وجود دارد.","error");return}db.units.push({id:Date.now(),unitNumber,residentName,phone,people})}saveDB();closeModal("unit-modal");renderUnits();renderDashboard()}
-
+let savingUnit=false;
+function saveUnit(){
+if(savingUnit)return;savingUnit=true;
+try{
+const idRaw=document.getElementById("editing-unit-id").value,id=idRaw?Number(idRaw):0,unitNumber=Number(document.getElementById("unit-number").value),residentName=document.getElementById("resident-name").value.trim(),phone=document.getElementById("resident-phone").value.trim(),people=Number(document.getElementById("unit-people").value);
+if(!unitNumber||!people){toast("شماره واحد و تعداد نفرات الزامی است.","error");return}
+if(idRaw&&!id){toast("شناسه واحد نامعتبر است؛ لطفاً صفحه را بروزرسانی کرده و دوباره ویرایش را باز کنید.","error");return}
+if(id){
+const u=db.units.find(x=>x.id===id);
+if(!u){toast("این واحد دیگر در سیستم پیدا نشد (احتمالاً حذف یا اصلاح شده)؛ صفحه را بروزرسانی کنید تا دوباره تلاش کنید.","error");return}
+const dup=db.units.find(x=>x.id!==id&&x.unitNumber===unitNumber);
+if(dup){toast("واحد شماره "+unitNumber+" قبلاً ثبت شده است؛ به جای ساخت مورد جدید، همان واحد را ویرایش کنید.","error");return}
+Object.assign(u,{unitNumber,residentName,phone,people})
+}else{
+const dup=db.units.find(x=>x.unitNumber===unitNumber);
+if(dup){toast("واحد شماره "+unitNumber+" قبلاً وجود دارد.","error");return}
+db.units.push({id:Date.now(),unitNumber,residentName,phone,people})
+}
+saveDB();closeModal("unit-modal");renderUnits();renderDashboard()
+}finally{savingUnit=false}
+}
 function deleteUnit(id){if(previousDebt(id)>0){toast("این واحد بدهی دارد و قابل حذف نیست.","error");return}if(!confirm("این واحد حذف شود؟"))return;db.units=db.units.filter(x=>x.id!==id);saveDB();renderUnits();renderDashboard()}
-
-function repairDuplicateUnits(){const groups={};db.units.forEach(u=>{const key=String(u.unitNumber);(groups[key]=groups[key]||[]).push(u)});const dupGroups=Object.values(groups).filter(g=>g.length>1);if(!dupGroups.length){toast("هیچ واحد تکراری پیدا نشد.","success");return}const summary=dupGroups.map(g=>"واحد "+g[0].unitNumber+" ("+g.length+" مورد تکراری)").join("\n");if(!confirm("موارد زیر پیدا شد و ادغام خواهند شد:\n\n"+summary+"\n\nادامه می‌دهید؟"))return;const report=[];dupGroups.forEach(group=>{function activity(id){let score=0;db.bills.forEach(b=>{if(b.unitShares.some(x=>x.unitId===id))score++});score+=db.payments.filter(p=>p.unitId===id).length;score+=db.fundPayments.filter(p=>p.unitId===id).length;return score}const sorted=group.slice().sort((a,b)=>{const diff=activity(b.id)-activity(a.id);if(diff!==0)return diff;return a.id-b.id});const keeper=sorted[0],dups=sorted.slice(1);dups.forEach(dupUnit=>{if(!keeper.residentName&&dupUnit.residentName)keeper.residentName=dupUnit.residentName;if(!keeper.phone&&dupUnit.phone)keeper.phone=dupUnit.phone;if(!keeper.people&&dupUnit.people)keeper.people=dupUnit.people;db.payments.forEach(p=>{if(p.unitId===dupUnit.id)p.unitId=keeper.id});db.fundPayments.forEach(p=>{if(p.unitId===dupUnit.id)p.unitId=keeper.id});db.bills.forEach(b=>{const keeperIdx=b.unitShares.findIndex(x=>x.unitId===keeper.id);const dupIdx=b.unitShares.findIndex(x=>x.unitId===dupUnit.id);if(dupIdx===-1)return;const dupRow=b.unitShares[dupIdx];if(keeperIdx!==-1){const keeperRow=b.unitShares[keeperIdx];Object.keys(dupRow.columns||{}).forEach(k=>{keeperRow.columns[k]=(keeperRow.columns[k]||0)+(dupRow.columns[k]||0)});keeperRow.oldDebt=(keeperRow.oldDebt||0)+(dupRow.oldDebt||0);keeperRow.roundedTotal=(keeperRow.roundedTotal||0)+(dupRow.roundedTotal||0);b.unitShares.splice(dupIdx,1)}else{dupRow.unitId=keeper.id;dupRow.unitNumber=keeper.unitNumber}b.roundedTotal=b.unitShares.reduce((s,x)=>s+x.roundedTotal,0)});report.push("واحد "+dupUnit.unitNumber+" (شناسه "+dupUnit.id+") در واحد اصلی (شناسه "+keeper.id+") ادغام شد.")});db.units=db.units.filter(u=>!dups.some(d=>d.id===u.id))});saveDB();renderUnits();renderDashboard();alert("اصلاح با موفقیت انجام شد:\n\n"+report.join("\n"));toast("واحدهای تکراری اصلاح شدند.","success")}
-
-function forceAppUpdate(){(async()=>{try{if("serviceWorker"in navigator){const regs=await navigator.serviceWorker.getRegistrations();for(const r of regs)await r.unregister()}if(window.caches){const keys=await caches.keys();for(const k of keys)await caches.delete(k)}toast("در حال دریافت آخرین نسخه برنامه...","success");setTimeout(()=>location.reload(),700)}catch(e){console.error(e);toast("خطا در بروزرسانی؛ لطفاً برنامه را ببندید و دوباره باز کنید.","error")}})()}
-
-function openPaymentModal(unitId,type){const u=db.units.find(x=>x.id===unitId),isFund=type==="fund";document.getElementById("payment-unit-id").value=unitId;document.getElementById("payment-type").value=type;document.getElementById("payment-title").textContent=isFund?"واریز به صندوق":"ثبت پرداخت بدهی";setMoneyValue("payment-amount",isFund?0:previousDebt(unitId));document.getElementById("payment-info").innerHTML=`<div class="info-box">${isFund?"صندوق واحد کاملاً جدا از بدهی است. موجودی فعلی صندوق: ":"بدهی فعلی واحد: "}<strong>${money(isFund?unitFund(unitId):previousDebt(unitId))}</strong></div>`;fillDateSelects("payment-date",todayJalaliParts());openModal("payment-modal")}
-
+function repairDuplicateUnits(){
+const groups={};
+db.units.forEach(u=>{const key=String(u.unitNumber);(groups[key]=groups[key]||[]).push(u)});
+const dupGroups=Object.values(groups).filter(g=>g.length>1);
+if(!dupGroups.length){toast("هیچ واحد تکراری پیدا نشد؛ همه چیز مرتب است.","success");return}
+const summary=dupGroups.map(g=>"واحد "+g[0].unitNumber+" ("+g.length+" مورد تکراری)").join("\n");
+if(!confirm("موارد زیر پیدا شد و ادغام خواهند شد:\n\n"+summary+"\n\nقدیمی‌ترین/فعال‌ترین رکورد هر واحد نگه داشته می‌شود و بقیه در آن ادغام می‌شوند. پرداخت‌ها، صندوق و قبض‌های قبلی نیز اصلاح می‌شوند.\n\nادامه می‌دهید؟"))return;
+const report=[];
+dupGroups.forEach(group=>{
+function activity(id){
+let score=0;
+db.bills.forEach(b=>{if(b.unitShares.some(x=>x.unitId===id))score++});
+score+=db.payments.filter(p=>p.unitId===id).length;
+score+=db.fundPayments.filter(p=>p.unitId===id).length;
+return score
+}
+const sorted=group.slice().sort((a,b)=>{const diff=activity(b.id)-activity(a.id);if(diff!==0)return diff;return a.id-b.id});
+const keeper=sorted[0],dups=sorted.slice(1);
+dups.forEach(dupUnit=>{
+if(!keeper.residentName&&dupUnit.residentName)keeper.residentName=dupUnit.residentName;
+if(!keeper.phone&&dupUnit.phone)keeper.phone=dupUnit.phone;
+if(!keeper.people&&dupUnit.people)keeper.people=dupUnit.people;
+db.payments.forEach(p=>{if(p.unitId===dupUnit.id)p.unitId=keeper.id});
+db.fundPayments.forEach(p=>{if(p.unitId===dupUnit.id)p.unitId=keeper.id});
+db.bills.forEach(b=>{
+const keeperIdx=b.unitShares.findIndex(x=>x.unitId===keeper.id);
+const dupIdx=b.unitShares.findIndex(x=>x.unitId===dupUnit.id);
+if(dupIdx===-1)return;
+const dupRow=b.unitShares[dupIdx];
+if(keeperIdx!==-1){
+const keeperRow=b.unitShares[keeperIdx];
+Object.keys(dupRow.columns||{}).forEach(k=>{keeperRow.columns[k]=(keeperRow.columns[k]||0)+(dupRow.columns[k]||0)});
+keeperRow.oldDebt=(keeperRow.oldDebt||0)+(dupRow.oldDebt||0);
+keeperRow.roundedTotal=(keeperRow.roundedTotal||0)+(dupRow.roundedTotal||0);
+b.unitShares.splice(dupIdx,1)
+}else{
+dupRow.unitId=keeper.id;dupRow.unitNumber=keeper.unitNumber
+}
+b.roundedTotal=b.unitShares.reduce((s,x)=>s+x.roundedTotal,0)
+});
+report.push("واحد "+dupUnit.unitNumber+" (شناسه "+dupUnit.id+") در واحد اصلی (شناسه "+keeper.id+") ادغام شد.")
+});
+db.units=db.units.filter(u=>!dups.some(d=>d.id===u.id))
+});
+saveDB();renderUnits();renderDashboard();
+alert("اصلاح با موفقیت انجام شد:\n\n"+report.join("\n"));
+toast("واحدهای تکراری اصلاح شدند.","success")
+}
+function forceAppUpdate(){
+(async()=>{
+try{
+if("serviceWorker" in navigator){
+const regs=await navigator.serviceWorker.getRegistrations();
+for(const r of regs)await r.unregister()
+}
+if(window.caches){
+const keys=await caches.keys();
+for(const k of keys)await caches.delete(k)
+}
+toast("در حال دریافت آخرین نسخه برنامه...","success");
+setTimeout(()=>{location.reload()},700)
+}catch(e){console.error(e);toast("خطا در بروزرسانی؛ لطفاً برنامه را ببندید و دوباره باز کنید.","error")}
+})()
+}
+function openPaymentModal(unitId,type){const u=db.units.find(x=>x.id===unitId),isFund=type==="fund";document.getElementById("payment-unit-id").value=unitId;document.getElementById("payment-type").value=type;document.getElementById("payment-title").textContent=isFund?"واریز به صندوق":"ثبت پرداخت بدهی";setMoneyValue("payment-amount",isFund?0:previousDebt(unitId));document.getElementById("payment-info").innerHTML=`<div class="info-box">${isFund?"صندوق واحد کاملاً جدا از بدهی است. موجودی فعلی صندوق: ":"بدهی فعلی واحد: "}<strong>${money(isFund?unitFund(unitId):previousDebt(unitId))}</strong></div>`;setDateSelects("payment-date",todayJalaliParts());openModal("payment-modal")}
 function savePayment(){const unitId=Number(document.getElementById("payment-unit-id").value),type=document.getElementById("payment-type").value,amount=getMoneyValue("payment-amount");if(!amount||amount<=0){toast("مبلغ صحیح نیست.","error");return}const p={id:Date.now(),unitId,amount,date:dateFromJalaliSelects("payment-date").toISOString()};if(type==="fund")db.fundPayments.push(p);else db.payments.push(p);saveDB();closeModal("payment-modal");renderUnits();renderDashboard();toast(type==="fund"?"واریز صندوق ثبت شد.":"پرداخت بدهی ثبت شد.","success")}
-
 function saveSettings(){db.settings.note1=document.getElementById("setting-note1").value.trim();db.settings.note2=document.getElementById("setting-note2").value.trim();db.settings.round=Math.max(1,getMoneyValue("setting-round")||1);saveDB();toast("تنظیمات ذخیره شد.","success")}
-
+function renderSettings(){document.getElementById("setting-note1").value=db.settings.note1||"";document.getElementById("setting-note2").value=db.settings.note2||"";setMoneyValue("setting-round",db.settings.round||1000);renderBillCenters();const box=document.getElementById("archive-expenses-list");if(!db.expenseArchive.length){box.innerHTML='<div class="empty">هزینه متغیری در آرشیو وجود ندارد.</div>';return}box.innerHTML=db.expenseArchive.map((n,i)=>`<div class="expense-item"><div class="expense-header"><strong>📌 ${esc(n)}</strong><button class="btn btn-danger" style="width:auto;margin:0;padding:7px 10px" onclick="deleteArchivedExpense(${i})">حذف</button></div></div>`).join("")}
+function renderBillCenters(){const box=document.getElementById("bill-centers-list");if(!box)return;if(!db.billCenters.length){box.innerHTML='<div class="empty">هنوز قبضی ثبت نشده است.</div>';return}
+box.innerHTML=db.billCenters.map(c=>`<div class="bills-center-item"><div class="bills-center-row"><div><div class="bill-name">${esc(c.name)}</div><div class="muted">شناسه: ${esc(c.subscriberId||"-")}</div><div class="muted">آخرین بررسی: ${c.lastCheckDate?esc(c.lastCheckDate):"هنوز بررسی نشده"}</div></div></div><div class="unit-actions">${c.url?`<button class="btn btn-primary" onclick="openBillCenterLink(${c.id})">🔗 باز کردن صفحه پرداخت</button>`:""}<button class="btn btn-success" onclick="markBillCenterChecked(${c.id})">✅ بررسی شد</button><button class="btn btn-secondary" onclick="openBillCenterModal(${c.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteBillCenterEntry(${c.id})">🗑 حذف</button></div></div>`).join("")}
 function openBillCenterModal(id=null){const c=id?db.billCenters.find(x=>x.id===id):null;document.getElementById("bill-center-modal-title").textContent=c?"ویرایش قبض":"افزودن قبض";document.getElementById("editing-bill-center-id").value=c?c.id:"";document.getElementById("bill-center-name").value=c?c.name:"";document.getElementById("bill-center-subscriber").value=c?c.subscriberId:"";document.getElementById("bill-center-url").value=c?c.url||"":"";openModal("bill-center-modal")}
-
 function saveBillCenterEntry(){const idRaw=document.getElementById("editing-bill-center-id").value,id=idRaw?Number(idRaw):0,name=document.getElementById("bill-center-name").value.trim(),subscriberId=document.getElementById("bill-center-subscriber").value.trim(),url=document.getElementById("bill-center-url").value.trim();if(!name){toast("نام قبض را وارد کنید.","error");return}if(id){const c=db.billCenters.find(x=>x.id===id);if(c)Object.assign(c,{name,subscriberId,url})}else{db.billCenters.push({id:Date.now(),name,subscriberId,url,lastCheckDate:""})}saveDB();closeModal("bill-center-modal");renderBillCenters();toast("ذخیره شد.","success")}
-
 function deleteBillCenterEntry(id){if(!confirm("این قبض از لیست حذف شود؟"))return;db.billCenters=db.billCenters.filter(x=>x.id!==id);saveDB();renderBillCenters()}
 function markBillCenterChecked(id){const c=db.billCenters.find(x=>x.id===id);if(!c)return;const t=todayJalaliParts();c.lastCheckDate=formatJalaliDate(t.d,t.m,t.y);saveDB();renderBillCenters();toast("تاریخ بررسی بروزرسانی شد.","success")}
 function openBillCenterLink(id){const c=db.billCenters.find(x=>x.id===id);if(!c||!c.url)return;window.open(c.url,"_blank")}
 function deleteArchivedExpense(i){if(!confirm("این هزینه حذف شود؟"))return;db.expenseArchive.splice(i,1);saveDB();renderSettings()}
-
-function viewBill(id){viewedBillId=id;const b=db.bills.find(x=>x.id===id);if(!b)return;document.getElementById("view-bill-title").textContent=b.title;document.getElementById("view-bill-content").innerHTML=tableHTML(b,"view");zoomReset("view");openModal("view-bill-modal")}
+function viewBill(id){viewedBillId=id;const b=db.bills.find(x=>x.id===id);if(!b)return;document.getElementById("view-bill-title").textContent=b.title;document.getElementById("view-bill-content").innerHTML=tableHTML(b,"view");zoomReset("view");initPinchZoom("view");openModal("view-bill-modal")}
 function editBill(id){const b=db.bills.find(x=>x.id===id);if(b)openBillWizard(b)}
-function editViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(b){closeModal("view-bill-modal");openBillWizard(b)}}
+function editViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(!b)return;closeModal("view-bill-modal");openBillWizard(b)}
 function deleteBill(id){if(!confirm("این قبض حذف شود؟"))return;db.bills=db.bills.filter(x=>x.id!==id);saveDB();renderDashboard()}
 function deleteViewedBill(){deleteBill(viewedBillId);closeModal("view-bill-modal")}
 function printCurrentBill(){printBill(buildBillData())}
 function printViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(b)printBill(b)}
 function printBill(b){document.getElementById("print-area").innerHTML=`<h2>${esc(b.title)}</h2>${tableHTML(b)}`;window.print()}
-
 let zoomState={};
-function zoomAdjust(uid,delta){zoomState[uid]=Math.min(3,Math.max(.5,(zoomState[uid]||1)+delta));const el=document.getElementById("layout-"+uid);if(el)el.style.zoom=zoomState[uid]}
-function zoomReset(uid){zoomState[uid]=1;const el=document.getElementById("layout-"+uid);if(el)el.style.zoom=1}
+function pinchDist(t){const dx=t[0].clientX-t[1].clientX,dy=t[0].clientY-t[1].clientY;return Math.hypot(dx,dy)}
+function applyZoom(uid){const el=document.getElementById("layout-"+uid);if(el)el.style.zoom=zoomState[uid]||1}
+function zoomAdjust(uid,delta){zoomState[uid]=Math.min(3,Math.max(.5,(zoomState[uid]||1)+delta));applyZoom(uid)}
+function zoomReset(uid){zoomState[uid]=1;applyZoom(uid)}
+function initPinchZoom(uid){const scrollEl=document.getElementById("scroll-"+uid);if(!scrollEl)return;let startDist=0,startScale=1;
+scrollEl.addEventListener("touchstart",e=>{if(e.touches.length===2){startDist=pinchDist(e.touches);startScale=zoomState[uid]||1}},{passive:true});
+scrollEl.addEventListener("touchmove",e=>{if(e.touches.length===2){e.preventDefault();const d=pinchDist(e.touches);let s=startScale*(d/startDist);s=Math.min(3,Math.max(.5,s));zoomState[uid]=s;applyZoom(uid)}},{passive:false})}
+async function shareBillToWhatsApp(billId){const b=db.bills.find(x=>x.id===billId);if(!b){toast("قبضی برای ارسال پیدا نشد.","error");return}
+if(typeof html2canvas==="undefined"){toast("امکان ساخت تصویر در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");return}
+toast("در حال آماده‌سازی تصویر...","success");
+const holder=document.createElement("div");holder.style.position="fixed";holder.style.left="-9999px";holder.style.top="0";holder.innerHTML=tableHTML(b,"share");document.body.appendChild(holder);
+const controls=holder.querySelector(".zoom-controls");if(controls)controls.style.display="none";
+const scrollEl=holder.querySelector(".preview-scroll");if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.maxHeight="none";scrollEl.style.width="max-content"}
+const captureEl=holder.querySelector(".bill-detail-container");
+try{
+const canvas=await html2canvas(captureEl,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:captureEl.scrollWidth,height:captureEl.scrollHeight,windowWidth:captureEl.scrollWidth+40,windowHeight:captureEl.scrollHeight+40});
+document.body.removeChild(holder);
+canvas.toBlob(async(blob)=>{
+if(!blob){toast("خطا در ساخت تصویر.","error");return}
+const file=new File([blob],(b.title||"قبض")+".png",{type:"image/png"});
+if(navigator.canShare&&navigator.canShare({files:[file]})){
+try{await navigator.share({files:[file],title:b.title,text:b.title});return}catch(err){if(err&&err.name==="AbortError")return}
+}
+const link=document.createElement("a");link.download=(b.title||"قبض")+".png";link.href=URL.createObjectURL(blob);link.click();
+toast("عکس دانلود شد؛ آن را در گروه واتساپ به‌صورت دستی ضمیمه کنید.","success");
+window.open("https://wa.me/?text="+encodeURIComponent(b.title||"لیست هزینه"),"_blank")
+},"image/png")
+}catch(e){document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")}}
 
-async function shareBillToWhatsApp(billId){const b=db.bills.find(x=>x.id===billId);if(!b){toast("قبضی برای ارسال پیدا نشد.","error");return}if(typeof html2canvas==="undefined"){toast("امکان ساخت تصویر در دسترس نیست.","error");return}toast("در حال آماده‌سازی تصویر...","success");const holder=document.createElement("div");holder.style.position="fixed";holder.style.left="-9999px";holder.style.top="0";holder.innerHTML=tableHTML(b,"share");document.body.appendChild(holder);const controls=holder.querySelector(".zoom-controls");if(controls)controls.style.display="none";const scrollEl=holder.querySelector(".preview-scroll");if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.maxHeight="none";scrollEl.style.width="max-content"}const captureEl=holder.querySelector(".bill-detail-container");try{const canvas=await html2canvas(captureEl,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:captureEl.scrollWidth,height:captureEl.scrollHeight,windowWidth:captureEl.scrollWidth+40,windowHeight:captureEl.scrollHeight+40});document.body.removeChild(holder);canvas.toBlob(async(blob)=>{if(!blob){toast("خطا در ساخت تصویر.","error");return}const file=new File([blob],(b.title||"قبض")+".png",{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:b.title,text:b.title});return}catch(err){if(err?.name==="AbortError")return}}const link=document.createElement("a");link.download=(b.title||"قبض")+".png";link.href=URL.createObjectURL(blob);link.click();toast("عکس دانلود شد؛ آن را در گروه واتساپ به‌صورت دستی ضمیمه کنید.","success");window.open("https://wa.me/?text="+encodeURIComponent(b.title||"لیست هزینه"),"_blank")},"image/png")}catch(e){document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")}}
 
 function downloadImage(uid, filename) {
-const sourceEl = document.getElementById("capture-" + uid);if(!sourceEl){toast("چیزی برای دانلود پیدا نشد.","error");return}if(typeof html2canvas==="undefined"){toast("امکان دانلود عکس در دسترس نیست.","error");return}
-const original={position:sourceEl.style.position,left:sourceEl.style.left,top:sourceEl.style.top,width:sourceEl.style.width,minWidth:sourceEl.style.minWidth,maxWidth:sourceEl.style.maxWidth,height:sourceEl.style.height,maxHeight:sourceEl.style.maxHeight,overflow:sourceEl.style.overflow,padding:sourceEl.style.padding,boxSizing:sourceEl.style.boxSizing,background:sourceEl.style.background};
-sourceEl.style.position="fixed";sourceEl.style.left="0";sourceEl.style.top="0";sourceEl.style.width="max-content";sourceEl.style.minWidth="max-content";sourceEl.style.maxWidth="none";sourceEl.style.height="auto";sourceEl.style.maxHeight="none";sourceEl.style.overflow="visible";sourceEl.style.padding="20px 20px 20px 20px";sourceEl.style.boxSizing="border-box";sourceEl.style.background="#ffffff";
-const controls=sourceEl.querySelector(".zoom-controls");let controlsDisplay=null;if(controls){controlsDisplay=controls.style.display;controls.style.display="none"}
-const layout=sourceEl.querySelector('[id^="layout-"]');let layoutOriginal=null;if(layout){layoutOriginal={width:layout.style.width,minWidth:layout.style.minWidth,maxWidth:layout.style.maxWidth,overflow:layout.style.overflow,zoom:layout.style.zoom};layout.style.width="max-content";layout.style.minWidth="max-content";layout.style.maxWidth="none";layout.style.overflow="visible";layout.style.zoom="1"}
-const scrollEl=sourceEl.querySelector('[id^="scroll-"]');let scrollOriginal=null;if(scrollEl){scrollOriginal={width:scrollEl.style.width,minWidth:scrollEl.style.minWidth,maxWidth:scrollEl.style.maxWidth,height:scrollEl.style.height,maxHeight:scrollEl.style.maxHeight,overflow:scrollEl.style.overflow};scrollEl.style.width="max-content";scrollEl.style.minWidth="max-content";scrollEl.style.maxWidth="none";scrollEl.style.height="auto";scrollEl.style.maxHeight="none";scrollEl.style.overflow="visible"}
-const tables=sourceEl.querySelectorAll("table");const tableOriginals=[];tables.forEach(table=>{tableOriginals.push({table,width:table.style.width,minWidth:table.style.minWidth,maxWidth:table.style.maxWidth,tableLayout:table.style.tableLayout});table.style.width="max-content";table.style.minWidth="max-content";table.style.maxWidth="none";table.style.tableLayout="auto"});
-setTimeout(()=>{const rect=sourceEl.getBoundingClientRect();const SAFETY_BUFFER=80;const width=Math.ceil(Math.max(rect.width,sourceEl.scrollWidth,sourceEl.offsetWidth))+SAFETY_BUFFER;const height=Math.ceil(Math.max(rect.height,sourceEl.scrollHeight,sourceEl.offsetHeight))+20;html2canvas(sourceEl,{scale:3,backgroundColor:"#ffffff",useCORS:true,allowTaint:true,scrollX:0,scrollY:0,x:0,y:0,width,height,windowWidth:width,windowHeight:height}).then(canvas=>{restore();const link=document.createElement("a");link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";link.href=canvas.toDataURL("image/png");link.click()}).catch(err=>{console.error(err);restore();toast("خطا در ساخت تصویر.","error")})},300);
-function restore(){sourceEl.style.position=original.position;sourceEl.style.left=original.left;sourceEl.style.top=original.top;sourceEl.style.width=original.width;sourceEl.style.minWidth=original.minWidth;sourceEl.style.maxWidth=original.maxWidth;sourceEl.style.height=original.height;sourceEl.style.maxHeight=original.maxHeight;sourceEl.style.overflow=original.overflow;sourceEl.style.padding=original.padding;sourceEl.style.boxSizing=original.boxSizing;sourceEl.style.background=original.background;sourceEl.style.transform="scale(0.8)";sourceEl.style.transformOrigin="top left";if(controls)controls.style.display=controlsDisplay;if(layout&&layoutOriginal){layout.style.width=layoutOriginal.width;layout.style.minWidth=layoutOriginal.minWidth;layout.style.maxWidth=layoutOriginal.maxWidth;layout.style.overflow=layoutOriginal.overflow;layout.style.zoom=layoutOriginal.zoom}if(scrollEl&&scrollOriginal){scrollEl.style.width=scrollOriginal.width;scrollEl.style.minWidth=scrollOriginal.minWidth;scrollEl.style.maxWidth=scrollOriginal.maxWidth;scrollEl.style.height=scrollOriginal.height;scrollEl.style.maxHeight=scrollOriginal.maxHeight;scrollEl.style.overflow=scrollOriginal.overflow}tableOriginals.forEach(item=>{item.table.style.width=item.width;item.table.style.minWidth=item.minWidth;item.table.style.maxWidth=item.maxWidth;item.table.style.tableLayout=item.tableLayout})}}
+
+    const sourceEl = document.getElementById("capture-" + uid);
+
+    if (!sourceEl) {
+        toast("چیزی برای دانلود پیدا نشد.", "error");
+        return;
+    }
+
+    if (typeof html2canvas === "undefined") {
+        toast(
+            "امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.",
+            "error"
+        );
+        return;
+    }
+
+    const original = {
+        position: sourceEl.style.position,
+        left: sourceEl.style.left,
+        top: sourceEl.style.top,
+        width: sourceEl.style.width,
+        minWidth: sourceEl.style.minWidth,
+        maxWidth: sourceEl.style.maxWidth,
+        height: sourceEl.style.height,
+        maxHeight: sourceEl.style.maxHeight,
+        overflow: sourceEl.style.overflow,
+        padding: sourceEl.style.padding,
+        boxSizing: sourceEl.style.boxSizing,
+        background: sourceEl.style.background
+    };
+
+    sourceEl.style.position = "fixed";
+    sourceEl.style.left = "0";
+    sourceEl.style.top = "0";
+    sourceEl.style.width = "max-content";
+    sourceEl.style.minWidth = "max-content";
+    sourceEl.style.maxWidth = "none";
+    sourceEl.style.height = "auto";
+    sourceEl.style.maxHeight = "none";
+    sourceEl.style.overflow = "visible";
+    // پدینگ راست بیشتر عمداً، چون html2canvas در RTL ستون سمت راست را کمی می‌بُرد
+   sourceEl.style.padding = "20px 20px 20px 20px";
+    sourceEl.style.boxSizing = "border-box";
+    sourceEl.style.background = "#ffffff";
+
+    const controls = sourceEl.querySelector(".zoom-controls");
+    let controlsDisplay = null;
+    if (controls) {
+        controlsDisplay = controls.style.display;
+        controls.style.display = "none";
+    }
+
+    const layout = sourceEl.querySelector('[id^="layout-"]');
+    let layoutOriginal = null;
+    if (layout) {
+        layoutOriginal = {
+            width: layout.style.width,
+            minWidth: layout.style.minWidth,
+            maxWidth: layout.style.maxWidth,
+            overflow: layout.style.overflow,
+            zoom: layout.style.zoom
+        };
+        layout.style.width = "max-content";
+        layout.style.minWidth = "max-content";
+        layout.style.maxWidth = "none";
+        layout.style.overflow = "visible";
+        layout.style.zoom = "1";
+    }
+
+    const scrollEl = sourceEl.querySelector('[id^="scroll-"]');
+    let scrollOriginal = null;
+    if (scrollEl) {
+        scrollOriginal = {
+            width: scrollEl.style.width,
+            minWidth: scrollEl.style.minWidth,
+            maxWidth: scrollEl.style.maxWidth,
+            height: scrollEl.style.height,
+            maxHeight: scrollEl.style.maxHeight,
+            overflow: scrollEl.style.overflow
+        };
+        scrollEl.style.width = "max-content";
+        scrollEl.style.minWidth = "max-content";
+        scrollEl.style.maxWidth = "none";
+        scrollEl.style.height = "auto";
+        scrollEl.style.maxHeight = "none";
+        scrollEl.style.overflow = "visible";
+    }
+
+    const tables = sourceEl.querySelectorAll("table");
+    const tableOriginals = [];
+    tables.forEach(table => {
+        tableOriginals.push({
+            table: table,
+            width: table.style.width,
+            minWidth: table.style.minWidth,
+            maxWidth: table.style.maxWidth,
+            tableLayout: table.style.tableLayout
+        });
+        table.style.width = "max-content";
+        table.style.minWidth = "max-content";
+        table.style.maxWidth = "none";
+        table.style.tableLayout = "auto";
+    });
+
+    setTimeout(() => {
+
+        const rect = sourceEl.getBoundingClientRect();
+
+        // بافر امنیتی: html2canvas در حالت RTL معمولاً چند پیکسل از لبه سمت راست را
+        // اشتباه محاسبه و حذف می‌کند؛ با این بافر جلوی بریده‌شدن ستون آخر گرفته می‌شود.
+        const SAFETY_BUFFER = 80;
+
+        const width = Math.ceil(
+            Math.max(rect.width, sourceEl.scrollWidth, sourceEl.offsetWidth)
+        ) + SAFETY_BUFFER;
+
+        const height = Math.ceil(
+            Math.max(rect.height, sourceEl.scrollHeight, sourceEl.offsetHeight)
+        ) + 20;
+
+        html2canvas(sourceEl, {
+            scale: 3,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            allowTaint: true,
+            scrollX: 0,
+            scrollY: 0,
+            x: 0,
+            y: 0,
+            width: width,
+            height: height,
+            windowWidth: width,
+            windowHeight: height
+        })
+        .then(canvas => {
+            restore();
+            const link = document.createElement("a");
+            link.download = (filename && filename.trim() ? filename.trim() : "قبض") + ".png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        })
+        .catch(err => {
+            console.error(err);
+            restore();
+            toast("خطا در ساخت تصویر.", "error");
+        });
+
+    }, 300);
+
+    function restore() {
+        sourceEl.style.position = original.position;
+        sourceEl.style.left = original.left;
+        sourceEl.style.top = original.top;
+        sourceEl.style.width = original.width;
+        sourceEl.style.minWidth = original.minWidth;
+        sourceEl.style.maxWidth = original.maxWidth;
+        sourceEl.style.height = original.height;
+        sourceEl.style.maxHeight = original.maxHeight;
+        sourceEl.style.overflow = original.overflow;
+        sourceEl.style.padding = original.padding;
+        sourceEl.style.boxSizing = original.boxSizing;
+        sourceEl.style.background = original.background;
+    sourceEl.style.background = "#ffffff";
+
+    // زوم به بیرون: جدول را ۲۰٪ کوچیک‌تر می‌کنیم تا با حاشیه‌ی خالی اضافه، هیچ‌وقت بریده نشود
+    sourceEl.style.transform = "scale(0.8)";
+    sourceEl.style.transformOrigin = "top left";
+
+        if (controls) controls.style.display = controlsDisplay;
+
+        if (layout && layoutOriginal) {
+            layout.style.width = layoutOriginal.width;
+            layout.style.minWidth = layoutOriginal.minWidth;
+            layout.style.maxWidth = layoutOriginal.maxWidth;
+            layout.style.overflow = layoutOriginal.overflow;
+            layout.style.zoom = layoutOriginal.zoom;
+        }
+
+        if (scrollEl && scrollOriginal) {
+            scrollEl.style.width = scrollOriginal.width;
+            scrollEl.style.minWidth = scrollOriginal.minWidth;
+            scrollEl.style.maxWidth = scrollOriginal.maxWidth;
+            scrollEl.style.height = scrollOriginal.height;
+            scrollEl.style.maxHeight = scrollOriginal.maxHeight;
+            scrollEl.style.overflow = scrollOriginal.overflow;
+        }
+
+        tableOriginals.forEach(item => {
+            item.table.style.width = item.width;
+            item.table.style.minWidth = item.minWidth;
+            item.table.style.maxWidth = item.maxWidth;
+            item.table.style.tableLayout = item.tableLayout;
+        });
+    }
+}
+
+async function checkAppVersion(){
+  try{
+    const res = await fetch(location.href, {method:'HEAD', cache:'no-store'});
+    const lastMod = res.headers.get('Last-Modified');
+    if(!lastMod) return;
+    const versionLabel = new Date(lastMod).toLocaleString('fa-IR',{dateStyle:'medium',timeStyle:'short'});
+    const el = document.getElementById('app-version-label');
+    if(el) el.textContent = versionLabel;
+    const stored = localStorage.getItem('app_last_modified');
+    if(stored && stored !== lastMod){
+      toast('نسخه جدید برنامه روی سرور شناسایی شد؛ برای دریافتش صفحه را بروزرسانی کن.','success');
+    }
+    localStorage.setItem('app_last_modified', lastMod);
+  }catch(e){console.error('version check failed',e)}
+}
+checkAppVersion();
+setInterval(checkAppVersion, 60000);
 
 initAuth();
-if("serviceWorker"in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("service-worker.js").then(reg=>{reg.update().catch(()=>{});setInterval(()=>{reg.update().catch(()=>{})},60000);reg.addEventListener("updatefound",()=>{const nw=reg.installing;if(!nw)return;nw.addEventListener("statechange",()=>{if(nw.state==="installed"&&navigator.serviceWorker.controller){toast("نسخه جدید برنامه آماده است؛ در حال بروزرسانی...","success");setTimeout(()=>location.reload(),1200)}})})}).catch(()=>{});let swRefreshed=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(swRefreshed)return;swRefreshed=true;location.reload()})})}
+loadVersion();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{
+navigator.serviceWorker.register("service-worker.js").then(reg=>{
+reg.update().catch(()=>{});
+setInterval(()=>{reg.update().catch(()=>{})},60000);
+reg.addEventListener("updatefound",()=>{
+const nw=reg.installing;if(!nw)return;
+nw.addEventListener("statechange",()=>{
+if(nw.state==="installed"&&navigator.serviceWorker.controller){
+toast("نسخه جدید برنامه آماده است؛ در حال بروزرسانی...","success");
+setTimeout(()=>location.reload(),1200)
+}
+})
+})
+}).catch(()=>{});
+let swRefreshed=false;
+navigator.serviceWorker.addEventListener("controllerchange",()=>{if(swRefreshed)return;swRefreshed=true;location.reload()})
+})}
 </script>
 </body>
 </html>
