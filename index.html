@@ -573,7 +573,31 @@ const controls=holder.querySelector(".zoom-controls");if(controls)controls.style
 const layout=holder.querySelector('[id^="layout-"]');if(layout)layout.style.zoom=1;
 const scrollEl=holder.querySelector('[id^="scroll-"]');if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.maxHeight="none";scrollEl.style.width="max-content"}
 const captureEl=holder.firstElementChild;
-html2canvas(captureEl,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:captureEl.scrollWidth,height:captureEl.scrollHeight,windowWidth:captureEl.scrollWidth+40,windowHeight:captureEl.scrollHeight+40}).then(canvas=>{
+html2canvas(captureEl,{
+    scale:3,
+    backgroundColor:"#ffffff",
+    useCORS:true,
+
+    scrollX: 0,
+    scrollY: 0,
+
+    x: 0,
+    y: 0,
+
+    width: captureEl.scrollWidth,
+    height: captureEl.scrollHeight,
+
+    windowWidth: Math.max(
+        captureEl.scrollWidth,
+        document.documentElement.clientWidth
+    ),
+
+    windowHeight: Math.max(
+        captureEl.scrollHeight,
+        document.documentElement.clientHeight
+    )
+})
+.then(canvas=>{
 document.body.removeChild(holder);
 const link=document.createElement("a");link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";link.href=canvas.toDataURL("image/png");link.click()
 }).catch(()=>{document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")})}
