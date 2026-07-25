@@ -610,8 +610,7 @@ async function loadVersion() {
 
     }
 
-}
-function downloadImage(uid, filename) {
+}function downloadImage(uid, filename) {
 
     const sourceEl = document.getElementById("capture-" + uid);
 
@@ -621,77 +620,161 @@ function downloadImage(uid, filename) {
     }
 
     if (typeof html2canvas === "undefined") {
-        toast("امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.", "error");
+        toast(
+            "امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.",
+            "error"
+        );
         return;
     }
 
+    // ساخت یک کپی موقت برای گرفتن عکس
     const holder = document.createElement("div");
+
     holder.style.position = "fixed";
     holder.style.left = "-10000px";
     holder.style.top = "0";
-    holder.style.background = "#fff";
-    holder.style.padding = "10";
     holder.style.background = "#ffffff";
+    holder.style.padding = "0";
+    holder.style.margin = "0";
     holder.style.zIndex = "-1";
 
     holder.innerHTML = sourceEl.outerHTML;
+
     document.body.appendChild(holder);
 
     const captureEl = holder.firstElementChild;
 
+    // حذف کنترل‌های زوم
     const controls = captureEl.querySelector(".zoom-controls");
-    if (controls) controls.remove();
 
-    const layout = captureEl.querySelector('[id^="layout-"]');
-    if (layout) layout.style.zoom = "1";
-
-    const scrollEl = captureEl.querySelector('[id^="scroll-"]');
-    if (scrollEl) {
-        scrollEl.style.overflow = "visible";
-        scrollEl.style.maxWidth = "none";
-        scrollEl.style.maxHeight = "none";
-        scrollEl.style.width = "max-content";
+    if (controls) {
+        controls.remove();
     }
 
-    captureEl.style.width = "fit-content";
-    captureEl.style.minWidth = "0";
-captureEl.style.maxWidth = "none";
-captureEl.style.overflow = "visible";
+    // تنظیم Layout
+    const layout = captureEl.querySelector('[id^="layout-"]');
 
-// فقط 20 پیکسل حاشیه اطراف
-captureEl.style.padding = "20px";
-captureEl.style.boxSizing = "border-box";
+    if (layout) {
 
-    html2canvas(captureEl,{
-    scale:3,
-    backgroundColor:"#ffffff",
-    useCORS:true,
+        layout.style.zoom = "1";
 
-    scrollX:0,
-    scrollY:0,
+        layout.style.width = "max-content";
 
-    width:captureEl.getBoundingClientRect().width,
-    height:captureEl.getBoundingClientRect().height,
+        layout.style.minWidth = "max-content";
 
-    windowWidth:captureEl.scrollWidth + 40,
-    windowHeight:captureEl.scrollHeight + 40
-})
-.then(canvas => {
+        layout.style.maxWidth = "none";
 
-        holder.remove();
+        layout.style.height = "auto";
 
-        const link = document.createElement("a");
-        link.download = (filename && filename.trim() ? filename.trim() : "قبض") + ".png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+        layout.style.maxHeight = "none";
 
-    }).catch(err => {
+        layout.style.overflow = "visible";
+    }
 
-        console.error(err);
+    // تنظیم بخش اسکرول جدول
+    const scrollEl = captureEl.querySelector('[id^="scroll-"]');
 
-        holder.remove();
+    if (scrollEl) {
 
-        toast("خطا در ساخت تصویر.", "error");
+        scrollEl.style.overflow = "visible";
+
+        scrollEl.style.width = "max-content";
+
+        scrollEl.style.minWidth = "max-content";
+
+        scrollEl.style.maxWidth = "none";
+
+        scrollEl.style.height = "auto";
+
+        scrollEl.style.maxHeight = "none";
+    }
+
+    // تنظیم خود عنصر اصلی
+    captureEl.style.width = "max-content";
+
+    captureEl.style.minWidth = "max-content";
+
+    captureEl.style.maxWidth = "none";
+
+    captureEl.style.height = "auto";
+
+    captureEl.style.maxHeight = "none";
+
+    captureEl.style.overflow = "visible";
+
+    // حاشیه اطراف تصویر
+    captureEl.style.padding = "20px";
+
+    captureEl.style.boxSizing = "border-box";
+
+    // صبر برای محاسبه کامل اندازه‌ها
+    requestAnimationFrame(() => {
+
+        // اندازه واقعی محتوا
+        const width = captureEl.scrollWidth;
+
+        const height = captureEl.scrollHeight;
+
+        // تنظیم دقیق اندازه قبل از گرفتن عکس
+        captureEl.style.width = width + "px";
+
+        captureEl.style.height = height + "px";
+
+        html2canvas(captureEl, {
+
+            scale: 3,
+
+            backgroundColor: "#ffffff",
+
+            useCORS: true,
+
+            allowTaint: true,
+
+            scrollX: 0,
+
+            scrollY: 0,
+
+            width: width,
+
+            height: height,
+
+            windowWidth: width,
+
+            windowHeight: height
+
+        })
+
+        .then(canvas => {
+
+            // حذف کپی موقت
+            holder.remove();
+
+            // ساخت لینک دانلود
+            const link = document.createElement("a");
+
+            link.download =
+                (
+                    filename &&
+                    filename.trim()
+                        ? filename.trim()
+                        : "قبض"
+                ) + ".png";
+
+            link.href = canvas.toDataURL("image/png");
+
+            link.click();
+
+        })
+
+        .catch(err => {
+
+            console.error("html2canvas error:", err);
+
+            holder.remove();
+
+            toast("خطا در ساخت تصویر.", "error");
+
+        });
 
     });
 
