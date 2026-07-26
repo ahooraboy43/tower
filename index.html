@@ -139,8 +139,7 @@ a{color:inherit}
 .total-box,
 .note-box,
 .bill-detail-container,
-.preview-layout,
-.preview-scroll{
+{
   background:var(--panel);
   border:1px solid var(--panel-border);
   border-radius:var(--radius);
@@ -254,7 +253,7 @@ textarea.form-control{min-height:96px;resize:vertical}
   box-shadow:0 8px 18px rgba(15,23,42,.08);
 }
 .nav-item:active{transform:scale(.98)}
-.nav-icon{display:block;font-size:1.18rem;margin-bottom:2px}
+.nav-icon{display:block;font-size:1.18rem;margin-bottom:-11px}
 .badge{
   display:inline-flex;
   align-items:center;
@@ -407,7 +406,6 @@ textarea.form-control{min-height:96px;resize:vertical}
   margin-bottom:16px;
   position:sticky;
   top:0;
-  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
   padding-bottom:12px;
   z-index:5;
 }
@@ -691,6 +689,12 @@ textarea.form-control{min-height:96px;resize:vertical}
   font-size:.8rem;
   display:inline;
 }
+.img-btn{
+
+width: 30px;
+height: 30px;
+
+}
 #app-root{min-height:100vh}
 #auth-screen{min-height:100vh}
 #bill-modal .modal-content,
@@ -705,7 +709,7 @@ textarea.form-control{min-height:96px;resize:vertical}
 @media(max-width:650px){
   .container{padding:180px 12px 16px}
   .fixed-grid{grid-template-columns:1fr}
-  .unit-actions .btn{flex:1 1 100%;font-size:.7rem;padding:9px 10px}
+  .unit-actions .btn{flex:1 1 25%;font-size:.7rem;padding:9px 10px}
   .preview-table{font-size:.69rem}
   .summary-table-wrap{width:220px}
   .stats-grid{grid-template-columns:1fr}
@@ -749,8 +753,6 @@ textarea.form-control{min-height:96px;resize:vertical}
 <div class="bank-subtitle">  جمـع صنـدوق</div><br>
 <div  id="stat-bank-deficit" class="bank-balance-deficit">۰ تومان</div>
 <div class="bank-Debit">کـسری بانک</div></div>
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-value" id="stat-bills">۰٪</div><div class="stat-value" id="stat-units">۰ از ۰</div><div class="mini-progress-track"><div class="mini-progress-fill" id="stat-collect-bar" style="width:0%"></div></div></div></div>
 <div class="card"><div class="card-title"><span>ایجاد لیست هزینه جدید</span><span>➕</span></div><button class="btn btn-primary" onclick="openBillWizard()">ایجاد هزینه ماهانه جدید</button></div>
 <div class="card"><div class="card-title"><span>آرشیو هزینه‌های ماه‌های قبلی</span><span>📁</span></div><div id="bills-list"></div></div>
 </section>
@@ -777,9 +779,9 @@ textarea.form-control{min-height:96px;resize:vertical}
 </section>
 </main>
 <nav class="bottom-nav">
-<button class="nav-item active" onclick="switchTab('dashboard',this)"><span class="nav-icon">📊</span>داشبورد</button>
-<button class="nav-item" onclick="switchTab('units',this)"><span class="nav-icon">🏠</span>واحدها</button>
-<button class="nav-item" onclick="switchTab('settings',this)"><span class="nav-icon">⚙️</span>تنظیمات</button>
+<button class="nav-item active" onclick="switchTab('dashboard',this)"><span class="nav-icon"><img class="img-btn" src="assest/dashboard.png" alt="داشبورد"></span>داشبورد</button>
+<button class="nav-item" onclick="switchTab('units',this)"><span class="nav-icon"><img class="img-btn" src="assest/units.png" alt="واحد ها"></span>واحدها</button>
+<button class="nav-item" onclick="switchTab('settings',this)"><span class="nav-icon"><img class="img-btn" src="assest/settings.png" alt="تنظیمات"></span>تنظیمات</button>
 </nav><div class="modal" id="bill-modal"><div class="modal-content">
 <div class="modal-header"><strong id="bill-modal-title">ایجاد لیست هزینه جدید</strong><button class="close-btn" onclick="closeModal('bill-modal')">×</button></div>
 <div class="wizard-step active" id="bill-step-1">
@@ -824,7 +826,11 @@ textarea.form-control{min-height:96px;resize:vertical}
 <select id="payment-date-year" class="form-control" onchange="onDateSelectChange('payment-date')"></select></div></div>
 <button class="btn btn-success" onclick="savePayment()">✅ ثبت</button></div></div>
 <div class="modal" id="view-bill-modal"><div class="modal-content">
-<div class="modal-header"><strong id="view-bill-title">نمایش قبض</strong><button class="close-btn" onclick="closeModal('view-bill-modal')">×</button></div>
+<div class="modal-header"><strong id="view-bill-title">نمایش قبض</strong><label class="summary-toggle">
+<input type="checkbox" onchange="toggleSummaryTable('view', this.checked)"> نمایش جدول دوم</label>
+<button type="button" class="zoom-btn" onclick="zoomAdjust('view', 0.15)">➕</button>
+<button type="button" class="zoom-btn" onclick="zoomAdjust('view', -0.15)">➖</button>
+<button type="button" class="zoom-btn" onclick="zoomReset('view')">⟳</button><button class="close-btn" onclick="closeModal('view-bill-modal')">×</button></div>
 <div id="view-bill-content"></div>
 <div class="action-row"><button class="btn btn-primary" onclick="downloadImage('view',(db.bills.find(x=>x.id===viewedBillId)||{}).title)">📥 دانلود عکس</button><button class="btn" style="background:#25D366;color:#fff" onclick="shareBillToWhatsApp(viewedBillId)">📲 واتساپ</button><button class="btn btn-secondary" onclick="printViewedBill()">🖨 چاپ</button><button class="btn btn-primary" onclick="editViewedBill()">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteViewedBill()">🗑 حذف</button></div></div></div>
 <div class="modal" id="contact-sheet-modal"><div class="modal-content" style="max-width:320px">
@@ -902,11 +908,8 @@ function openModal(id){document.getElementById(id).classList.add("active")} func
 function billCollectionStats(b){const totalAmount=b.roundedTotal||0;let collectedAmount=0,settledCount=0;b.unitShares.forEach(u=>{if(previousDebt(u.unitId)<=0){collectedAmount+=u.roundedTotal;settledCount++}});const percent=totalAmount>0?Math.min(100,Math.round(collectedAmount/totalAmount*100)):100;return{percent,collectedAmount,totalAmount,settledCount,totalUnits:b.unitShares.length}}
 function renderDashboard(){
 const totalUnits=db.units.length,settledUnits=db.units.filter(u=>previousDebt(u.id)<=0).length;
-document.getElementById("stat-units").textContent=settledUnits.toLocaleString("fa-IR")+" از "+totalUnits.toLocaleString("fa-IR");
 const totalCharged=db.bills.reduce((s,b)=>s+b.realTotal,0),totalDebtPaid=db.payments.reduce((s,p)=>s+p.amount,0);
 const overallPercent=totalCharged>0?Math.min(100,Math.round(totalDebtPaid/totalCharged*100)):100;
-document.getElementById("stat-bills").textContent=faDigits(overallPercent)+"٪";
-document.getElementById("stat-collect-bar").style.width=overallPercent+"%";
 document.getElementById("stat-fund").textContent=money(buildingFundBalance());// مانده بانک
 document.getElementById("stat-cash").textContent=money(db.fundPayments.reduce((s,p)=>s+p.amount,0));// کل واریز صندوق
  const deficit =
@@ -950,12 +953,11 @@ function unitFund(unitId){return db.fundPayments.filter(x=>x.unitId===unitId).re
 function buildBillData(){const expenses=createExpenseList(),realTotal=expenses.reduce((s,e)=>s+e.amount,0),shares=db.units.map(u=>{const columns={};let currentTotal=0;expenses.forEach(e=>{const v=roundUp(share(e,u));columns[e.key]=v;currentTotal+=v});const oldDebt=previousDebt(u.id,editingBillId);return{unitId:u.id,unitNumber:u.unitNumber,residentName:u.residentName,people:u.people,columns,oldDebt,roundedTotal:currentTotal+oldDebt}});return{id:editingBillId||Date.now(),title:currentBill.title,date:currentBill.date,fixed:currentBill.fixed,variables:currentBill.variables,expenses,realTotal,roundedTotal:shares.reduce((s,u)=>s+u.roundedTotal,0),unitShares:shares,notes:{note1:db.settings.note1,note2:db.settings.note2}}}
 function notesHTML(b){const n1=b.notes?.note1,n2=b.notes?.note2;if(!n1&&!n2)return"";return `<div class="notes-wrap">${n1?`<div class="note-box">📝 ${esc(n1)}</div>`:""}${n2?`<div class="note-box">📝 ${esc(n2)}</div>`:""}</div>`}
 function tableHTML(b,uid="preview"){const ex=b.expenses,fundTotal=b.unitShares.reduce((s,u)=>s+unitFund(u.unitId),0);return `<div class="bill-detail-container" id="capture-${uid}">
-<div class="zoom-controls"><label class="summary-toggle"><input type="checkbox" onchange="toggleSummaryTable('${uid}',this.checked)"> نمایش جدول دوم</label><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',0.15)">➕</button><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',-0.15)">➖</button><button type="button" class="zoom-btn" onclick="zoomReset('${uid}')">⟳</button></div>
 <div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${previousDebt(u.unitId)<=0?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td><strong>${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td>${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td>${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
 </div>`}
 function toggleSummaryTable(uid,show){const el=document.querySelector("#layout-"+uid+" .summary-table-wrap");if(el)el.style.display=show?"block":"none"}
 function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div>${tableHTML(b,"wizard")}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
-function saveBill(){const b=buildBillData();if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0)db.bills[i]=b}else db.bills.push(b);saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"بدهی: "+money(debt):"تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
+function saveBill(){const b=buildBillData();if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0)db.bills[i]=b}else db.bills.push(b);saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
 function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);
 const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;
 const digits=(u.phone||"").replace(/\D/g,"");const intl=digits.startsWith("0")?"98"+digits.slice(1):digits;const box=document.getElementById("contact-sheet-body");box.innerHTML="";
@@ -1217,7 +1219,7 @@ sourceEl.style.overflow = original.overflow;
 sourceEl.style.padding = original.padding;
 sourceEl.style.boxSizing = original.boxSizing;
 sourceEl.style.background = "#ffffff";// زوم به بیرون: جدول را ۲۰٪ کوچیک‌تر می‌کنیم تا با حاشیه‌ی خالی اضافه، هیچ‌وقت بریده نشود
-sourceEl.style.transform = "scale(0.8)";
+//sourceEl.style.transform = "scale(0.8)";
 sourceEl.style.transformOrigin = "top left";if (controls) controls.style.display = controlsDisplay;if (layout && layoutOriginal) {
 layout.style.width = layoutOriginal.width;
 layout.style.minWidth = layoutOriginal.minWidth;
