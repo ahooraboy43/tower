@@ -138,7 +138,7 @@ a{color:inherit}
 .info-box,
 .total-box,
 .note-box,
-.bill-detail-container,
+.bill-detail-container
 {
   background:var(--panel);
   border:1px solid var(--panel-border);
@@ -449,6 +449,9 @@ textarea.form-control{min-height:96px;resize:vertical}
   border-radius:20px;
   overflow:hidden;
   box-shadow:0 10px 26px rgba(15,23,42,.06);
+  border-style: dashed;
+  border-color: #164575;
+  border-width: 3px;
 }
 .preview-table th,.preview-table td{
   border-bottom:1px solid rgba(226,232,240,.9);
@@ -775,6 +778,17 @@ height: 30px;
 <button class="btn btn-secondary" onclick="repairDuplicateUnits()">🩹 اصلاح واحدهای تکراری و قبض‌های قبلی</button>
 <button class="btn btn-secondary" onclick="forceAppUpdate()">🔄 پاکسازی کش و دریافت آخرین نسخه برنامه</button>
 <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+<div class="card-title">🧪 دیباگ کادر عکس</div>
+<div class="info-box">آخرین قبض ذخیره‌شده (یا یک نمونه تست در صورت نبود قبض) را با تنظیمات زیر می‌سازد و بدون دانلود، همین‌جا نشان می‌دهد. کادر قرمز نقطه‌چین دقیقاً مرز عکس است.</div>
+<div class="fixed-grid">
+<div class="form-group"><label class="form-label">پدینگ اطراف (px)</label><input id="debug-padding" type="text" inputmode="numeric" class="form-control" value="20"></div>
+<div class="form-group"><label class="form-label">بافر امنیتی راست (px) — خالی=خودکار (۶۰ تک‌جدول / ۱۴۰ دوجدولی)</label><input id="debug-buffer" type="text" inputmode="numeric" class="form-control" placeholder="خودکار"></div>
+</div>
+<div class="form-group"><label class="form-label">اسکیل / کیفیت</label><input id="debug-scale" type="text" inputmode="numeric" class="form-control" value="3"></div>
+<label class="summary-toggle" style="display:inline-flex;margin-bottom:10px"><input type="checkbox" id="debug-show-summary"> نمایش جدول دوم در پیش‌نمایش</label>
+<button class="btn btn-primary" onclick="debugPreviewCapture()">🧪 ساخت پیش‌نمایش عکس</button>
+<div id="debug-preview-box" style="margin-top:14px"></div>
+<hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
 <button class="btn btn-danger" onclick="logout()">🚪 خروج از حساب</button></div>
 </section>
 </main>
@@ -956,7 +970,7 @@ function tableHTML(b,uid="preview"){const ex=b.expenses,fundTotal=b.unitShares.r
 <div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${previousDebt(u.unitId)<=0?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td><strong>${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td>${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td>${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
 </div>`}
 function toggleSummaryTable(uid,show){const el=document.querySelector("#layout-"+uid+" .summary-table-wrap");if(el)el.style.display=show?"block":"none"}
-function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div>${tableHTML(b,"wizard")}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
+function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div><label class="summary-toggle" style="display:inline-flex;margin-bottom:10px"><input type="checkbox" onchange="toggleSummaryTable('wizard', this.checked)"> نمایش جدول دوم</label>${tableHTML(b,"wizard")}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
 function saveBill(){const b=buildBillData();if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0)db.bills[i]=b}else db.bills.push(b);saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
 function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);
 const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;
@@ -1074,9 +1088,18 @@ function editBill(id){const b=db.bills.find(x=>x.id===id);if(b)openBillWizard(b)
 function editViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(!b)return;closeModal("view-bill-modal");openBillWizard(b)}
 function deleteBill(id){if(!confirm("این قبض حذف شود؟"))return;db.bills=db.bills.filter(x=>x.id!==id);saveDB();renderDashboard()}
 function deleteViewedBill(){deleteBill(viewedBillId);closeModal("view-bill-modal")}
-function printCurrentBill(){printBill(buildBillData())}
-function printViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(b)printBill(b)}
-function printBill(b){document.getElementById("print-area").innerHTML=`<h2>${esc(b.title)}</h2>${tableHTML(b)}`;window.print()}
+function printCurrentBill(){printBill(buildBillData(),"wizard")}
+function printViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(b)printBill(b,"view")}
+function printBill(b,uid){
+  document.getElementById("print-area").innerHTML=`<h2>${esc(b.title)}</h2>${tableHTML(b)}`;
+  if(uid){
+    const liveSummary=document.querySelector("#layout-"+uid+" .summary-table-wrap");
+    const show=!!(liveSummary && liveSummary.style.display==="block");
+    const printSummary=document.querySelector("#print-area .summary-table-wrap");
+    if(printSummary)printSummary.style.display=show?"block":"none";
+  }
+  window.print();
+}
 let zoomState={};
 function pinchDist(t){const dx=t[0].clientX-t[1].clientX,dy=t[0].clientY-t[1].clientY;return Math.hypot(dx,dy)}
 function applyZoom(uid){const el=document.getElementById("layout-"+uid);if(el)el.style.zoom=zoomState[uid]||1}
@@ -1085,159 +1108,175 @@ function zoomReset(uid){zoomState[uid]=1;applyZoom(uid)}
 function initPinchZoom(uid){const scrollEl=document.getElementById("scroll-"+uid);if(!scrollEl)return;let startDist=0,startScale=1;
 scrollEl.addEventListener("touchstart",e=>{if(e.touches.length===2){startDist=pinchDist(e.touches);startScale=zoomState[uid]||1}},{passive:true});
 scrollEl.addEventListener("touchmove",e=>{if(e.touches.length===2){e.preventDefault();const d=pinchDist(e.touches);let s=startScale*(d/startDist);s=Math.min(3,Math.max(.5,s));zoomState[uid]=s;applyZoom(uid)}},{passive:false})}
-async function shareBillToWhatsApp(billId){const b=db.bills.find(x=>x.id===billId);if(!b){toast("قبضی برای ارسال پیدا نشد.","error");return}
-if(typeof html2canvas==="undefined"){toast("امکان ساخت تصویر در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");return}
-toast("در حال آماده‌سازی تصویر...","success");
-const holder=document.createElement("div");holder.style.position="fixed";holder.style.left="-9999px";holder.style.top="0";holder.innerHTML=tableHTML(b,"share");document.body.appendChild(holder);
-const controls=holder.querySelector(".zoom-controls");if(controls)controls.style.display="none";
-const scrollEl=holder.querySelector(".preview-scroll");if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.maxHeight="none";scrollEl.style.width="max-content"}
-const captureEl=holder.querySelector(".bill-detail-container");
-try{
-const canvas=await html2canvas(captureEl,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:captureEl.scrollWidth,height:captureEl.scrollHeight,windowWidth:captureEl.scrollWidth+40,windowHeight:captureEl.scrollHeight+40});
-document.body.removeChild(holder);
-canvas.toBlob(async(blob)=>{
-if(!blob){toast("خطا در ساخت تصویر.","error");return}
-const file=new File([blob],(b.title||"قبض")+".png",{type:"image/png"});
-if(navigator.canShare&&navigator.canShare({files:[file]})){
-try{await navigator.share({files:[file],title:b.title,text:b.title});return}catch(err){if(err&&err.name==="AbortError")return}}
-const link=document.createElement("a");link.download=(b.title||"قبض")+".png";link.href=URL.createObjectURL(blob);link.click();
-toast("عکس دانلود شد؛ آن را در گروه واتساپ به‌صورت دستی ضمیمه کنید.","success");
-window.open("https://wa.me/?text="+encodeURIComponent(b.title||"لیست هزینه"),"_blank")},"image/png")
-}catch(e){document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")}}function downloadImage(uid, filename) {const sourceEl = document.getElementById("capture-" + uid);if (!sourceEl) {
-toast("چیزی برای دانلود پیدا نشد.", "error");
-return;
-}if (typeof html2canvas === "undefined") {
-toast(
-"امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.",
-"error"
-);
-return;
-}const original = {
-position: sourceEl.style.position,
-left: sourceEl.style.left,
-top: sourceEl.style.top,
-width: sourceEl.style.width,
-minWidth: sourceEl.style.minWidth,
-maxWidth: sourceEl.style.maxWidth,
-height: sourceEl.style.height,
-maxHeight: sourceEl.style.maxHeight,
-overflow: sourceEl.style.overflow,
-padding: sourceEl.style.padding,
-boxSizing: sourceEl.style.boxSizing,
-background: sourceEl.style.background
-};sourceEl.style.position = "fixed";
-sourceEl.style.left = "0";
-sourceEl.style.top = "0";
-sourceEl.style.width = "max-content";
-sourceEl.style.minWidth = "max-content";
-sourceEl.style.maxWidth = "none";
-sourceEl.style.height = "auto";
-sourceEl.style.maxHeight = "none";
-sourceEl.style.overflow = "visible";
-sourceEl.style.padding = "20px 20px 20px 20px";
-sourceEl.style.boxSizing = "border-box";
-sourceEl.style.background = "#ffffff";const controls = sourceEl.querySelector(".zoom-controls");
-let controlsDisplay = null;
-if (controls) {
-controlsDisplay = controls.style.display;
-controls.style.display = "none";
-}const layout = sourceEl.querySelector('[id^="layout-"]');
-let layoutOriginal = null;
-if (layout) {
-layoutOriginal = {
-width: layout.style.width,
-minWidth: layout.style.minWidth,
-maxWidth: layout.style.maxWidth,
-overflow: layout.style.overflow,
-zoom: layout.style.zoom
-};
-layout.style.width = "max-content";
-layout.style.minWidth = "max-content";
-layout.style.maxWidth = "none";
-layout.style.overflow = "visible";
-layout.style.zoom = "1";
-}const scrollEl = sourceEl.querySelector('[id^="scroll-"]');
-let scrollOriginal = null;
-if (scrollEl) {
-scrollOriginal = {
-width: scrollEl.style.width,
-minWidth: scrollEl.style.minWidth,
-maxWidth: scrollEl.style.maxWidth,
-height: scrollEl.style.height,
-maxHeight: scrollEl.style.maxHeight,
-overflow: scrollEl.style.overflow
-};
-scrollEl.style.width = "max-content";
-scrollEl.style.minWidth = "max-content";
-scrollEl.style.maxWidth = "none";
-scrollEl.style.height = "auto";
-scrollEl.style.maxHeight = "none";
-scrollEl.style.overflow = "visible";
-}const tables = sourceEl.querySelectorAll("table");
-const tableOriginals = [];
-tables.forEach(table => {
-tableOriginals.push({
-table: table,
-width: table.style.width,
-minWidth: table.style.minWidth,
-maxWidth: table.style.maxWidth,
-tableLayout: table.style.tableLayout
-});
-table.style.width = "max-content";
-table.style.minWidth = "max-content";
-table.style.maxWidth = "none";
-table.style.tableLayout = "auto";
-});setTimeout(() => {const rect = sourceEl.getBoundingClientRect();// بافر امنیتی: html2canvas در حالت RTL معمولاً چند پیکسل از لبه سمت راست را
-// اشتباه محاسبه و حذف می‌کند؛ با این بافر جلوی بریده‌شدن ستون آخر گرفته می‌شود.
-const SAFETY_BUFFER = 80;const width = Math.ceil(
-Math.max(rect.width, sourceEl.scrollWidth, sourceEl.offsetWidth)
-) + SAFETY_BUFFER;const height = Math.ceil(
-Math.max(rect.height, sourceEl.scrollHeight, sourceEl.offsetHeight)
-) + 20;html2canvas(sourceEl, {
-scale: 3,backgroundColor: "#ffffff",useCORS: true,allowTaint: true,scrollX: 0,scrollY: 0,x: 0,y: 0,width: width,height: height,windowWidth: width,windowHeight: height})
-.then(canvas => {
-restore();
-const link = document.createElement("a");
-link.download = (filename && filename.trim() ? filename.trim() : "قبض") + ".png";
-link.href = canvas.toDataURL("image/png");
-link.click();
-})
-.catch(err => {
-console.error(err);
-restore();
-toast("خطا در ساخت تصویر.", "error");
-});}, 300);function restore() {
-sourceEl.style.position = original.position;
-sourceEl.style.left = original.left;
-sourceEl.style.top = original.top;
-sourceEl.style.width = original.width;
-sourceEl.style.minWidth = original.minWidth;
-sourceEl.style.maxWidth = original.maxWidth;
-sourceEl.style.height = original.height;
-sourceEl.style.maxHeight = original.maxHeight;
-sourceEl.style.overflow = original.overflow;
-sourceEl.style.padding = original.padding;
-sourceEl.style.boxSizing = original.boxSizing;
-sourceEl.style.background = "#ffffff";// زوم به بیرون: جدول را ۲۰٪ کوچیک‌تر می‌کنیم تا با حاشیه‌ی خالی اضافه، هیچ‌وقت بریده نشود
-//sourceEl.style.transform = "scale(0.8)";
-sourceEl.style.transformOrigin = "top left";if (controls) controls.style.display = controlsDisplay;if (layout && layoutOriginal) {
-layout.style.width = layoutOriginal.width;
-layout.style.minWidth = layoutOriginal.minWidth;
-layout.style.maxWidth = layoutOriginal.maxWidth;
-layout.style.overflow = layoutOriginal.overflow;
-layout.style.zoom = layoutOriginal.zoom;
-}if (scrollEl && scrollOriginal) {
-scrollEl.style.width = scrollOriginal.width;
-scrollEl.style.minWidth = scrollOriginal.minWidth;
-scrollEl.style.maxWidth = scrollOriginal.maxWidth;
-scrollEl.style.height = scrollOriginal.height;
-scrollEl.style.maxHeight = scrollOriginal.maxHeight;
-scrollEl.style.overflow = scrollOriginal.overflow;
-}tableOriginals.forEach(item => {
-item.table.style.width = item.width;
-item.table.style.minWidth = item.minWidth;
-item.table.style.maxWidth = item.maxWidth;
-item.table.style.tableLayout = item.tableLayout;});}}
+// ===== تابع مشترک عکس‌گیری: هم دانلود، هم واتساپ از همین استفاده می‌کنن =====
+function captureBillCanvas(sourceEl, opts={}){
+  const padding = opts.padding ?? 20;
+  const scale   = opts.scale   ?? 3;
+  return new Promise((resolve,reject)=>{
+    if(typeof html2canvas==="undefined"){reject(new Error("no-html2canvas"));return}
+
+    const original={
+      position:sourceEl.style.position,left:sourceEl.style.left,top:sourceEl.style.top,
+      width:sourceEl.style.width,minWidth:sourceEl.style.minWidth,maxWidth:sourceEl.style.maxWidth,
+      height:sourceEl.style.height,maxHeight:sourceEl.style.maxHeight,
+      overflow:sourceEl.style.overflow,padding:sourceEl.style.padding,
+      boxSizing:sourceEl.style.boxSizing,background:sourceEl.style.background
+    };
+    sourceEl.style.position="fixed";sourceEl.style.left="0";sourceEl.style.top="0";
+    sourceEl.style.width="max-content";sourceEl.style.minWidth="max-content";sourceEl.style.maxWidth="none";
+    sourceEl.style.height="auto";sourceEl.style.maxHeight="none";sourceEl.style.overflow="visible";
+    sourceEl.style.padding=padding+"px";sourceEl.style.boxSizing="border-box";sourceEl.style.background="#ffffff";
+
+    const controls=sourceEl.querySelector(".zoom-controls");
+    const controlsDisplay=controls?controls.style.display:null;
+    if(controls)controls.style.display="none";
+
+    // پیش‌فرض: هیچ دست‌کاری‌ای نمی‌کنیم و همون وضعیت فعلی تیک «نمایش جدول دوم» حفظ می‌شه (برای دانلود).
+    // فقط وقتی صراحتاً opts.showSummary پاس داده بشه (واتساپ: false، دیباگ: طبق تیک کاربر) اعمال می‌شه.
+    const summaryWrap=sourceEl.querySelector(".summary-table-wrap");
+    const summaryDisplay=summaryWrap?summaryWrap.style.display:null;
+    if(summaryWrap&&opts.showSummary!==undefined){
+      summaryWrap.style.display=opts.showSummary?"block":"none";
+    }
+    // بافر امنیتی سمت راست: با دو جدول کنار هم به فضای بیشتری نیاز داره
+    const willShowSummary=summaryWrap?(summaryWrap.style.display==="block"):false;
+    const buffer=opts.buffer ?? (willShowSummary?140:60);
+
+    const layout=sourceEl.querySelector('[id^="layout-"]');
+    const layoutOriginal=layout?{width:layout.style.width,minWidth:layout.style.minWidth,maxWidth:layout.style.maxWidth,overflow:layout.style.overflow,zoom:layout.style.zoom}:null;
+    if(layout){layout.style.width="max-content";layout.style.minWidth="max-content";layout.style.maxWidth="none";layout.style.overflow="visible";layout.style.zoom="1"}
+
+    const scrollEl=sourceEl.querySelector('[id^="scroll-"]');
+    const scrollOriginal=scrollEl?{width:scrollEl.style.width,minWidth:scrollEl.style.minWidth,maxWidth:scrollEl.style.maxWidth,height:scrollEl.style.height,maxHeight:scrollEl.style.maxHeight,overflow:scrollEl.style.overflow}:null;
+    if(scrollEl){scrollEl.style.width="max-content";scrollEl.style.minWidth="max-content";scrollEl.style.maxWidth="none";scrollEl.style.height="auto";scrollEl.style.maxHeight="none";scrollEl.style.overflow="visible"}
+
+    const tables=sourceEl.querySelectorAll("table");
+    const tableOriginals=[];
+    tables.forEach(table=>{
+      tableOriginals.push({table,width:table.style.width,minWidth:table.style.minWidth,maxWidth:table.style.maxWidth,tableLayout:table.style.tableLayout});
+      table.style.width="max-content";table.style.minWidth="max-content";table.style.maxWidth="none";table.style.tableLayout="auto";
+    });
+
+    function restore(){
+      sourceEl.style.position=original.position;sourceEl.style.left=original.left;sourceEl.style.top=original.top;
+      sourceEl.style.width=original.width;sourceEl.style.minWidth=original.minWidth;sourceEl.style.maxWidth=original.maxWidth;
+      sourceEl.style.height=original.height;sourceEl.style.maxHeight=original.maxHeight;
+      sourceEl.style.overflow=original.overflow;sourceEl.style.padding=original.padding;
+      sourceEl.style.boxSizing=original.boxSizing;sourceEl.style.background="#ffffff";
+      if(controls)controls.style.display=controlsDisplay;
+      if(summaryWrap)summaryWrap.style.display=summaryDisplay;
+      if(layout&&layoutOriginal){layout.style.width=layoutOriginal.width;layout.style.minWidth=layoutOriginal.minWidth;layout.style.maxWidth=layoutOriginal.maxWidth;layout.style.overflow=layoutOriginal.overflow;layout.style.zoom=layoutOriginal.zoom}
+      if(scrollEl&&scrollOriginal){scrollEl.style.width=scrollOriginal.width;scrollEl.style.minWidth=scrollOriginal.minWidth;scrollEl.style.maxWidth=scrollOriginal.maxWidth;scrollEl.style.height=scrollOriginal.height;scrollEl.style.maxHeight=scrollOriginal.maxHeight;scrollEl.style.overflow=scrollOriginal.overflow}
+      tableOriginals.forEach(item=>{item.table.style.width=item.width;item.table.style.minWidth=item.minWidth;item.table.style.maxWidth=item.maxWidth;item.table.style.tableLayout=item.tableLayout});
+    }
+
+    setTimeout(()=>{
+      const rect=sourceEl.getBoundingClientRect();
+      const width=Math.ceil(Math.max(rect.width,sourceEl.scrollWidth,sourceEl.offsetWidth))+buffer;
+      const height=Math.ceil(Math.max(rect.height,sourceEl.scrollHeight,sourceEl.offsetHeight))+20;
+      html2canvas(sourceEl,{scale,backgroundColor:"#ffffff",useCORS:true,allowTaint:true,scrollX:0,scrollY:0,x:0,y:0,width,height,windowWidth:width,windowHeight:height})
+        .then(canvas=>{restore();resolve(canvas)})
+        .catch(err=>{restore();reject(err)});
+    },300);
+  });
+}
+
+// ===== دانلود عکس =====
+async function downloadImage(uid,filename){
+  const sourceEl=document.getElementById("capture-"+uid);
+  if(!sourceEl){toast("چیزی برای دانلود پیدا نشد.","error");return}
+  try{
+    const canvas=await captureBillCanvas(sourceEl);
+    const link=document.createElement("a");
+    link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";
+    link.href=canvas.toDataURL("image/png");
+    link.click();
+  }catch(e){
+    if(e.message==="no-html2canvas")toast("امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");
+    else{console.error(e);toast("خطا در ساخت تصویر.","error")}
+  }
+}
+
+// ===== ارسال به واتساپ =====
+async function shareBillToWhatsApp(billId){
+  const b=db.bills.find(x=>x.id===billId);
+  if(!b){toast("قبضی برای ارسال پیدا نشد.","error");return}
+  toast("در حال آماده‌سازی تصویر...","success");
+  const holder=document.createElement("div");
+  holder.style.position="fixed";holder.style.left="-9999px";holder.style.top="0";
+  holder.innerHTML=tableHTML(b,"share");
+  document.body.appendChild(holder);
+  const sourceEl=holder.querySelector(".bill-detail-container");
+  try{
+    const canvas=await captureBillCanvas(sourceEl,{showSummary:false});
+    document.body.removeChild(holder);
+    canvas.toBlob(async(blob)=>{
+      if(!blob){toast("خطا در ساخت تصویر.","error");return}
+      const file=new File([blob],(b.title||"قبض")+".png",{type:"image/png"});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        try{await navigator.share({files:[file],title:b.title,text:b.title});return}catch(err){if(err&&err.name==="AbortError")return}
+      }
+      const link=document.createElement("a");link.download=(b.title||"قبض")+".png";link.href=URL.createObjectURL(blob);link.click();
+      toast("عکس دانلود شد؛ آن را در گروه واتساپ به‌صورت دستی ضمیمه کنید.","success");
+      window.open("https://wa.me/?text="+encodeURIComponent(b.title||"لیست هزینه"),"_blank")
+    },"image/png");
+  }catch(e){
+    document.body.removeChild(holder);
+    if(e.message==="no-html2canvas")toast("امکان ساخت تصویر در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");
+    else{console.error(e);toast("خطا در ساخت تصویر.","error")}
+  }
+}
+
+// ===== ابزار دیباگ کادر عکس =====
+async function debugPreviewCapture(){
+  let b = db.bills[db.bills.length-1];
+  if(!b){
+    const t=todayJalaliParts();
+    b={
+      title:"نمونه تست دیباگ",
+      date:formatJalaliDate(t.d,t.m,t.y),
+      expenses:[{key:"water",name:"آب"},{key:"electricity",name:"برق"}],
+      roundedTotal:160000,
+      unitShares:[
+        {unitId:-1,unitNumber:1,residentName:"تست یک",people:2,columns:{water:50000,electricity:30000},oldDebt:0,roundedTotal:80000},
+        {unitId:-2,unitNumber:2,residentName:"تست دو",people:3,columns:{water:50000,electricity:30000},oldDebt:0,roundedTotal:80000}
+      ],
+      notes:{note1:db.settings.note1,note2:db.settings.note2}
+    };
+  }
+  const holder=document.createElement("div");
+  holder.style.position="fixed";holder.style.left="-9999px";holder.style.top="0";
+  holder.innerHTML=tableHTML(b,"debug");
+  document.body.appendChild(holder);
+  const sourceEl=holder.querySelector(".bill-detail-container");
+
+  const padding=Number(document.getElementById("debug-padding").value)||0;
+  const bufferRaw=document.getElementById("debug-buffer").value.trim();
+  const buffer=bufferRaw?Number(bufferRaw):undefined;
+  const scale=Number(document.getElementById("debug-scale").value)||1;
+  const showSummary=document.getElementById("debug-show-summary").checked;
+
+  const box=document.getElementById("debug-preview-box");
+  box.innerHTML='<div class="empty">در حال ساخت...</div>';
+
+  try{
+    const canvas=await captureBillCanvas(sourceEl,{padding,buffer,scale,showSummary});
+    document.body.removeChild(holder);
+    box.innerHTML=`<div class="info-box">ابعاد خروجی: ${canvas.width} × ${canvas.height} پیکسل</div>`;
+    const img=document.createElement("img");
+    img.src=canvas.toDataURL("image/png");
+    img.style.maxWidth="100%";
+    img.style.border="2px dashed red";
+    img.style.borderRadius="8px";
+    img.style.display="block";
+    box.appendChild(img);
+    toast("پیش‌نمایش ساخته شد.","success");
+  }catch(e){
+    document.body.removeChild(holder);
+    box.innerHTML='<div class="empty">خطا در ساخت پیش‌نمایش.</div>';
+    toast("خطا: "+(e.message||""),"error");
+  }
+}
 async function checkAppVersion(){
   try{
     if(location.protocol === 'file:') return;
