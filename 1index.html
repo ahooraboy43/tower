@@ -1,363 +1,268 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>مدیریت ساختمان پلاک ۳</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2563eb">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="پلاک ۳">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-:root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#eff6ff;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--bg:#f8fafc;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--radius:14px}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Vazirmatn',sans-serif}
-body{background:var(--bg);color:var(--text);padding-bottom:80px}
-button,input,select,textarea{font-family:inherit}
-.app-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:18px 20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 15px #0002}
-.header-title{font-size:1.25rem;font-weight:800}.header-subtitle{font-size:.8rem;opacity:.85}
-.container{max-width:1100px;margin:auto;padding:16px}.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:0 2px 5px #00000008}
-.card-title{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:14px;padding-bottom:10px;border-bottom:1px dashed var(--border)}
-.btn{width:100%;border:none;border-radius:var(--radius);padding:12px;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:8px}.btn-primary{background:var(--primary);color:#fff}.btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}.btn-secondary{background:#e2e8f0;color:var(--text)}
-.form-group{margin-bottom:14px}.form-label{display:block;font-size:.88rem;font-weight:700;margin-bottom:6px}.form-control{width:100%;padding:11px;border:1px solid var(--border);border-radius:var(--radius);background:#f8fafc;font-size:1rem;outline:none}.form-control:focus{border-color:var(--primary);background:#fff}
-.bottom-nav{position:fixed;bottom:0;right:0;left:0;height:66px;background:#fff;border-top:1px solid var(--border);display:flex;z-index:200}.nav-item{flex:1;border:none;background:none;color:var(--muted);cursor:pointer;font-size:.75rem}.nav-item.active{color:var(--primary);font-weight:700}.nav-icon{display:block;font-size:1.35rem;margin-bottom:2px}
-.badge{display:inline-block;padding:5px 9px;border-radius:8px;font-size:.75rem;font-weight:700}.badge-danger{background:#fef2f2;color:var(--danger)}.badge-success{background:#ecfdf5;color:var(--success)}.badge-primary{background:var(--primary-light);color:var(--primary)}.empty{text-align:center;padding:24px;color:var(--muted)}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.stat-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px}.stat-title{color:var(--muted);font-size:.78rem}.stat-value{font-size:1.15rem;font-weight:800;margin-top:5px}
-.bill-item,.unit-item,.expense-item{border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px;background:#fff}.bill-header,.unit-header,.expense-header{display:flex;justify-content:space-between;align-items:center;gap:10px}.bill-name,.unit-name{font-weight:800}.muted{color:var(--muted);font-size:.82rem}.action-row{display:flex;gap:8px;margin-top:10px}.action-row .btn{flex:1}.unit-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.unit-actions .btn{width:auto;flex:1 1 30%;margin:0;padding:8px 6px;font-size:.75rem;white-space:nowrap}.info-box{background:var(--primary-light);color:#1e40af;border-radius:10px;padding:12px;font-size:.85rem;margin-bottom:14px}.total-box{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:14px;font-weight:800}
-.toast-container{position:fixed;bottom:80px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:9999;pointer-events:none;padding:0 16px}
-.toast{background:#0f172aee;color:#fff;padding:10px 18px;border-radius:10px;font-size:.83rem;max-width:100%;text-align:center;box-shadow:0 4px 12px #0004;opacity:0;transform:translateY(12px);transition:opacity .25s,transform .25s}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.success{background:#065f46ee}
-.toast.error{background:#7f1d1dee}
-.modal{display:none;position:fixed;inset:0;background:#0f172a99;z-index:1000;align-items:flex-end;justify-content:center}.modal.active{display:flex}.modal-content{background:#fff;width:100%;max-width:1100px;max-height:94vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:18px}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.close-btn{border:none;background:#f1f5f9;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1.2rem}
-.wizard-step{display:none}.wizard-step.active{display:block}.preview-scroll{overflow-x:auto;padding-bottom:10px}.preview-layout{display:flex;direction:rtl;align-items:stretch;gap:20px;min-width:max-content}.main-table-wrap,.summary-table-wrap{direction:rtl}.main-table-wrap{flex:1}.summary-table-wrap{margin-top: 34PX;width:260px}.preview-table{border-collapse:collapse;width:100%;font-size:.78rem;background:#fff}.preview-table th,.preview-table td{border:1px solid #cbd5e1;padding:8px;text-align:center;white-space:nowrap;height:48px}.preview-table th{background:#e2e8f0;font-weight:800}.preview-table tfoot td{background:#eff6ff;font-weight:800;height:52px}.summary-table th{background:#dbeafe}.summary-table td{font-weight:700}.summary-value{font-size:.85rem}.expense-row{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}.fixed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.archive-select-row{display:flex;gap:8px;align-items:end}.archive-select-row>div{flex:1}.bill-detail-container{background:#fff;padding:10px}
-.note-box{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;color:#64748b;text-align:center;width:100%;max-width:640px;font-size:.76rem;line-height:1.5}
-.notes-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:8px}
-.table-date-label{text-align:center;font-weight:800;font-size:.9rem;margin-bottom:10px;color:var(--text)}
-.zoom-controls{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
-.date-picker-row{display:flex;gap:8px}.date-picker-row select{flex:1;min-width:0}
-.unit-item.row-settled{background:#f0fdf4;border-color:#bbf7d0}
-.preview-table tbody tr.row-settled td{background:#65cf8a;}
-.summary-toggle{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted);cursor:pointer;user-select:none}
-.summary-toggle input{width:15px;height:15px}
-.zoom-btn{border:1px solid var(--border);background:#f8fafc;border-radius:8px;width:34px;height:34px;font-size:1rem;cursor:pointer;flex:none}
-.preview-scroll{touch-action:pan-x}
-@media(max-width:650px){.fixed-grid{grid-template-columns:1fr}.action-row{flex-direction:column}.unit-actions{gap:4px}.unit-actions .btn{font-size:.68rem;padding:7px 3px}.preview-table{font-size:.7rem}.summary-table-wrap{width:220px}.stats-grid{grid-template-columns:1fr}}
-@media print{body>*:not(#print-area){display:none!important}#print-area{display:block!important}.zoom-controls{display:none!important}}
-#print-area{display:none}
-.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.auth-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:26px 22px;width:100%;max-width:360px;box-shadow:0 4px 15px #0001}
-.auth-title{font-weight:800;font-size:1.15rem;margin-bottom:4px;text-align:center}
-.auth-subtitle{color:var(--muted);font-size:.82rem;text-align:center;margin-bottom:18px}
-.auth-error{color:var(--danger);font-size:.82rem;margin-bottom:10px;min-height:1em;text-align:center}
-.sync-badge{display:inline-block;font-size:.72rem;font-weight:700;margin-right:8px;padding:2px 8px;border-radius:20px;background:#ffffff30;vertical-align:middle}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>مدیریت ساختمان پلاک ۳</title>
+  <meta name="theme-color" content="#f7f8fb">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="V1.png">
+  <link rel="apple-touch-icon" href="v2.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="پلاک ۳">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div id="auth-screen" class="auth-screen">
-<div class="auth-card">
-<div class="auth-title">مدیریت پلاک ۳</div>
-<div class="auth-subtitle">برای دسترسی به داده‌ها وارد حساب خود شوید</div>
-<div class="form-group"><label class="form-label">ایمیل</label><input id="auth-email" type="email" class="form-control" autocomplete="username"></div>
-<div class="form-group"><label class="form-label">رمز عبور</label><input id="auth-password" type="password" class="form-control" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-<div id="auth-error" class="auth-error"></div>
-<button class="btn btn-primary" id="auth-login-btn" onclick="doLogin()">ورود</button>
-</div>
-</div>
-<div id="app-root" style="display:none">
-<header class="app-header"><div class="header-title">پلاک ۳ <span id="sync-badge" class="sync-badge"></span></div><div class="header-subtitle">مدیریت هزینه و شارژ ساختمان</div></header>
-<main class="container">
-<section id="tab-dashboard">
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-title">تعداد واحدها</div><div class="stat-value" id="stat-units">۰</div></div>
-<div class="stat-box"><div class="stat-title">قبض‌های آرشیو شده</div><div class="stat-value" id="stat-bills">۰</div></div>
-<div class="stat-box"><div class="stat-title">جمع صندوق واحدها</div><div class="stat-value" id="stat-fund">۰</div></div>
-</div>
-<div class="card"><div class="card-title"><span>ایجاد لیست هزینه جدید</span><span>➕</span></div><button class="btn btn-primary" onclick="openBillWizard()">ایجاد هزینه ماهانه جدید</button></div>
-<div class="card"><div class="card-title"><span>آرشیو هزینه‌های ماه‌های قبلی</span><span>📁</span></div><div id="bills-list"></div></div>
-</section>
 
-<section id="tab-units" style="display:none"><div class="card"><div class="card-title"><span>مدیریت واحدها</span><button class="btn btn-primary" style="width:auto;margin:0;padding:8px 12px" onclick="openUnitModal()">➕ واحد</button></div><div id="units-list"></div></div></section>
+  <!-- ===== صفحه احراز هویت ===== -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-title">مدیریت پلاک ۳</div>
+      <div class="auth-subtitle">برای دسترسی به داده‌ها وارد حساب خود شوید</div>
+      <div class="form-group">
+        <label class="form-label">ایمیل</label>
+        <input id="auth-email" type="email" class="form-control" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">رمز عبور</label>
+        <input id="auth-password" type="password" class="form-control" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div id="auth-error" class="auth-error"></div>
+      <button class="btn btn-primary" id="auth-login-btn" onclick="doLogin()">ورود</button>
+    </div>
+  </div>
 
-<section id="tab-settings" style="display:none"><div class="card"><div class="card-title"><span>تنظیمات</span><span>⚙️</span></div>
-<div class="info-box">یادداشت‌ها در بالای جدول قبض نمایش داده می‌شوند. مقدار رُند کردن به بالا نیز از همین قسمت تنظیم می‌شود.</div>
-<div class="form-group"><label class="form-label">یادداشت ۱</label><textarea id="setting-note1" class="form-control" rows="3" placeholder="یادداشت اول"></textarea></div>
-<div class="form-group"><label class="form-label">یادداشت ۲</label><textarea id="setting-note2" class="form-control" rows="3" placeholder="یادداشت دوم"></textarea></div>
-<div class="form-group"><label class="form-label">مقدار رُند کردن به بالا</label><input id="setting-round" type="text" inputmode="numeric" class="form-control" placeholder="مثلاً 10,000" oninput="formatMoneyInput(this)"></div>
-<button class="btn btn-primary" onclick="saveSettings()">💾 ذخیره تنظیمات</button>
-<hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
-<div class="card-title">آرشیو هزینه‌های متغیر</div><div id="archive-expenses-list"></div>
-<hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
-<button class="btn btn-danger" onclick="logout()">🚪 خروج از حساب</button>
-</div></section>
-</main>
+  <!-- ===== اپلیکیشن اصلی ===== -->
+  <div id="app-root" style="display:none">
+    <header class="app-header">
+      <div class="header-title">پلاک ۳ <span id="sync-badge" class="sync-badge"></span></div>
+      <div class="header-subtitle">مدیریت هزینه و شارژ ساختمان<div class="info-box">نسخه فایل: <strong
+            id="app-version-label">در حال بررسی...</strong></div>
+      </div>
+    </header>
+    <main class="container">
+      <section id="tab-dashboard">
+        <div class="card bank-balance-card">
+          <div class="bank-title">💳 موجودی بانک</div>
+          <div id="stat-fund" class="bank-balance-value">۰ تومان</div><br>
+          <div id="stat-cash" class="bank-balance-cash">۰ تومان</div>
+          <div class="bank-subtitle">جمع صندوق</div><br>
+          <div id="stat-bank-deficit" class="bank-balance-deficit">۰ تومان</div>
+          <div class="bank-Debit">کسری بانک</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>ایجاد لیست هزینه جدید</span><span>➕</span></div><button class="btn btn-primary"
+            onclick="openBillWizard()">ایجاد هزینه ماهانه جدید</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>آرشیو هزینه‌های ماه‌های قبلی</span><span>📁</span></div>
+          <div id="bills-list"></div>
+        </div>
+      </section>
+      <section id="tab-units" style="display:none">
+        <div class="card">
+          <div class="card-title"><span>مدیریت واحدها</span><button class="btn btn-primary"
+              style="width:auto;margin:0;padding:8px 12px" onclick="openUnitModal()">➕ واحد</button></div>
+          <div id="units-list"></div>
+        </div>
+      </section>
+      <section id="tab-settings" style="display:none">
+        <div class="card">
+          <div class="card-title"><span>تنظیمات</span><span>⚙️</span></div>
+          <div class="info-box">یادداشت‌ها در بالای جدول قبض نمایش داده می‌شوند.</div>
+          <div class="form-group"><label class="form-label">یادداشت ۱</label><textarea id="setting-note1"
+              class="form-control" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label">یادداشت ۲</label><textarea id="setting-note2"
+              class="form-control" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label">مقدار رُند کردن به بالا</label><input id="setting-round"
+              type="text" inputmode="numeric" class="form-control" placeholder="مثلاً 10,000"
+              oninput="formatMoneyInput(this)"></div>
+          <button class="btn btn-primary" onclick="saveSettings()">💾 ذخیره تنظیمات</button>
+          <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+          <div class="card-title"><span>مرکز قبوض</span><button class="btn btn-primary"
+              style="width:auto;margin:0;padding:8px 12px" onclick="openBillCenterModal()">➕ افزودن</button></div>
+          <div id="bill-centers-list"></div>
+          <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+          <div class="card-title">آرشیو هزینه‌های متغیر</div>
+          <div id="archive-expenses-list"></div>
+          <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+          <div class="card-title">ابزار تعمیر</div>
+          <button class="btn btn-secondary" onclick="repairDuplicateUnits()">🩹 اصلاح واحدهای تکراری</button>
+          <button class="btn btn-secondary" onclick="forceAppUpdate()">🔄 بروزرسانی برنامه</button>
+          <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+          <div class="card-title">🧪 دیباگ</div>
+          <div class="fixed-grid">
+            <div class="form-group"><label>پدینگ (px)</label><input id="debug-padding" class="form-control" value="20">
+            </div>
+            <div class="form-group"><label>بافر راست</label><input id="debug-buffer" class="form-control"
+                placeholder="خودکار"></div>
+          </div>
+          <div class="form-group"><label>اسکیل</label><input id="debug-scale" class="form-control" value="3"></div>
+          <label class="summary-toggle"><input type="checkbox" id="debug-show-summary"> نمایش جدول دوم</label>
+          <button class="btn btn-primary" onclick="debugPreviewCapture()">🧪 ساخت پیش‌نمایش</button>
+          <div id="debug-preview-box" style="margin-top:14px"></div>
+          <hr style="margin:20px 0;border:0;border-top:1px solid var(--border)">
+          <button class="btn btn-danger" onclick="logout()">🚪 خروج</button>
+        </div>
+      </section>
+    </main>
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchTab('dashboard',this)"><span class="nav-icon"><img class="img-btn"
+            src="assest/dashboard.png" alt="داشبورد"></span>داشبورد</button>
+      <button class="nav-item" onclick="switchTab('units',this)"><span class="nav-icon"><img class="img-btn"
+            src="assest/units.png" alt="واحدها"></span>واحدها</button>
+      <button class="nav-item" onclick="switchTab('settings',this)"><span class="nav-icon"><img class="img-btn"
+            src="assest/settings.png" alt="تنظیمات"></span>تنظیمات</button>
+    </nav>
+  </div>
 
-<nav class="bottom-nav">
-<button class="nav-item active" onclick="switchTab('dashboard',this)"><span class="nav-icon">📊</span>داشبورد</button>
-<button class="nav-item" onclick="switchTab('units',this)"><span class="nav-icon">🏠</span>واحدها</button>
-<button class="nav-item" onclick="switchTab('settings',this)"><span class="nav-icon">⚙️</span>تنظیمات</button>
-</nav>
+  <!-- مودال‌ها با ساختار ساده‌تر -->
+  <div class="modal" id="bill-modal">
+    <div class="modal-content">
+      <div class="modal-header"><strong id="bill-modal-title">ایجاد لیست هزینه</strong><button class="close-btn"
+          onclick="closeModal('bill-modal')">×</button></div>
+      <div class="wizard-step active" id="bill-step-1">
+        <div class="form-group"><label>عنوان</label><input id="bill-title" class="form-control"></div>
+        <div class="form-group"><label>تاریخ</label>
+          <div class="date-picker-row">
+            <select id="bill-date-day" class="form-control" onchange="onDateSelectChange('bill-date')"></select>
+            <select id="bill-date-month" class="form-control" onchange="onDateSelectChange('bill-date')"></select>
+            <select id="bill-date-year" class="form-control" onchange="onDateSelectChange('bill-date')"></select>
+          </div>
+          <input type="hidden" id="bill-date">
+        </div>
+        <button class="btn btn-primary" onclick="goBillStep(2)">ادامه</button>
+      </div>
+      <div class="wizard-step" id="bill-step-2">
+        <div class="fixed-grid">
+          <div class="expense-row"><strong>💧 آب</strong><input type="text" id="water-amount" class="form-control"
+              value="0" oninput="formatMoneyInput(this)"></div>
+          <div class="expense-row"><strong>⚡ برق</strong><input type="text" id="electricity-amount" class="form-control"
+              value="0" oninput="formatMoneyInput(this)"></div>
+          <div class="expense-row"><strong>🔥 گاز</strong><input type="text" id="gas-amount" class="form-control"
+              value="0" oninput="formatMoneyInput(this)"></div>
+          <div class="expense-row"><strong>🧹 نظافت</strong><input type="text" id="cleaning-amount" class="form-control"
+              value="0" oninput="formatMoneyInput(this)"><input type="number" id="cleaning-count" class="form-control"
+              value="1" min="1"></div>
+        </div>
+        <div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(1)">⬅ بازگشت</button><button
+            class="btn btn-primary" onclick="goBillStep(3)">ادامه</button></div>
+      </div>
+      <div class="wizard-step" id="bill-step-3">
+        <div id="variable-expenses"></div>
+        <button class="btn btn-secondary" onclick="addVariableExpenseRow()">➕ افزودن</button>
+        <div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(2)">⬅ بازگشت</button><button
+            class="btn btn-primary" onclick="goBillStep(4)">پیش‌نمایش</button></div>
+      </div>
+      <div class="wizard-step" id="bill-step-4">
+        <div id="bill-preview"></div>
+        <div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(3)">⬅ بازگشت</button><button
+            class="btn btn-primary" onclick="downloadImage('wizard',currentBill.title)">📥 دانلود</button><button
+            class="btn btn-secondary" onclick="printCurrentBill()">🖨 چاپ</button><button class="btn btn-success"
+            onclick="saveBill()">✅ ذخیره</button></div>
+      </div>
+    </div>
+  </div>
 
-<div class="modal" id="bill-modal"><div class="modal-content">
-<div class="modal-header"><strong id="bill-modal-title">ایجاد لیست هزینه جدید</strong><button class="close-btn" onclick="closeModal('bill-modal')">×</button></div>
-<div class="wizard-step active" id="bill-step-1">
-<div class="form-group"><label class="form-label">عنوان لیست</label><input id="bill-title" class="form-control" placeholder="مثلاً هزینه‌های تیر ۱۴۰۵"></div>
-<div class="form-group"><label class="form-label">تاریخ شمسی روز</label>
-<div class="date-picker-row">
-<select id="bill-date-day" class="form-control" onchange="onDateSelectChange('bill-date')"></select>
-<select id="bill-date-month" class="form-control" onchange="onDateSelectChange('bill-date')"></select>
-<select id="bill-date-year" class="form-control" onchange="onDateSelectChange('bill-date')"></select>
-</div>
-<input type="hidden" id="bill-date">
-</div>
-<button class="btn btn-primary" onclick="goBillStep(2)">ادامه</button>
-</div>
-<div class="wizard-step" id="bill-step-2">
-<div class="info-box">آب بر اساس نفرات تقسیم می‌شود. برق، گاز، نظافت و هزینه‌های متغیر بر اساس تعداد واحدها تقسیم می‌شوند.</div>
-<div class="fixed-grid">
-<div class="expense-row"><strong>💧 آب</strong><div class="form-group"><label class="form-label">مبلغ کل قبض آب</label><input type="text" inputmode="numeric" id="water-amount" class="form-control" value="0" oninput="formatMoneyInput(this)"></div></div>
-<div class="expense-row"><strong>⚡ برق</strong><div class="form-group"><label class="form-label">مبلغ کل قبض برق</label><input type="text" inputmode="numeric" id="electricity-amount" class="form-control" value="0" oninput="formatMoneyInput(this)"></div></div>
-<div class="expense-row"><strong>🔥 گاز</strong><div class="form-group"><label class="form-label">مبلغ کل قبض گاز</label><input type="text" inputmode="numeric" id="gas-amount" class="form-control" value="0" oninput="formatMoneyInput(this)"></div></div>
-<div class="expense-row"><strong>🧹 نظافت</strong><div class="form-group"><label class="form-label">مبلغ هر بار نظافت</label><input type="text" inputmode="numeric" id="cleaning-amount" class="form-control" value="0" oninput="formatMoneyInput(this)"></div><div class="form-group"><label class="form-label">تعداد دفعات</label><input type="number" id="cleaning-count" class="form-control" value="1" min="1"></div></div>
-</div>
-<div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(1)">⬅ بازگشت</button><button class="btn btn-primary" onclick="goBillStep(3)">ادامه به هزینه‌های متغیر</button></div>
-</div>
-<div class="wizard-step" id="bill-step-3">
-<div class="info-box">هزینه متغیر را از آرشیو انتخاب کنید یا نام جدید وارد کنید.</div><div id="variable-expenses"></div>
-<button class="btn btn-secondary" onclick="addVariableExpenseRow()">➕ افزودن هزینه متغیر</button>
-<div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(2)">⬅ بازگشت</button><button class="btn btn-primary" onclick="goBillStep(4)">ادامه و پیش‌نمایش</button></div>
-</div>
-<div class="wizard-step" id="bill-step-4"><div id="bill-preview"></div><div class="action-row"><button class="btn btn-secondary" onclick="goBillStep(3)">⬅ بازگشت</button><button class="btn btn-primary" onclick="downloadImage('wizard',currentBill.title)">📥 دانلود عکس</button><button class="btn btn-secondary" onclick="printCurrentBill()">🖨 چاپ</button><button class="btn btn-success" onclick="saveBill()">✅ ذخیره قبض</button></div></div>
-</div></div>
+  <div class="modal" id="unit-modal">
+    <div class="modal-content">
+      <div class="modal-header"><strong id="unit-modal-title">افزودن واحد</strong><button class="close-btn"
+          onclick="closeModal('unit-modal')">×</button></div>
+      <input type="hidden" id="editing-unit-id">
+      <div class="form-group"><label>شماره</label><input id="unit-number" type="number" class="form-control"></div>
+      <div class="form-group"><label>نام ساکن</label><input id="resident-name" class="form-control"></div>
+      <div class="form-group"><label>موبایل</label><input id="resident-phone" class="form-control"
+          placeholder="09xxxxxxxxx"></div>
+      <div class="form-group"><label>تعداد نفرات</label><input id="unit-people" type="number" min="1"
+          class="form-control"></div>
+      <button class="btn btn-primary" onclick="saveUnit()">💾 ذخیره</button>
+    </div>
+  </div>
 
-<div class="modal" id="unit-modal"><div class="modal-content">
-<div class="modal-header"><strong id="unit-modal-title">افزودن واحد</strong><button class="close-btn" onclick="closeModal('unit-modal')">×</button></div>
-<input type="hidden" id="editing-unit-id">
-<div class="form-group"><label class="form-label">شماره واحد</label><input id="unit-number" type="number" class="form-control"></div>
-<div class="form-group"><label class="form-label">نام ساکن</label><input id="resident-name" class="form-control"></div>
-<div class="form-group"><label class="form-label">شماره موبایل (اختیاری - برای یادآوری واتساپ)</label><input id="resident-phone" class="form-control" placeholder="09xxxxxxxxx" inputmode="tel"></div>
-<div class="form-group"><label class="form-label">تعداد نفرات</label><input id="unit-people" type="number" min="1" class="form-control"></div>
-<button class="btn btn-primary" onclick="saveUnit()">💾 ذخیره اطلاعات</button>
-</div></div>
+  <div class="modal" id="payment-modal">
+    <div class="modal-content">
+      <div class="modal-header"><strong id="payment-title">ثبت پرداخت</strong><button class="close-btn"
+          onclick="closeModal('payment-modal')">×</button></div>
+      <input type="hidden" id="payment-unit-id"><input type="hidden" id="payment-type">
+      <div id="payment-info"></div>
+      <div class="form-group"><label>مبلغ</label><input id="payment-amount" type="text" class="form-control"
+          oninput="formatMoneyInput(this)"></div>
+      <div class="form-group"><label>تاریخ</label>
+        <div class="date-picker-row">
+          <select id="payment-date-day" class="form-control" onchange="onDateSelectChange('payment-date')"></select>
+          <select id="payment-date-month" class="form-control" onchange="onDateSelectChange('payment-date')"></select>
+          <select id="payment-date-year" class="form-control" onchange="onDateSelectChange('payment-date')"></select>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="savePayment()">✅ ثبت</button>
+    </div>
+  </div>
 
-<div class="modal" id="payment-modal"><div class="modal-content">
-<div class="modal-header"><strong id="payment-title">ثبت پرداخت بدهی</strong><button class="close-btn" onclick="closeModal('payment-modal')">×</button></div>
-<input type="hidden" id="payment-unit-id"><input type="hidden" id="payment-type">
-<div id="payment-info"></div>
-<div class="form-group"><label class="form-label">مبلغ</label><input id="payment-amount" type="text" inputmode="numeric" class="form-control" oninput="formatMoneyInput(this)"></div>
-<div class="form-group"><label class="form-label">تاریخ پرداخت</label>
-<div class="date-picker-row">
-<select id="payment-date-day" class="form-control" onchange="onDateSelectChange('payment-date')"></select>
-<select id="payment-date-month" class="form-control" onchange="onDateSelectChange('payment-date')"></select>
-<select id="payment-date-year" class="form-control" onchange="onDateSelectChange('payment-date')"></select>
-</div>
-</div>
-<button class="btn btn-success" onclick="savePayment()">✅ ثبت</button>
-</div></div>
+  <div class="modal" id="view-bill-modal">
+    <div class="modal-content">
+      <div class="modal-header"><strong id="view-bill-title">نمایش قبض</strong>
+        <label class="summary-toggle"><input type="checkbox" onchange="toggleSummaryTable('view',this.checked)"> جدول
+          دوم</label>
+        <button class="zoom-btn" onclick="zoomAdjust('view',0.15)">➕</button>
+        <button class="zoom-btn" onclick="zoomAdjust('view',-0.15)">➖</button>
+        <button class="zoom-btn" onclick="zoomReset('view')">⟳</button>
+        <button class="close-btn" onclick="closeModal('view-bill-modal')">×</button>
+      </div>
+      <div id="view-bill-content"></div>
+      <div class="action-row">
+        <button class="btn btn-primary"
+          onclick="downloadImage('view',(db.bills.find(x=>x.id===viewedBillId)||{}).title)">📥 دانلود</button>
+        <button class="btn" style="background:#25D366;color:#fff" onclick="shareBillToWhatsApp(viewedBillId)">📲
+          واتساپ</button>
+        <button class="btn btn-secondary" onclick="printViewedBill()">🖨 چاپ</button>
+        <button class="btn btn-primary" onclick="editViewedBill()">✏️ ویرایش</button>
+        <button class="btn btn-danger" onclick="deleteViewedBill()">🗑 حذف</button>
+      </div>
+    </div>
+  </div>
 
-<div class="modal" id="view-bill-modal"><div class="modal-content">
-<div class="modal-header"><strong id="view-bill-title">نمایش قبض</strong><button class="close-btn" onclick="closeModal('view-bill-modal')">×</button></div>
-<div id="view-bill-content"></div>
-<div class="action-row"><button class="btn btn-primary" onclick="downloadImage('view',(db.bills.find(x=>x.id===viewedBillId)||{}).title)">📥 دانلود عکس</button><button class="btn" style="background:#25D366;color:#fff" onclick="shareBillToWhatsApp(viewedBillId)">📲 واتساپ</button><button class="btn btn-secondary" onclick="printViewedBill()">🖨 چاپ</button><button class="btn btn-primary" onclick="editViewedBill()">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteViewedBill()">🗑 حذف</button></div>
-</div></div>
-<div class="modal" id="contact-sheet-modal"><div class="modal-content" style="max-width:320px">
-<div class="modal-header"><strong>ارتباط با واحد</strong><button class="close-btn" onclick="closeModal('contact-sheet-modal')">×</button></div>
-<div id="contact-sheet-body" class="action-row" style="flex-direction:column"></div>
-</div></div>
-<div class="modal" id="payment-history-modal"><div class="modal-content">
-<div class="modal-header"><strong id="payment-history-title">تاریخچه پرداخت‌ها</strong><button class="close-btn" onclick="closeModal('payment-history-modal')">×</button></div>
-<div id="payment-history-content"></div>
-</div></div>
-</div>
-<div id="toast-container" class="toast-container"></div>
-<div id="print-area"></div>
-<script>
-const STORAGE_KEY="plaque3_final_database_v4";
-const SUPABASE_URL="https://fdzoacsevwjbdqnoqmmu.supabase.co";
-const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkem9hY3NldndqYmRxbm9xbW11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NDkwNzcsImV4cCI6MjEwMDMyNTA3N30.9gITw6to9jduguMio-kGSLhmJUxCdJQ0GeWU76Rx95o";
-const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-function defaultDB(){return{units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],settings:{note1:"",note2:"",round:1000}}}
-let db=JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultDB();
-db.settings=db.settings||{note1:"",note2:"",round:1000}; db.fundPayments=db.fundPayments||[];
-let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;
+  <div class="modal" id="contact-sheet-modal">
+    <div class="modal-content" style="max-width:320px">
+      <div class="modal-header"><strong>تماس با واحد</strong><button class="close-btn"
+          onclick="closeModal('contact-sheet-modal')">×</button></div>
+      <div id="contact-sheet-body"></div>
+    </div>
+  </div>
 
-function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
-if(status==="syncing"){el.textContent="🔄 در حال ذخیره";el.style.background="#ffffff30"}
-else if(status==="synced"){el.textContent="☁️ ذخیره شد";el.style.background="#ffffff30"}
-else if(status==="error"){el.textContent="⚠️ عدم اتصال (ذخیره محلی)";el.style.background="#7f1d1d55"}
-else{el.textContent=""}}
+  <div class="modal" id="payment-history-modal">
+    <div class="modal-content">
+      <div class="modal-header"><strong id="payment-history-title">تاریخچه پرداخت‌ها</strong><button class="close-btn"
+          onclick="closeModal('payment-history-modal')">×</button></div>
+      <div id="payment-history-content"></div>
+    </div>
+  </div>
 
-function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db));syncToCloud()}
-function syncToCloud(){if(!currentUser)return;clearTimeout(syncTimer);setSyncStatus("syncing");
-syncTimer=setTimeout(async()=>{try{const{error}=await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}},500)}
+  <div class="modal" id="bill-center-modal">
+    <div class="modal-content" style="max-width:420px">
+      <div class="modal-header"><strong id="bill-center-modal-title">افزودن قبض</strong><button class="close-btn"
+          onclick="closeModal('bill-center-modal')">×</button></div>
+      <input type="hidden" id="editing-bill-center-id">
+      <div class="form-group"><label>نام قبض</label><input id="bill-center-name" class="form-control"></div>
+      <div class="form-group"><label>شناسه قبض</label><input id="bill-center-subscriber" class="form-control"></div>
+      <div class="form-group"><label>لینک پرداخت</label><input id="bill-center-url" class="form-control"
+          placeholder="https://..."></div>
+      <button class="btn btn-primary" onclick="saveBillCenterEntry()">💾 ذخیره</button>
+    </div>
+  </div>
 
-async function loadDBFromCloud(){setSyncStatus("syncing");
-try{const{data,error}=await supa.from("app_state").select("data").eq("user_id",currentUser.id).maybeSingle();
-if(error)throw error;
-if(data&&data.data){db=data.data;db.settings=db.settings||{note1:"",note2:"",round:1000};db.fundPayments=db.fundPayments||[];db.expenseArchive=db.expenseArchive||[];db.payments=db.payments||[];db.units=db.units||[];db.bills=db.bills||[]}
-else{db=defaultDB();await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()})}
-localStorage.setItem(STORAGE_KEY,JSON.stringify(db));setSyncStatus("synced")}
-catch(e){console.error("load error",e);setSyncStatus("error")}}
+  <div id="toast-container" class="toast-container"></div>
+  <div id="print-area"></div>
 
-function showAuthScreen(){document.getElementById("auth-screen").style.display="flex";document.getElementById("app-root").style.display="none"}
-function showAppRoot(){document.getElementById("auth-screen").style.display="none";document.getElementById("app-root").style.display="block"}
-
-async function doLogin(){const email=document.getElementById("auth-email").value.trim();const password=document.getElementById("auth-password").value;const errEl=document.getElementById("auth-error");errEl.textContent="";
-if(!email||!password){errEl.textContent="ایمیل و رمز عبور را وارد کنید";return}
-const btn=document.getElementById("auth-login-btn");btn.disabled=true;btn.textContent="در حال ورود...";
-try{const{data,error}=await supa.auth.signInWithPassword({email,password});if(error)throw error;
-currentUser=data.user;showAppRoot();await loadDBFromCloud();renderDashboard()}
-catch(e){errEl.textContent="ورود ناموفق بود. ایمیل یا رمز عبور اشتباه است."}
-finally{btn.disabled=false;btn.textContent="ورود"}}
-
-async function logout(){await supa.auth.signOut();currentUser=null;showAuthScreen()}
-
-async function initAuth(){const{data}=await supa.auth.getSession();
-if(data&&data.session){currentUser=data.session.user;showAppRoot();await loadDBFromCloud();renderDashboard()}
-else{showAuthScreen()}}
-
-function money(n){return Number(n||0).toLocaleString("fa-IR")+" تومان"}
-function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
-function toast(msg,type="success"){const c=document.getElementById("toast-container");if(!c)return;const el=document.createElement("div");el.className="toast "+type;el.textContent=msg;c.appendChild(el);requestAnimationFrame(()=>el.classList.add("show"));setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},2700)}
-function formatMoneyInput(el){const raw=el.value.replace(/[^\d]/g,"");el.value=raw?Number(raw).toLocaleString("en-US"):""}
-function getMoneyValue(idOrEl){const el=typeof idOrEl==="string"?document.getElementById(idOrEl):idOrEl;return Number((el.value||"").replace(/[^\d]/g,""))||0}
-function setMoneyValue(id,num){document.getElementById(id).value=Number(num||0).toLocaleString("en-US")}
-function formatPaymentDate(iso){try{return new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso))}catch(e){return iso}}
-const JALALI_MONTHS=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
-function faDigits(n){return Number(n).toLocaleString("fa-IR",{useGrouping:false})}
-function faDigitsToEn(str){return String(str).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d))}
-function isJalaliLeap(jy){return [1,5,9,13,17,22,26,30].includes(((jy%33)+33)%33)}
-function daysInJalaliMonth(y,m){if(m<=6)return 31;if(m<=11)return 30;return isJalaliLeap(y)?30:29}
-function todayJalaliParts(){try{const parts=new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn",{year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date());const o={};parts.forEach(p=>{if(p.type!=="literal")o[p.type]=parseInt(p.value,10)});return{y:o.year,m:o.month,d:o.day}}catch(e){return{y:1404,m:1,d:1}}}
-function parseJalaliDateString(s){if(!s)return null;const t=faDigitsToEn(s);const nums=t.match(/\d+/g);if(!nums||nums.length<2)return null;let mIdx=-1;JALALI_MONTHS.forEach((name,i)=>{if(s.indexOf(name)>-1)mIdx=i+1});if(mIdx===-1)return null;const d=parseInt(nums[0],10),y=parseInt(nums[nums.length-1],10);if(!d||!y)return null;return{d,m:mIdx,y}}
-function formatJalaliDate(d,m,y){return `${faDigits(d)} ${JALALI_MONTHS[m-1]} ${faDigits(y)}`}
-function fillYearSelect(prefix,selectedYear){const sel=document.getElementById(prefix+"-year"),base=todayJalaliParts().y;let opts="";for(let y=base-3;y<=base+3;y++)opts+=`<option value="${y}" ${y===selectedYear?"selected":""}>${faDigits(y)}</option>`;sel.innerHTML=opts}
-function fillMonthSelect(prefix,selectedMonth){document.getElementById(prefix+"-month").innerHTML=JALALI_MONTHS.map((n,i)=>`<option value="${i+1}" ${i+1===selectedMonth?"selected":""}>${n}</option>`).join("")}
-function fillDaySelect(prefix,y,m,selectedDay){const sel=document.getElementById(prefix+"-day"),max=daysInJalaliMonth(y,m),d0=Math.min(selectedDay,max);let opts="";for(let d=1;d<=max;d++)opts+=`<option value="${d}" ${d===d0?"selected":""}>${faDigits(d)}</option>`;sel.innerHTML=opts}
-function setDateSelects(prefix,parts){fillYearSelect(prefix,parts.y);fillMonthSelect(prefix,parts.m);fillDaySelect(prefix,parts.y,parts.m,parts.d);if(prefix==="bill-date")syncBillDateHidden()}
-function onDateSelectChange(prefix){const y=Number(document.getElementById(prefix+"-year").value),m=Number(document.getElementById(prefix+"-month").value),d=Number(document.getElementById(prefix+"-day").value)||1;fillDaySelect(prefix,y,m,d);if(prefix==="bill-date")syncBillDateHidden()}
-function syncBillDateHidden(){const y=Number(document.getElementById("bill-date-year").value),m=Number(document.getElementById("bill-date-month").value),d=Number(document.getElementById("bill-date-day").value);document.getElementById("bill-date").value=formatJalaliDate(d,m,y)}
-function readDateSelects(prefix){return{y:Number(document.getElementById(prefix+"-year").value),m:Number(document.getElementById(prefix+"-month").value),d:Number(document.getElementById(prefix+"-day").value)}}
-function jalaliToGregorian(jy,jm,jd){jy+=1595;let days=-355668+(365*jy)+(Math.floor(jy/33)*8)+Math.floor(((jy%33)+3)/4)+jd+((jm<7)?(jm-1)*31:((jm-7)*30)+186);let gy=400*Math.floor(days/146097);days%=146097;if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++}gy+=4*Math.floor(days/1461);days%=1461;if(days>365){gy+=Math.floor((days-1)/365);days=(days-1)%365}let gd=days+1;const salA=[0,31,((gy%4===0&&gy%100!==0)||(gy%400===0))?29:28,31,30,31,30,31,31,30,31,30,31];let gm;for(gm=1;gm<=12&&gd>salA[gm];gm++){gd-=salA[gm]}return{gy,gm,gd}}
-function dateFromJalaliSelects(prefix){const p=readDateSelects(prefix);const g=jalaliToGregorian(p.y,p.m,p.d);const now=new Date();return new Date(g.gy,g.gm-1,g.gd,now.getHours(),now.getMinutes(),now.getSeconds())}
-function roundUp(n){const r=Number(db.settings.round)||1;return Math.ceil(Number(n||0)/r)*r}
-function switchTab(tab,b){document.querySelectorAll("main>section").forEach(x=>x.style.display="none");document.getElementById("tab-"+tab).style.display="block";document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(tab==="dashboard")renderDashboard();if(tab==="units")renderUnits();if(tab==="settings")renderSettings()}
-function openModal(id){document.getElementById(id).classList.add("active")} function closeModal(id){document.getElementById(id).classList.remove("active")}
-
-function renderDashboard(){
-document.getElementById("stat-units").textContent=db.units.length.toLocaleString("fa-IR");
-document.getElementById("stat-bills").textContent=db.bills.length.toLocaleString("fa-IR");
-document.getElementById("stat-fund").textContent=money(db.fundPayments.reduce((s,p)=>s+p.amount,0));
-const box=document.getElementById("bills-list"); if(!db.bills.length){box.innerHTML='<div class="empty">هنوز قبضی ذخیره نشده است.</div>';return}
-box.innerHTML=db.bills.slice().reverse().map(b=>`<div class="bill-item"><div class="bill-header"><div><div class="bill-name">${esc(b.title)}</div><div class="muted">${esc(b.date)}</div></div><span class="badge badge-primary">${b.unitShares.length} واحد</span></div><div class="total-box">جمع واقعی هزینه‌ها: ${money(b.realTotal)}<br>جمع بدهی قابل دریافت: ${money(b.roundedTotal)}</div><div class="action-row"><button class="btn btn-primary" onclick="viewBill(${b.id})">👁 نمایش</button><button class="btn btn-secondary" onclick="editBill(${b.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteBill(${b.id})">🗑 حذف</button></div><div class="action-row"><button class="btn" style="background:#25D366;color:#fff" onclick="shareBillToWhatsApp(${b.id})">📲 ارسال به واتساپ</button></div></div>`).join("")
-}
-
-function openBillWizard(bill=null){
-editingBillId=bill?bill.id:null;document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";
-document.getElementById("bill-title").value=bill?bill.title:"";setDateSelects("bill-date",bill?(parseJalaliDateString(bill.date)||todayJalaliParts()):todayJalaliParts());
-setMoneyValue("water-amount",bill?.fixed?.water?.amount||0);setMoneyValue("electricity-amount",bill?.fixed?.electricity?.amount||0);setMoneyValue("gas-amount",bill?.fixed?.gas?.amount||0);setMoneyValue("cleaning-amount",bill?.fixed?.cleaning?.amountPerTime||0);document.getElementById("cleaning-count").value=bill?.fixed?.cleaning?.count||1;document.getElementById("variable-expenses").innerHTML="";
-if(bill?.variables)bill.variables.forEach(v=>addVariableExpenseRow(v.name,v.amount));else addVariableExpenseRow();goBillStep(1);openModal("bill-modal")
-}
-function goBillStep(step){
-if(step===2&&!document.getElementById("bill-title").value.trim()){toast("عنوان لیست را وارد کنید.","error");return}
-if(step===4){if(!db.units.length){toast("ابتدا واحدها را ثبت کنید.","error");return}const vars=readVariables();if(vars===null)return;currentBill={title:document.getElementById("bill-title").value.trim(),date:document.getElementById("bill-date").value.trim(),fixed:{water:{amount:getMoneyValue("water-amount")},electricity:{amount:getMoneyValue("electricity-amount")},gas:{amount:getMoneyValue("gas-amount")},cleaning:{amountPerTime:getMoneyValue("cleaning-amount"),count:Number(document.getElementById("cleaning-count").value)||1}},variables:vars};renderPreview()}
-document.querySelectorAll(".wizard-step").forEach(x=>x.classList.remove("active"));document.getElementById("bill-step-"+step).classList.add("active")
-}
-function addVariableExpenseRow(name="",amount=""){const box=document.getElementById("variable-expenses"),row=document.createElement("div");row.className="expense-row";let opts='<option value="">انتخاب هزینه از آرشیو</option>';db.expenseArchive.forEach(n=>opts+=`<option value="${esc(n)}" ${n===name?"selected":""}>${esc(n)}</option>`);row.innerHTML=`<div class="archive-select-row"><div><label class="form-label">نام هزینه</label><select class="form-control variable-name">${opts}</select></div><div><label class="form-label">مبلغ این ماه</label><input type="text" inputmode="numeric" class="form-control variable-amount" value="${amount?Number(amount).toLocaleString("en-US"):""}" oninput="formatMoneyInput(this)"></div></div><div class="form-group" style="margin-top:10px"><label class="form-label">نام هزینه جدید در صورت نیاز</label><input class="form-control new-variable-name"></div><button class="btn btn-danger" onclick="this.parentElement.remove()">🗑 حذف</button>`;box.appendChild(row)}
-function readVariables(){const result=[];const rows=document.querySelectorAll("#variable-expenses .expense-row");for(const row of rows){const selected=row.querySelector(".variable-name").value.trim(),newName=row.querySelector(".new-variable-name").value.trim(),amount=getMoneyValue(row.querySelector(".variable-amount")),name=newName||selected;if(!name&&amount===0)continue;if(!name){toast("نام هزینه متغیر را وارد کنید.","error");return null}if(amount<=0){toast("مبلغ هزینه «"+name+"» صحیح نیست.","error");return null}result.push({name,amount});if(!db.expenseArchive.includes(name))db.expenseArchive.push(name)}saveDB();return result}
-function totalPeople(){return db.units.reduce((s,u)=>s+Number(u.people||0),0)}
-function share(e,u){return e.type==="per_person"?(e.amount/totalPeople())*u.people:e.amount/db.units.length}
-function createExpenseList(){const c=currentBill.fixed,arr=[{key:"water",name:"آب",amount:c.water.amount,type:"per_person"},{key:"electricity",name:"برق",amount:c.electricity.amount,type:"per_unit"},{key:"gas",name:"گاز",amount:c.gas.amount,type:"per_unit"},{key:"cleaning",name:"نظافت",amount:c.cleaning.amountPerTime*c.cleaning.count,type:"per_unit"}];currentBill.variables.forEach((v,i)=>arr.push({key:"variable_"+i,name:v.name,amount:v.amount,type:"per_unit"}));return arr}
-function previousDebt(unitId,excludeBillId=null){let charges=0;db.bills.forEach(b=>{if(b.id===excludeBillId)return;const u=b.unitShares.find(x=>x.unitId===unitId);if(u)charges+=u.roundedTotal});let paid=db.payments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0);return Math.max(0,Math.round(charges-paid))}
-function unitFund(unitId){return db.fundPayments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0)}
-function buildBillData(){const expenses=createExpenseList(),realTotal=expenses.reduce((s,e)=>s+e.amount,0),shares=db.units.map(u=>{const columns={};let currentTotal=0;expenses.forEach(e=>{const v=roundUp(share(e,u));columns[e.key]=v;currentTotal+=v});const oldDebt=previousDebt(u.id,editingBillId);return{unitId:u.id,unitNumber:u.unitNumber,residentName:u.residentName,people:u.people,columns,oldDebt,roundedTotal:currentTotal+oldDebt}});return{id:editingBillId||Date.now(),title:currentBill.title,date:currentBill.date,fixed:currentBill.fixed,variables:currentBill.variables,expenses,realTotal,roundedTotal:shares.reduce((s,u)=>s+u.roundedTotal,0),unitShares:shares,notes:{note1:db.settings.note1,note2:db.settings.note2}}}
-function notesHTML(b){const n1=b.notes?.note1,n2=b.notes?.note2;if(!n1&&!n2)return"";return `<div class="notes-wrap">${n1?`<div class="note-box">📝 ${esc(n1)}</div>`:""}${n2?`<div class="note-box">📝 ${esc(n2)}</div>`:""}</div>`}
-function tableHTML(b,uid="preview"){const ex=b.expenses,fundTotal=b.unitShares.reduce((s,u)=>s+unitFund(u.unitId),0);return `<div class="bill-detail-container" id="capture-${uid}">
-<div class="zoom-controls"><label class="summary-toggle"><input type="checkbox" onchange="toggleSummaryTable('${uid}',this.checked)"> نمایش جدول دوم</label><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',0.15)">➕</button><button type="button" class="zoom-btn" onclick="zoomAdjust('${uid}',-0.15)">➖</button><button type="button" class="zoom-btn" onclick="zoomReset('${uid}')">⟳</button></div>
-<div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${previousDebt(u.unitId)<=0?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td><strong>${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td>${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td>${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
-</div>`}
-function toggleSummaryTable(uid,show){const el=document.querySelector("#layout-"+uid+" .summary-table-wrap");if(el)el.style.display=show?"block":"none"}
-function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div>${tableHTML(b,"wizard")}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
-function getFundBalance(){return db.fundPayments.reduce((s,p)=>s+p.amount,0)-db.bills.reduce((s,b)=>s+b.realTotal,0)}
-function saveBill(){const b=buildBillData();if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0)db.bills[i]=b}else db.bills.push(b);saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null}
-
-function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"بدهی: "+money(debt):"تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn btn-secondary" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
-function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;const digits=(u.phone||"").replace(/\D/g,"");const intl=digits.startsWith("0")?"98"+digits.slice(1):digits;const box=document.getElementById("contact-sheet-body");box.innerHTML="";
-if(!digits){const info=document.createElement("div");info.className="info-box";info.textContent="شماره موبایل این واحد ثبت نشده؛ فقط واتساپ عمومی در دسترس است.";box.appendChild(info)}
-const btnCall=document.createElement("button");btnCall.className="btn btn-primary";btnCall.textContent="📞 تماس تلفنی";if(digits){btnCall.onclick=()=>{window.location.href="tel:"+digits}}else btnCall.disabled=true;
-const btnSms=document.createElement("button");btnSms.className="btn btn-secondary";btnSms.textContent="💬 پیامک";if(digits){btnSms.onclick=()=>{const sep=/iPhone|iPad|iPod/.test(navigator.userAgent)?"&":"?";window.location.href="sms:"+digits+sep+"body="+encodeURIComponent(msg)}}else btnSms.disabled=true;
-const btnWa=document.createElement("button");btnWa.className="btn";btnWa.style.background="#25D366";btnWa.style.color="#fff";btnWa.textContent="📲 واتساپ";btnWa.onclick=()=>{const url=intl?`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;window.open(url,"_blank")};
-box.appendChild(btnCall);box.appendChild(btnSms);box.appendChild(btnWa);openModal("contact-sheet-modal")}
-function openPaymentHistory(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;document.getElementById("payment-history-title").textContent="تاریخچه پرداخت‌های واحد "+u.unitNumber;const debtPays=db.payments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"debt"})),fundPays=db.fundPayments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"fund"})),all=[...debtPays,...fundPays].sort((a,b)=>new Date(b.date)-new Date(a.date));const box=document.getElementById("payment-history-content");box.innerHTML=all.length?all.map(p=>`<div class="unit-item"><div class="unit-header"><div><div class="unit-name">${p.kind==="debt"?"💳 پرداخت بدهی":"🏦 واریز صندوق"}</div><div class="muted">${formatPaymentDate(p.date)}</div></div><span class="badge ${p.kind==="debt"?"badge-success":"badge-primary"}">${money(p.amount)}</span></div></div>`).join(""):'<div class="empty">پرداختی ثبت نشده است.</div>';openModal("payment-history-modal")}
-function openUnitModal(){document.getElementById("unit-modal-title").textContent="افزودن واحد";document.getElementById("editing-unit-id").value="";document.getElementById("unit-number").value="";document.getElementById("resident-name").value="";document.getElementById("resident-phone").value="";document.getElementById("unit-people").value=1;openModal("unit-modal")}
-function editUnit(id){const u=db.units.find(x=>x.id===id);if(!u)return;document.getElementById("unit-modal-title").textContent="ویرایش اطلاعات واحد";document.getElementById("editing-unit-id").value=u.id;document.getElementById("unit-number").value=u.unitNumber;document.getElementById("resident-name").value=u.residentName;document.getElementById("resident-phone").value=u.phone||"";document.getElementById("unit-people").value=u.people;openModal("unit-modal")}
-function saveUnit(){const id=Number(document.getElementById("editing-unit-id").value),unitNumber=Number(document.getElementById("unit-number").value),residentName=document.getElementById("resident-name").value.trim(),phone=document.getElementById("resident-phone").value.trim(),people=Number(document.getElementById("unit-people").value);if(!unitNumber||!people){toast("شماره واحد و تعداد نفرات الزامی است.","error");return}if(id){const u=db.units.find(x=>x.id===id);Object.assign(u,{unitNumber,residentName,phone,people})}else db.units.push({id:Date.now(),unitNumber,residentName,phone,people});saveDB();closeModal("unit-modal");renderUnits();renderDashboard()}
-function deleteUnit(id){if(previousDebt(id)>0){toast("این واحد بدهی دارد و قابل حذف نیست.","error");return}if(!confirm("این واحد حذف شود؟"))return;db.units=db.units.filter(x=>x.id!==id);saveDB();renderUnits();renderDashboard()}
-function openPaymentModal(unitId,type){const u=db.units.find(x=>x.id===unitId),isFund=type==="fund";document.getElementById("payment-unit-id").value=unitId;document.getElementById("payment-type").value=type;document.getElementById("payment-title").textContent=isFund?"واریز به صندوق":"ثبت پرداخت بدهی";setMoneyValue("payment-amount",isFund?0:previousDebt(unitId));document.getElementById("payment-info").innerHTML=`<div class="info-box">${isFund?"صندوق واحد کاملاً جدا از بدهی است. موجودی فعلی صندوق: ":"بدهی فعلی واحد: "}<strong>${money(isFund?unitFund(unitId):previousDebt(unitId))}</strong></div>`;setDateSelects("payment-date",todayJalaliParts());openModal("payment-modal")}
-function savePayment(){const unitId=Number(document.getElementById("payment-unit-id").value),type=document.getElementById("payment-type").value,amount=getMoneyValue("payment-amount");if(!amount||amount<=0){toast("مبلغ صحیح نیست.","error");return}const p={id:Date.now(),unitId,amount,date:dateFromJalaliSelects("payment-date").toISOString()};if(type==="fund")db.fundPayments.push(p);else db.payments.push(p);saveDB();closeModal("payment-modal");renderUnits();renderDashboard();toast(type==="fund"?"واریز صندوق ثبت شد.":"پرداخت بدهی ثبت شد.","success")}
-function saveSettings(){db.settings.note1=document.getElementById("setting-note1").value.trim();db.settings.note2=document.getElementById("setting-note2").value.trim();db.settings.round=Math.max(1,getMoneyValue("setting-round")||1);saveDB();toast("تنظیمات ذخیره شد.","success")}
-function renderSettings(){document.getElementById("setting-note1").value=db.settings.note1||"";document.getElementById("setting-note2").value=db.settings.note2||"";setMoneyValue("setting-round",db.settings.round||1000);const box=document.getElementById("archive-expenses-list");if(!db.expenseArchive.length){box.innerHTML='<div class="empty">هزینه متغیری در آرشیو وجود ندارد.</div>';return}box.innerHTML=db.expenseArchive.map((n,i)=>`<div class="expense-item"><div class="expense-header"><strong>📌 ${esc(n)}</strong><button class="btn btn-danger" style="width:auto;margin:0;padding:7px 10px" onclick="deleteArchivedExpense(${i})">حذف</button></div></div>`).join("")}
-function deleteArchivedExpense(i){if(!confirm("این هزینه حذف شود؟"))return;db.expenseArchive.splice(i,1);saveDB();renderSettings()}
-function viewBill(id){viewedBillId=id;const b=db.bills.find(x=>x.id===id);if(!b)return;document.getElementById("view-bill-title").textContent=b.title;document.getElementById("view-bill-content").innerHTML=tableHTML(b,"view");zoomReset("view");initPinchZoom("view");openModal("view-bill-modal")}
-function editBill(id){const b=db.bills.find(x=>x.id===id);if(b)openBillWizard(b)}
-function editViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(!b)return;closeModal("view-bill-modal");openBillWizard(b)}
-function deleteBill(id){if(!confirm("این قبض حذف شود؟"))return;db.bills=db.bills.filter(x=>x.id!==id);saveDB();renderDashboard()}
-function deleteViewedBill(){deleteBill(viewedBillId);closeModal("view-bill-modal")}
-function printCurrentBill(){printBill(buildBillData())}
-function printViewedBill(){const b=db.bills.find(x=>x.id===viewedBillId);if(b)printBill(b)}
-function printBill(b){document.getElementById("print-area").innerHTML=`<h2>${esc(b.title)}</h2>${tableHTML(b)}`;window.print()}
-let zoomState={};
-function pinchDist(t){const dx=t[0].clientX-t[1].clientX,dy=t[0].clientY-t[1].clientY;return Math.hypot(dx,dy)}
-function applyZoom(uid){const el=document.getElementById("layout-"+uid);if(el)el.style.zoom=zoomState[uid]||1}
-function zoomAdjust(uid,delta){zoomState[uid]=Math.min(3,Math.max(.5,(zoomState[uid]||1)+delta));applyZoom(uid)}
-function zoomReset(uid){zoomState[uid]=1;applyZoom(uid)}
-function initPinchZoom(uid){const scrollEl=document.getElementById("scroll-"+uid);if(!scrollEl)return;let startDist=0,startScale=1;
-scrollEl.addEventListener("touchstart",e=>{if(e.touches.length===2){startDist=pinchDist(e.touches);startScale=zoomState[uid]||1}},{passive:true});
-scrollEl.addEventListener("touchmove",e=>{if(e.touches.length===2){e.preventDefault();const d=pinchDist(e.touches);let s=startScale*(d/startDist);s=Math.min(3,Math.max(.5,s));zoomState[uid]=s;applyZoom(uid)}},{passive:false})}
-async function shareBillToWhatsApp(billId){const b=db.bills.find(x=>x.id===billId);if(!b){toast("قبضی برای ارسال پیدا نشد.","error");return}
-if(typeof html2canvas==="undefined"){toast("امکان ساخت تصویر در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");return}
-toast("در حال آماده‌سازی تصویر...","success");
-const holder=document.createElement("div");holder.style.position="fixed";holder.style.left="-9999px";holder.style.top="0";holder.innerHTML=tableHTML(b,"share");document.body.appendChild(holder);
-const controls=holder.querySelector(".zoom-controls");if(controls)controls.style.display="none";
-const scrollEl=holder.querySelector(".preview-scroll");if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.width="max-content"}
-const captureEl=holder.querySelector(".bill-detail-container");
-try{
-const canvas=await html2canvas(captureEl,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:captureEl.scrollWidth,height:captureEl.scrollHeight,windowWidth:captureEl.scrollWidth+40,windowHeight:captureEl.scrollHeight+40});
-document.body.removeChild(holder);
-canvas.toBlob(async(blob)=>{
-if(!blob){toast("خطا در ساخت تصویر.","error");return}
-const file=new File([blob],(b.title||"قبض")+".png",{type:"image/png"});
-if(navigator.canShare&&navigator.canShare({files:[file]})){
-try{await navigator.share({files:[file],title:b.title,text:b.title});return}catch(err){if(err&&err.name==="AbortError")return}
-}
-const link=document.createElement("a");link.download=(b.title||"قبض")+".png";link.href=URL.createObjectURL(blob);link.click();
-toast("عکس دانلود شد؛ آن را در گروه واتساپ به‌صورت دستی ضمیمه کنید.","success");
-window.open("https://wa.me/?text="+encodeURIComponent(b.title||"لیست هزینه"),"_blank")
-},"image/png")
-}catch(e){document.body.removeChild(holder);toast("خطا در ساخت تصویر.","error")}}
-function downloadImage(uid,filename){const el=document.getElementById("capture-"+uid);if(!el)return;
-if(typeof html2canvas==="undefined"){toast("امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");return}
-const controls=el.querySelector(".zoom-controls"),prevDisplay=controls?controls.style.display:null;
-const layout=document.getElementById("layout-"+uid),prevZoom=layout?layout.style.zoom:null;
-const scrollEl=document.getElementById("scroll-"+uid),prevOverflow=scrollEl?scrollEl.style.overflow:null,prevWidth=scrollEl?scrollEl.style.width:null,prevMaxWidth=scrollEl?scrollEl.style.maxWidth:null;
-const modalContent=el.closest(".modal-content");
-const mPrev=modalContent?{overflow:modalContent.style.overflow,overflowY:modalContent.style.overflowY,overflowX:modalContent.style.overflowX,maxWidth:modalContent.style.maxWidth,maxHeight:modalContent.style.maxHeight,width:modalContent.style.width}:null;
-function restore(){if(controls)controls.style.display=prevDisplay||"";if(layout)layout.style.zoom=prevZoom||"";if(scrollEl){scrollEl.style.overflow=prevOverflow||"";scrollEl.style.width=prevWidth||"";scrollEl.style.maxWidth=prevMaxWidth||""}if(modalContent&&mPrev){modalContent.style.overflow=mPrev.overflow||"";modalContent.style.overflowY=mPrev.overflowY||"";modalContent.style.overflowX=mPrev.overflowX||"";modalContent.style.maxWidth=mPrev.maxWidth||"";modalContent.style.maxHeight=mPrev.maxHeight||"";modalContent.style.width=mPrev.width||""}}
-if(controls)controls.style.display="none";if(layout)layout.style.zoom=1;
-if(scrollEl){scrollEl.style.overflow="visible";scrollEl.style.maxWidth="none";scrollEl.style.width="max-content"}
-if(modalContent){modalContent.style.overflow="visible";modalContent.style.overflowY="visible";modalContent.style.overflowX="visible";modalContent.style.maxWidth="none";modalContent.style.maxHeight="none";modalContent.style.width="max-content"}
-html2canvas(el,{scale:2,backgroundColor:"#ffffff",useCORS:true,width:el.scrollWidth,height:el.scrollHeight,windowWidth:el.scrollWidth+40,windowHeight:el.scrollHeight+40}).then(canvas=>{
-restore();
-const link=document.createElement("a");link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";link.href=canvas.toDataURL("image/png");link.click()
-}).catch(()=>{restore();toast("خطا در ساخت تصویر.","error")})}
-
-initAuth();
-if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("service-worker.js").catch(()=>{})})}
-</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
 </body>
+
 </html>

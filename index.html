@@ -962,7 +962,27 @@ function readVariables(){const result=[];const rows=document.querySelectorAll("#
 function totalPeople(){return db.units.reduce((s,u)=>s+Number(u.people||0),0)}
 function share(e,u){return e.type==="per_person"?(e.amount/totalPeople())*u.people:e.amount/db.units.length}
 function createExpenseList(){const c=currentBill.fixed,arr=[{key:"water",name:"آب",amount:c.water.amount,type:"per_person"},{key:"electricity",name:"برق",amount:c.electricity.amount,type:"per_unit"},{key:"gas",name:"گاز",amount:c.gas.amount,type:"per_unit"},{key:"cleaning",name:"نظافت",amount:c.cleaning.amountPerTime*c.cleaning.count,type:"per_unit"}];currentBill.variables.forEach((v,i)=>arr.push({key:"variable_"+i,name:v.name,amount:v.amount,type:"per_unit"}));return arr}
-function previousDebt(unitId,excludeBillId=null){let charges=0;db.bills.forEach(b=>{if(b.id===excludeBillId)return;const u=b.unitShares.find(x=>x.unitId===unitId);if(u)charges+=u.roundedTotal});let paid=db.payments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0);return Math.max(0,Math.round(charges-paid))}
+function billCurrentCharge(unitShare){
+  if(!unitShare)return 0;
+  const columns=unitShare.columns||{};
+  return Object.values(columns).reduce((sum,value)=>sum+(Number(value)||0),0);
+}
+
+function previousDebt(unitId,excludeBillId=null){
+  // فقط سهم واقعی هزینه های هر قبض را جمع می کنیم.
+  // roundedTotal ممکن است شامل oldDebt همان قبض باشد و استفاده از آن باعث
+  // می شد بدهی قبلی در قبض بعدی دوباره محاسبه شود.
+  let charges=0;
+  db.bills.forEach(b=>{
+    if(b.id===excludeBillId)return;
+    const u=b.unitShares.find(x=>x.unitId===unitId);
+    if(u)charges+=billCurrentCharge(u);
+  });
+  const paid=db.payments
+    .filter(x=>x.unitId===unitId)
+    .reduce((sum,x)=>sum+(Number(x.amount)||0),0);
+  return Math.max(0,Math.round(charges-paid));
+}
 function unitFund(unitId){return db.fundPayments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0)}
 function buildBillData(){const expenses=createExpenseList(),realTotal=expenses.reduce((s,e)=>s+e.amount,0),shares=db.units.map(u=>{const columns={};let currentTotal=0;expenses.forEach(e=>{const v=roundUp(share(e,u));columns[e.key]=v;currentTotal+=v});const oldDebt=previousDebt(u.id,editingBillId);return{unitId:u.id,unitNumber:u.unitNumber,residentName:u.residentName,people:u.people,columns,oldDebt,roundedTotal:currentTotal+oldDebt}});return{id:editingBillId||Date.now(),title:currentBill.title,date:currentBill.date,fixed:currentBill.fixed,variables:currentBill.variables,expenses,realTotal,roundedTotal:shares.reduce((s,u)=>s+u.roundedTotal,0),unitShares:shares,notes:{note1:db.settings.note1,note2:db.settings.note2}}}
 function notesHTML(b){const n1=b.notes?.note1,n2=b.notes?.note2;if(!n1&&!n2)return"";return `<div class="notes-wrap">${n1?`<div class="note-box">📝 ${esc(n1)}</div>`:""}${n2?`<div class="note-box">📝 ${esc(n2)}</div>`:""}</div>`}
