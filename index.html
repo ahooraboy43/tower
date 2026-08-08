@@ -709,6 +709,26 @@ height: 30px;
 #bill-center-modal .modal-content{
   border-radius:30px 30px 24px 24px;
 }
+.cell-edit{
+  padding:6px 8px;
+  min-width:78px;
+  font-size:.78rem;
+  border-radius:10px;
+  text-align:center;
+  height:auto;
+}
+.editable-badge{
+  display:inline-block;
+  margin-inline-start:6px;
+  font-size:.7rem;
+  color:var(--primary-dark);
+}
+.archived-badge{
+  display:inline-block;
+  margin-inline-start:6px;
+  font-size:.7rem;
+  color:var(--muted);
+}
 @media(max-width:650px){
   .container{padding:180px 12px 16px}
   .fixed-grid{grid-template-columns:1fr}
@@ -871,7 +891,7 @@ let supa = null;if (!window.supabase) {alert("کتابخانه Supabase بارگ
 function defaultDB(){return{units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],billCenters:[],settings:{note1:"",note2:"",round:1000}}}
 let db=JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultDB();
 db.settings=db.settings||{note1:"",note2:"",round:1000}; db.fundPayments=db.fundPayments||[]; db.billCenters=db.billCenters||[];
-let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
+let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;let manualOverrides={};function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
 if(status==="syncing"){el.textContent="🔄 در حال ذخیره";el.style.background="#ffffff30"}
 else if(status==="synced"){el.textContent="☁️ ذخیره شد";el.style.background="#ffffff30"}
 else if(status==="error"){el.textContent="⚠️ عدم اتصال (ذخیره محلی)";el.style.background="#7f1d1d55"}
@@ -919,7 +939,10 @@ function dateFromJalaliSelects(prefix){const p=readDateSelects(prefix);const g=j
 function roundUp(n){const r=Number(db.settings.round)||1;return Math.ceil(Number(n||0)/r)*r}
 function switchTab(tab,b){document.querySelectorAll("main>section").forEach(x=>x.style.display="none");document.getElementById("tab-"+tab).style.display="block";document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(tab==="dashboard")renderDashboard();if(tab==="units")renderUnits();if(tab==="settings")renderSettings()}
 function openModal(id){document.getElementById(id).classList.add("active")} function closeModal(id){document.getElementById(id).classList.remove("active")}function buildingFundBalance(){const debtCollected=db.payments.reduce((s,p)=>s+p.amount,0);const fundCollected=db.fundPayments.reduce((s,p)=>s+p.amount,0);const totalRealCost=db.bills.reduce((s,b)=>s+b.realTotal,0);return debtCollected+fundCollected-totalRealCost}
-function billCollectionStats(b){const totalAmount=b.roundedTotal||0;let collectedAmount=0,settledCount=0;b.unitShares.forEach(u=>{if(previousDebt(u.unitId)<=0){collectedAmount+=u.roundedTotal;settledCount++}});const percent=totalAmount>0?Math.min(100,Math.round(collectedAmount/totalAmount*100)):100;return{percent,collectedAmount,totalAmount,settledCount,totalUnits:b.unitShares.length}}
+function isLatestBill(billId){return db.bills.length && db.bills[db.bills.length-1].id===billId}
+function isUnitSettledForBill(b,unitId){if(b.frozen&&b.frozenStats&&b.frozenStats[unitId])return !!b.frozenStats[unitId].settled;return previousDebt(unitId)<=0}
+function freezeBillSnapshot(bill){if(!bill||bill.frozen)return;const stats={};bill.unitShares.forEach(u=>{stats[u.unitId]={settled:previousDebt(u.unitId)<=0}});bill.frozen=true;bill.frozenStats=stats}
+function billCollectionStats(b){const totalAmount=b.roundedTotal||0;let collectedAmount=0,settledCount=0;b.unitShares.forEach(u=>{if(isUnitSettledForBill(b,u.unitId)){collectedAmount+=u.roundedTotal;settledCount++}});const percent=totalAmount>0?Math.min(100,Math.round(collectedAmount/totalAmount*100)):100;return{percent,collectedAmount,totalAmount,settledCount,totalUnits:b.unitShares.length}}
 function renderDashboard(){
 const totalUnits=db.units.length,settledUnits=db.units.filter(u=>previousDebt(u.id)<=0).length;
 const totalCharged=db.bills.reduce((s,b)=>s+b.realTotal,0),totalDebtPaid=db.payments.reduce((s,p)=>s+p.amount,0);
@@ -932,7 +955,7 @@ document.getElementById("stat-cash").textContent=money(db.fundPayments.reduce((s
 element.textContent = money(deficit);
 element.style.color = deficit > 0 ? "green" : "red";// کسری بانک
 const box=document.getElementById("bills-list"); if(!db.bills.length){box.innerHTML='<div class="empty">هنوز قبضی ذخیره نشده است.</div>';return}
-box.innerHTML=db.bills.slice().reverse().map(b=>{const st=billCollectionStats(b);return `<div class="bill-item"><div class="bill-header"><div><div class="bill-name">${esc(b.title)}</div><div class="muted">${esc(b.date)}</div></div><span class="badge badge-primary">${b.unitShares.length} واحد</span></div><div class="total-box">جمع واقعی هزینه‌ها: ${money(b.realTotal)}<br>جمع بدهی قابل دریافت: ${money(b.roundedTotal)}</div>
+box.innerHTML=db.bills.slice().reverse().map(b=>{const st=billCollectionStats(b);const archived=!isLatestBill(b.id);return `<div class="bill-item"><div class="bill-header"><div><div class="bill-name">${esc(b.title)}${archived?'<span class="archived-badge">📦 آرشیو</span>':''}</div><div class="muted">${esc(b.date)}</div></div><span class="badge badge-primary">${b.unitShares.length} واحد</span></div><div class="total-box">جمع واقعی هزینه‌ها: ${money(b.realTotal)}<br>جمع بدهی قابل دریافت: ${money(b.roundedTotal)}</div>
 <div class="progress-wrap"><div class="progress-label"><span>وصول شده: ${money(st.collectedAmount)}</span><span>${faDigits(st.percent)}٪ (${faDigits(st.settledCount)} از ${faDigits(st.totalUnits)} واحد)</span></div><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${st.percent}%"></div></div></div>
 <div class="action-row"><button class="btn btn-primary" onclick="viewBill(${b.id})">👁 نمایش</button></div>
 <div class="action-row"><button class="btn btn-secondary" onclick="editBill(${b.id})">✏️ ویرایش</button><button class="btn" style="background:#25D366;color:#fff" onclick="shareBillToWhatsApp(${b.id})">📲 واتس اپ</button><button class="btn btn-danger" onclick="deleteBill(${b.id})">🗑 حذف</button></div>
@@ -947,7 +970,7 @@ const paid = db.payments.reduce(
 );return fund - billTotal + paid;
 }
 function openBillWizard(bill=null){
-editingBillId=bill?bill.id:null;document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";
+editingBillId=bill?bill.id:null;manualOverrides=bill&&bill.manualOverrides?JSON.parse(JSON.stringify(bill.manualOverrides)):{};document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";
 document.getElementById("bill-title").value=bill?bill.title:"";setDateSelects("bill-date",bill?(parseJalaliDateString(bill.date)||todayJalaliParts()):todayJalaliParts());
 setMoneyValue("water-amount",bill?.fixed?.water?.amount||0);setMoneyValue("electricity-amount",bill?.fixed?.electricity?.amount||0);setMoneyValue("gas-amount",bill?.fixed?.gas?.amount||0);setMoneyValue("cleaning-amount",bill?.fixed?.cleaning?.amountPerTime||0);document.getElementById("cleaning-count").value=bill?.fixed?.cleaning?.count||1;document.getElementById("variable-expenses").innerHTML="";
 if(bill?.variables)bill.variables.forEach(v=>addVariableExpenseRow(v.name,v.amount));else addVariableExpenseRow();goBillStep(1);openModal("bill-modal")
@@ -984,14 +1007,40 @@ function previousDebt(unitId,excludeBillId=null){
   return Math.max(0,Math.round(charges-paid));
 }
 function unitFund(unitId){return db.fundPayments.filter(x=>x.unitId===unitId).reduce((s,x)=>s+x.amount,0)}
-function buildBillData(){const expenses=createExpenseList(),realTotal=expenses.reduce((s,e)=>s+e.amount,0),shares=db.units.map(u=>{const columns={};let currentTotal=0;expenses.forEach(e=>{const v=roundUp(share(e,u));columns[e.key]=v;currentTotal+=v});const oldDebt=previousDebt(u.id,editingBillId);return{unitId:u.id,unitNumber:u.unitNumber,residentName:u.residentName,people:u.people,columns,oldDebt,roundedTotal:currentTotal+oldDebt}});return{id:editingBillId||Date.now(),title:currentBill.title,date:currentBill.date,fixed:currentBill.fixed,variables:currentBill.variables,expenses,realTotal,roundedTotal:shares.reduce((s,u)=>s+u.roundedTotal,0),unitShares:shares,notes:{note1:db.settings.note1,note2:db.settings.note2}}}
+function buildBillData(){const expenses=createExpenseList(),realTotal=expenses.reduce((s,e)=>s+e.amount,0),shares=db.units.map(u=>{const columns={};let currentTotal=0;const ov=manualOverrides[u.id];expenses.forEach(e=>{let v=roundUp(share(e,u));if(ov&&ov[e.key]!==undefined)v=ov[e.key];columns[e.key]=v;currentTotal+=v});let oldDebt=previousDebt(u.id,editingBillId);if(ov&&ov.oldDebt!==undefined)oldDebt=ov.oldDebt;return{unitId:u.id,unitNumber:u.unitNumber,residentName:u.residentName,people:u.people,columns,oldDebt,roundedTotal:currentTotal+oldDebt}});return{id:editingBillId||Date.now(),title:currentBill.title,date:currentBill.date,fixed:currentBill.fixed,variables:currentBill.variables,expenses,realTotal,roundedTotal:shares.reduce((s,u)=>s+u.roundedTotal,0),unitShares:shares,notes:{note1:db.settings.note1,note2:db.settings.note2},manualOverrides:JSON.parse(JSON.stringify(manualOverrides))}}
 function notesHTML(b){const n1=b.notes?.note1,n2=b.notes?.note2;if(!n1&&!n2)return"";return `<div class="notes-wrap">${n1?`<div class="note-box">📝 ${esc(n1)}</div>`:""}${n2?`<div class="note-box">📝 ${esc(n2)}</div>`:""}</div>`}
-function tableHTML(b,uid="preview"){const ex=b.expenses,fundTotal=b.unitShares.reduce((s,u)=>s+unitFund(u.unitId),0);return `<div class="bill-detail-container" id="capture-${uid}">
-<div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${previousDebt(u.unitId)<=0?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td><strong>${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td>${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td>${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
+function tableHTML(b,uid="preview",editable=false){const ex=b.expenses,fundTotal=b.unitShares.reduce((s,u)=>s+unitFund(u.unitId),0);return `<div class="bill-detail-container" id="capture-${uid}">
+${editable?'<div class="info-box">✏️ برای اصلاح دستی هر مبلغ، روی همان خانه در جدول ضربه بزنید و عدد جدید را وارد کنید؛ بقیه محاسبات به‌طور خودکار بروزرسانی می‌شوند.</div>':''}
+<div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${isUnitSettledForBill(b,u.unitId)?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${editable?`<input type="text" inputmode="numeric" class="form-control cell-edit" data-unit="${u.unitId}" data-key="${esc(e.key)}" value="${Number(u.columns[e.key]||0).toLocaleString('en-US')}" oninput="formatMoneyInput(this)" onchange="onCellEdit(this,'${uid}')">`:money(u.columns[e.key])}</td>`).join("")}<td>${editable?`<input type="text" inputmode="numeric" class="form-control cell-edit" data-unit="${u.unitId}" data-key="oldDebt" value="${Number(u.oldDebt||0).toLocaleString('en-US')}" oninput="formatMoneyInput(this)" onchange="onCellEdit(this,'${uid}')">`:money(u.oldDebt)}</td><td><strong id="total-${uid}-${u.unitId}">${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td id="footer-${uid}-${esc(e.key)}">${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td id="footer-total-${uid}">${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
 </div>`}
 function toggleSummaryTable(uid,show){const el=document.querySelector("#layout-"+uid+" .summary-table-wrap");if(el)el.style.display=show?"block":"none"}
-function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div><label class="summary-toggle" style="display:inline-flex;margin-bottom:10px"><input type="checkbox" onchange="toggleSummaryTable('wizard', this.checked)"> نمایش جدول دوم</label>${tableHTML(b,"wizard")}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
-function saveBill(){const b=buildBillData();if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0)db.bills[i]=b}else db.bills.push(b);saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
+function onCellEdit(el,uid){
+  const unitId=Number(el.dataset.unit),key=el.dataset.key,val=getMoneyValue(el);
+  if(!manualOverrides[unitId])manualOverrides[unitId]={};
+  manualOverrides[unitId][key]=val;
+  recalcPreviewTotals(uid);
+}
+function recalcPreviewTotals(uid){
+  const b=buildBillData();
+  if(uid==="wizard")currentBillBuilt=b;
+  b.unitShares.forEach(u=>{
+    const rowEl=document.getElementById("total-"+uid+"-"+u.unitId);
+    if(rowEl)rowEl.textContent=money(u.roundedTotal);
+  });
+  b.expenses.forEach(e=>{
+    const colEl=document.getElementById("footer-"+uid+"-"+e.key);
+    if(colEl)colEl.textContent=money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0));
+  });
+  const footEl=document.getElementById("footer-total-"+uid);
+  if(footEl)footEl.textContent=money(b.roundedTotal);
+}
+function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div><label class="summary-toggle" style="display:inline-flex;margin-bottom:10px"><input type="checkbox" onchange="toggleSummaryTable('wizard', this.checked)"> نمایش جدول دوم</label>${tableHTML(b,"wizard",true)}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
+function saveBill(){
+if(!editingBillId){const prevLatest=db.bills[db.bills.length-1];if(prevLatest)freezeBillSnapshot(prevLatest)}
+const b=buildBillData();
+if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0){if(db.bills[i].frozen){b.frozen=true;b.frozenStats=db.bills[i].frozenStats}db.bills[i]=b}}else db.bills.push(b);
+saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null;manualOverrides={}
+}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
 function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);
 const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;
 const digits=(u.phone||"").replace(/\D/g,"");const intl=digits.startsWith("0")?"98"+digits.slice(1):digits;const box=document.getElementById("contact-sheet-body");box.innerHTML="";
@@ -1177,6 +1226,17 @@ function captureBillCanvas(sourceEl, opts={}){
       table.style.width="max-content";table.style.minWidth="max-content";table.style.maxWidth="none";table.style.tableLayout="auto";
     });
 
+    // خانه‌های ورودی قابل ویرایش را برای عکس‌گیری به متن ساده تبدیل می‌کنیم تا مثل بقیه جدول دیده شوند
+    const editInputs=sourceEl.querySelectorAll("input.cell-edit");
+    const editOriginals=[];
+    editInputs.forEach(inp=>{
+      const span=document.createElement("span");
+      span.textContent=(Number(inp.value.replace(/[^\d]/g,""))||0).toLocaleString("fa-IR")+" تومان";
+      span.className="cell-edit-frozen";
+      editOriginals.push({inp,parent:inp.parentNode,next:inp.nextSibling,span});
+      inp.parentNode.replaceChild(span,inp);
+    });
+
     function restore(){
       sourceEl.style.position=original.position;sourceEl.style.left=original.left;sourceEl.style.top=original.top;
       sourceEl.style.width=original.width;sourceEl.style.minWidth=original.minWidth;sourceEl.style.maxWidth=original.maxWidth;
@@ -1188,6 +1248,7 @@ function captureBillCanvas(sourceEl, opts={}){
       if(layout&&layoutOriginal){layout.style.width=layoutOriginal.width;layout.style.minWidth=layoutOriginal.minWidth;layout.style.maxWidth=layoutOriginal.maxWidth;layout.style.overflow=layoutOriginal.overflow;layout.style.zoom=layoutOriginal.zoom}
       if(scrollEl&&scrollOriginal){scrollEl.style.width=scrollOriginal.width;scrollEl.style.minWidth=scrollOriginal.minWidth;scrollEl.style.maxWidth=scrollOriginal.maxWidth;scrollEl.style.height=scrollOriginal.height;scrollEl.style.maxHeight=scrollOriginal.maxHeight;scrollEl.style.overflow=scrollOriginal.overflow}
       tableOriginals.forEach(item=>{item.table.style.width=item.width;item.table.style.minWidth=item.minWidth;item.table.style.maxWidth=item.maxWidth;item.table.style.tableLayout=item.tableLayout});
+      editOriginals.forEach(item=>{if(item.span.parentNode)item.span.parentNode.replaceChild(item.inp,item.span)});
     }
 
     setTimeout(()=>{
@@ -1201,16 +1262,31 @@ function captureBillCanvas(sourceEl, opts={}){
   });
 }
 
-// ===== دانلود عکس =====
+// ===== دانلود عکس (سازگار با iOS Safari که از ویژگی download پشتیبانی درستی نمی‌کند) =====
 async function downloadImage(uid,filename){
   const sourceEl=document.getElementById("capture-"+uid);
   if(!sourceEl){toast("چیزی برای دانلود پیدا نشد.","error");return}
   try{
     const canvas=await captureBillCanvas(sourceEl);
-    const link=document.createElement("a");
-    link.download=(filename&&filename.trim()?filename.trim():"قبض")+".png";
-    link.href=canvas.toDataURL("image/png");
-    link.click();
+    const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    canvas.toBlob(async(blob)=>{
+      if(!blob){toast("خطا در ساخت تصویر.","error");return}
+      const name=(filename&&filename.trim()?filename.trim():"قبض")+".png";
+      const file=new File([blob],name,{type:"image/png"});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{await navigator.share({files:[file],title:name});return}catch(err){if(err&&err.name==="AbortError")return}
+      }
+      if(isIOS){
+        const url=URL.createObjectURL(blob);
+        window.open(url,"_blank");
+        toast("عکس در تب جدید باز شد؛ برای ذخیره، انگشتتان را روی عکس نگه دارید و «افزودن به عکس‌ها» را بزنید.","success");
+        return;
+      }
+      const link=document.createElement("a");
+      link.download=name;
+      link.href=URL.createObjectURL(blob);
+      link.click();
+    },"image/png");
   }catch(e){
     if(e.message==="no-html2canvas")toast("امکان دانلود عکس در دسترس نیست؛ اتصال اینترنت را بررسی کنید.","error");
     else{console.error(e);toast("خطا در ساخت تصویر.","error")}
