@@ -877,11 +877,11 @@ else if(status==="synced"){el.textContent="☁️ ذخیره شد";el.style.back
 else if(status==="error"){el.textContent="⚠️ عدم اتصال (ذخیره محلی)";el.style.background="#7f1d1d55"}
 else{el.textContent=""}}function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db));syncToCloud()}
 function syncToCloud(){if(!currentUser)return;clearTimeout(syncTimer);setSyncStatus("syncing");
-syncTimer=setTimeout(async()=>{try{const{error}=await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}},500)}async function loadDBFromCloud(){setSyncStatus("syncing");
-try{const{data,error}=await supa.from("app_state").select("data").eq("user_id",currentUser.id).maybeSingle();
+syncTimer=setTimeout(async()=>{try{const{error}=await supa.rpc("replace_app_state",{p_data:db});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}},500)}async function loadDBFromCloud(){setSyncStatus("syncing");
+try{const{data,error}=await supa.rpc("get_app_state");
 if(error)throw error;
-if(data&&data.data){db=data.data;db.settings=db.settings||{note1:"",note2:"",round:1000};db.fundPayments=db.fundPayments||[];db.expenseArchive=db.expenseArchive||[];db.payments=db.payments||[];db.units=db.units||[];db.bills=db.bills||[];db.billCenters=db.billCenters||[]}
-else{db=defaultDB();await supa.from("app_state").upsert({user_id:currentUser.id,data:db,updated_at:new Date().toISOString()})}
+if(data&&(data.units.length||data.bills.length||data.payments.length||data.billCenters.length)){db=data;db.settings=db.settings||{note1:"",note2:"",round:1000};db.fundPayments=db.fundPayments||[];db.expenseArchive=db.expenseArchive||[];db.payments=db.payments||[];db.units=db.units||[];db.bills=db.bills||[];db.billCenters=db.billCenters||[]}
+else{db=defaultDB();await supa.rpc("replace_app_state",{p_data:db})}
 localStorage.setItem(STORAGE_KEY,JSON.stringify(db));setSyncStatus("synced")}
 catch(e){console.error("load error",e);setSyncStatus("error")}}function showAuthScreen(){document.getElementById("auth-screen").style.display="flex";document.getElementById("app-root").style.display="none"}
 function showAppRoot(){document.getElementById("auth-screen").style.display="none";document.getElementById("app-root").style.display="block"}async function doLogin(){const email=document.getElementById("auth-email").value.trim();const password=document.getElementById("auth-password").value;const errEl=document.getElementById("auth-error");errEl.textContent="";
