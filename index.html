@@ -71,6 +71,112 @@ body::after{
   pointer-events:none;
   z-index:0;
 }
+.unit-actions {
+  position: relative;
+  display: inline-block;
+}
+
+/* دکمه اصلی منو */
+.dropdown-toggle {
+  padding: 0px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 25px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  background: transparent;
+  
+}
+
+.dropdown-toggle:hover {
+  transform: translateY(-2px);
+  
+}
+.dropdown-toggle  {
+  transition: transform 0.3s ease;
+}
+
+.dropdown-toggle.active  {
+  transform: rotate(90deg);
+}
+
+/* منوی کشویی */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 200px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  z-index: 1000;
+  animation: slideDown 0.2s ease;
+  z-index:1000;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+/* دکمه‌های داخل منو */
+.dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  text-align: right;
+  font-family: inherit;
+}
+
+.dropdown-menu button:hover {
+  background: #f1f5f9;
+}
+
+.dropdown-menu button.danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* انیمیشن باز شدن */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* بستن منو با کلیک خارج */
+.dropdown-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+
+.dropdown-overlay.show {
+  display: block;
+}
 body::before{left:-110px;top:110px;background:rgba(10,132,255,.08)}
 body::after{right:-110px;bottom:120px;background:rgba(31,190,127,.08)}
 #auth-screen,#app-root,main,.container,header,section,nav{position:relative;z-index:1}
@@ -144,7 +250,7 @@ a{color:inherit}
   border:1px solid var(--panel-border);
   border-radius:var(--radius);
   box-shadow:var(--shadow-soft);
-  backdrop-filter:blur(26px) saturate(180%);
+ /* backdrop-filter: blur(26px) saturate(180%);*/
   -webkit-backdrop-filter:blur(26px) saturate(180%);
 }
 .card{
@@ -320,9 +426,9 @@ textarea.form-control{min-height:96px;resize:vertical}
 .action-row .btn{flex:1;min-width:120px}
 .unit-actions{
   display:flex;
-  flex-wrap:wrap;
   gap:8px;
   margin-top:12px;
+  flex-direction: row-reverse;
 }
 .unit-actions .btn{
   width:auto;
@@ -1022,7 +1128,7 @@ function buildBillData(){const expenses=createExpenseList(),realTotal=expenses.r
 function notesHTML(b){const n1=b.notes?.note1,n2=b.notes?.note2;if(!n1&&!n2)return"";return `<div class="notes-wrap">${n1?`<div class="note-box">📝 ${esc(n1)}</div>`:""}${n2?`<div class="note-box">📝 ${esc(n2)}</div>`:""}</div>`}
 function tableHTML(b,uid="preview",editable=false){const ex=b.expenses,fundTotal=b.unitShares.reduce((s,u)=>s+unitFund(u.unitId),0);return `<div class="bill-detail-container" id="capture-${uid}">
 ${editable?'<div class="info-box"> نمایش جدول</div>':''}
-<div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>اصلاح دستی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${isUnitSettledForBill(b,u.unitId)?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${editable?`<input type="text" inputmode="numeric" class="form-control cell-edit" data-unit="${u.unitId}" data-key="${esc(e.key)}" value="${Number(u.columns[e.key]||0).toLocaleString('en-US')}" oninput="formatMoneyInput(this)" onchange="onCellEdit(this,'${uid}')">`:money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td>${editable?`<input type="text" inputmode="numeric" class="form-control cell-edit" data-unit="${u.unitId}" data-key="adjustment" value="${Number(u.adjustment||0).toLocaleString('en-US')}" oninput="formatMoneyInput(this)" onchange="onCellEdit(this,'${uid}')">`:(u.adjustment?money(u.adjustment):"—")}</td><td><strong id="total-${uid}-${u.unitId}">${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td id="footer-${uid}-${esc(e.key)}">${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td id="footer-${uid}-adjustment">${money(b.unitShares.reduce((s,u)=>s+(u.adjustment||0),0))}</td><td id="footer-total-${uid}">${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
+<div class="preview-scroll" id="scroll-${uid}"><div class="preview-layout" id="layout-${uid}"><div class="main-table-wrap"><div class="table-date-label">📅 ${esc(b.date||"")}</div><table class="preview-table"><thead><tr><th>واحد</th><th>نام</th><th>نفرات</th>${ex.map(e=>`<th>${esc(e.name)}</th>`).join("")}<th>بدهی قبلی</th><th>مبلغ پرداختی</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr${isUnitSettledForBill(b,u.unitId)?' class="row-settled"':''}><td>${esc(u.unitNumber)}</td><td>${esc(u.residentName||"-")}</td><td>${u.people}</td>${ex.map(e=>`<td>${editable?`<input type="text" inputmode="numeric" class="form-control cell-edit" data-unit="${u.unitId}" data-key="${esc(e.key)}" value="${Number(u.columns[e.key]||0).toLocaleString('en-US')}" oninput="formatMoneyInput(this)" onchange="onCellEdit(this,'${uid}')">`:money(u.columns[e.key])}</td>`).join("")}<td>${money(u.oldDebt)}</td><td><strong id="total-${uid}-${u.unitId}">${money(u.roundedTotal)}</strong></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2">جمع کل</td><td>${b.unitShares.reduce((s,u)=>s+u.people,0)}</td>${ex.map(e=>`<td id="footer-${uid}-${esc(e.key)}">${money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0))}</td>`).join("")}<td>—</td><td id="footer-total-${uid}">${money(b.roundedTotal)}</td></tr></tfoot></table>${notesHTML(b)}</div><div class="summary-table-wrap" style="display:none"><table class="preview-table summary-table"><thead><tr><th>جمع اصلی (تومان)</th><th>صندوق (تومان)</th></tr></thead><tbody>${b.unitShares.map(u=>`<tr><td>${money(u.roundedTotal)}</td><td>${money(unitFund(u.unitId))}</td></tr>`).join("")}</tbody><tfoot><tr><td>${money(b.roundedTotal)}</td><td>${money(fundTotal)}</td></tr></tfoot></table></div></div></div>
 </div>`}
 function toggleSummaryTable(uid,show){const el=document.querySelector("#layout-"+uid+" .summary-table-wrap");if(el)el.style.display=show?"block":"none"}
 function onCellEdit(el,uid){
@@ -1041,18 +1147,81 @@ function recalcPreviewTotals(uid){
     const colEl=document.getElementById("footer-"+uid+"-"+e.key);
     if(colEl)colEl.textContent=money(b.unitShares.reduce((s,u)=>s+u.columns[e.key],0));
   });
-  const adjEl=document.getElementById("footer-"+uid+"-adjustment");
-  if(adjEl)adjEl.textContent=money(b.unitShares.reduce((s,u)=>s+(u.adjustment||0),0));
+
   const footEl=document.getElementById("footer-total-"+uid);
   if(footEl)footEl.textContent=money(b.roundedTotal);
 }
+function toggleDropdown(btn) {
+  const dropdown = btn.closest('.dropdown');
+  const menu = dropdown.querySelector('.dropdown-menu');
+  const isOpen = menu.classList.contains('show');
+  
+  // بستن همه منوهای باز دیگر
+  document.querySelectorAll('.dropdown-menu.show').forEach(m => {
+    if (m !== menu) {
+      m.classList.remove('show');
+      m.closest('.dropdown').querySelector('.dropdown-toggle').classList.remove('active');
+    }
+  });
+  
+  // تغییر وضعیت منو فعلی
+  menu.classList.toggle('show');
+  btn.classList.toggle('active');
+  
+  // ایجاد overlay برای بستن با کلیک خارج
+  if (!isOpen) {
+    const overlay = document.createElement('div');
+    overlay.className = 'dropdown-overlay show';
+    overlay.onclick = function() {
+      closeAllDropdowns();
+      this.remove();
+    };
+    document.body.appendChild(overlay);
+  } else {
+    document.querySelector('.dropdown-overlay')?.remove();
+  }
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+    menu.classList.remove('show');
+    menu.closest('.dropdown').querySelector('.dropdown-toggle').classList.remove('active');
+  });
+  document.querySelector('.dropdown-overlay')?.remove();
+}
+
+// بستن منو با کلید Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeAllDropdowns();
+  }
+});
 function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div><label class="summary-toggle" style="display:inline-flex;margin-bottom:10px"><input type="checkbox" onchange="toggleSummaryTable('wizard', this.checked)"> نمایش جدول دوم</label>${tableHTML(b,"wizard",true)}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
 function saveBill(){
 if(!editingBillId){const prevLatest=db.bills[db.bills.length-1];if(prevLatest)freezeBillSnapshot(prevLatest)}
 const b=buildBillData();
 if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0){if(db.bills[i].frozen){b.frozen=true;b.frozenStats=db.bills[i].frozenStats}db.bills[i]=b}}else db.bills.push(b);
 saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null;manualOverrides={}
-}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div><div class="unit-actions"><button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button><button class="btn btn-primary" onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button><button class="btn" style="background:#f59e0b;color:#fff" onclick="openDebtAdjustModal(${u.id})">✏️ اصلاح بدهی</button><button class="btn" style="background:#00c7b6;color:#fff" onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button><button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button><button class="btn btn-secondary" onclick="editUnit(${u.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteUnit(${u.id})">🗑 حذف</button></div></div>`}).join("")}
+}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div>
+<!-- دکمه اصلی منو -->
+<div class="unit-actions">
+
+  <div class="dropdown">
+    <button class="dropdown-toggle" onclick="toggleDropdown(this)">
+      <span class="arrow">⋮</span>
+    </button>
+    <div class="dropdown-menu">
+      
+      <button onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button>
+      <button onclick="openDebtAdjustModal(${u.id})">✏️ اصلاح بدهی</button>
+      <button onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button>
+      <button onclick="editUnit(${u.id})">✏️ ویرایش</button>
+      <button onclick="deleteUnit(${u.id})" class="danger">🗑 حذف</button>
+    </div>
+  </div>
+     <button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button>
+   <button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button>
+</div></div>`}).join("")}
 function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);
 const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;
 const digits=(u.phone||"").replace(/\D/g,"");const intl=digits.startsWith("0")?"98"+digits.slice(1):digits;const box=document.getElementById("contact-sheet-body");box.innerHTML="";
@@ -1168,11 +1337,10 @@ function saveDebtAdjustment(){
 function saveSettings(){db.settings.note1=document.getElementById("setting-note1").value.trim();db.settings.note2=document.getElementById("setting-note2").value.trim();db.settings.round=Math.max(1,getMoneyValue("setting-round")||1);saveDB();toast("تنظیمات ذخیره شد.","success")}
 function renderSettings(){document.getElementById("setting-note1").value=db.settings.note1||"";document.getElementById("setting-note2").value=db.settings.note2||"";setMoneyValue("setting-round",db.settings.round||1000);renderBillCenters();const box=document.getElementById("archive-expenses-list");if(!db.expenseArchive.length){box.innerHTML='<div class="empty">هزینه متغیری در آرشیو وجود ندارد.</div>';return}box.innerHTML=db.expenseArchive.map((n,i)=>`<div class="expense-item"><div class="expense-header"><strong>📌 ${esc(n)}</strong><button class="btn btn-danger" style="width:auto;margin:0;padding:7px 10px" onclick="deleteArchivedExpense(${i})">حذف</button></div></div>`).join("")}
 function renderBillCenters(){const box=document.getElementById("bill-centers-list");if(!box)return;if(!db.billCenters.length){box.innerHTML='<div class="empty">هنوز قبضی ثبت نشده است.</div>';return}
-box.innerHTML=db.billCenters.map(c=>`<div class="bills-center-item"><div class="bills-center-row"><div><div class="bill-name">${esc(c.name)}</div><div class="muted">شناسه: ${esc(c.subscriberId||"-")}</div><div class="muted">آخرین بررسی: ${c.lastCheckDate?esc(c.lastCheckDate):"هنوز بررسی نشده"}</div></div></div><div class="unit-actions">${c.url?`<button class="btn btn-primary" onclick="openBillCenterLink(${c.id})">🔗 باز کردن صفحه پرداخت</button>`:""}<button class="btn btn-success" onclick="markBillCenterChecked(${c.id})">✅ بررسی شد</button><button class="btn btn-secondary" onclick="openBillCenterModal(${c.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteBillCenterEntry(${c.id})">🗑 حذف</button></div></div>`).join("")}
+box.innerHTML=db.billCenters.map(c=>`<div class="bills-center-item"><div class="bills-center-row"><div><div class="bill-name">${esc(c.name)}</div><div class="muted">شناسه: ${esc(c.subscriberId||"-")}</div></div></div><div class="unit-actions">${c.url?`<button class="btn btn-primary" onclick="openBillCenterLink(${c.id})">🔗 باز کردن صفحه پرداخت</button>`:""}<button class="btn btn-secondary" onclick="openBillCenterModal(${c.id})">✏️ ویرایش</button><button class="btn btn-danger" onclick="deleteBillCenterEntry(${c.id})">🗑 حذف</button></div></div>`).join("")}
 function openBillCenterModal(id=null){const c=id?db.billCenters.find(x=>x.id===id):null;document.getElementById("bill-center-modal-title").textContent=c?"ویرایش قبض":"افزودن قبض";document.getElementById("editing-bill-center-id").value=c?c.id:"";document.getElementById("bill-center-name").value=c?c.name:"";document.getElementById("bill-center-subscriber").value=c?c.subscriberId:"";document.getElementById("bill-center-url").value=c?c.url||"":"";openModal("bill-center-modal")}
 function saveBillCenterEntry(){const idRaw=document.getElementById("editing-bill-center-id").value,id=idRaw?Number(idRaw):0,name=document.getElementById("bill-center-name").value.trim(),subscriberId=document.getElementById("bill-center-subscriber").value.trim(),url=document.getElementById("bill-center-url").value.trim();if(!name){toast("نام قبض را وارد کنید.","error");return}if(id){const c=db.billCenters.find(x=>x.id===id);if(c)Object.assign(c,{name,subscriberId,url})}else{db.billCenters.push({id:Date.now(),name,subscriberId,url,lastCheckDate:""})}saveDB();closeModal("bill-center-modal");renderBillCenters();toast("ذخیره شد.","success")}
 function deleteBillCenterEntry(id){if(!confirm("این قبض از لیست حذف شود؟"))return;db.billCenters=db.billCenters.filter(x=>x.id!==id);saveDB();renderBillCenters()}
-function markBillCenterChecked(id){const c=db.billCenters.find(x=>x.id===id);if(!c)return;const t=todayJalaliParts();c.lastCheckDate=formatJalaliDate(t.d,t.m,t.y);saveDB();renderBillCenters();toast("تاریخ بررسی بروزرسانی شد.","success")}
 function openBillCenterLink(id){const c=db.billCenters.find(x=>x.id===id);if(!c||!c.url)return;window.open(c.url,"_blank")}
 function deleteArchivedExpense(i){if(!confirm("این هزینه حذف شود؟"))return;db.expenseArchive.splice(i,1);saveDB();renderSettings()}
 function viewBill(id){viewedBillId=id;const b=db.bills.find(x=>x.id===id);if(!b)return;document.getElementById("view-bill-title").textContent=b.title;document.getElementById("view-bill-content").innerHTML=tableHTML(b,"view");zoomReset("view");initPinchZoom("view");openModal("view-bill-modal")}
