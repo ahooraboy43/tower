@@ -171,22 +171,12 @@ body::after{
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 0;
 }
 
 .dropdown-overlay.show {
   display: block;
 }
-.dropdown-toggle:focus + .dropdown-menu,
-.dropdown-toggle.active + .dropdown-menu,
-.dropdown:focus-within .dropdown-menu {
-  display: block;
-}
 
-/* برای بسته شدن با کلیک خارج */
-.dropdown-toggle:not(:focus):not(.active) + .dropdown-menu {
-  display: none;
-}
 body::before{left:-110px;top:110px;background:rgba(10,132,255,.08)}
 body::after{right:-110px;bottom:120px;background:rgba(31,190,127,.08)}
 #auth-screen,#app-root,main,.container,header,section,nav{position:relative;z-index:1}
