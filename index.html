@@ -1238,14 +1238,14 @@ toast(ok?"قبض با موفقیت ذخیره شد.":"قبض ذخیره محلی
     <div class="dropdown-menu">
       
       <button  onclick="openPaymentModal(${u.id},'fund')"><span style="color:#004ec7">£</span>    واریز صندوق</button>
-      <button  onclick="openDebtAdjustModal(${u.id})"><span style="color:#73071f">✒</span>      اصلاح بدهی</button>
+      <button  onclick="openDebtAdjustModal(${u.id})"><span style="color:#73071f">₧</span>      اصلاح بدهی</button>
       <button  onclick="openPaymentHistory(${u.id})"><span style="color:#878416">§</span>    تاریخچه</button>
-      <button  onclick="editUnit(${u.id})"><span style="color:#05877c">✎</span>    ویرایش</button>
+      <button  onclick="editUnit(${u.id})"><span style="color:#05877c;font-size: large;">✎</span>    ویرایش</button>
       <button  onclick="deleteUnit(${u.id})" class="danger"><span style="color:#ff0000">✘</span>    حذف</button>
     </div>
   </div>
-     <button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')"> پرداخت بدهی $</button>
-   <button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})"> تماس با واحد ✆</button>
+     <button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')"> پرداخت بدهی <span style="font-size: large;">$</span></button>
+   <button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})"> تماس با واحد <span style="font-size: large;">✆</span></button>
 </div></div>`}).join("")}
 function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);
 const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;
