@@ -171,11 +171,21 @@ body::after{
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: 0;
 }
 
 .dropdown-overlay.show {
   display: block;
+}
+.dropdown-toggle:focus + .dropdown-menu,
+.dropdown-toggle.active + .dropdown-menu,
+.dropdown:focus-within .dropdown-menu {
+  display: block;
+}
+
+/* برای بسته شدن با کلیک خارج */
+.dropdown-toggle:not(:focus):not(.active) + .dropdown-menu {
+  display: none;
 }
 body::before{left:-110px;top:110px;background:rgba(10,132,255,.08)}
 body::after{right:-110px;bottom:120px;background:rgba(31,190,127,.08)}
@@ -1004,13 +1014,34 @@ let supa = null;if (!window.supabase) {alert("کتابخانه Supabase بارگ
 function defaultDB(){return{units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],billCenters:[],debtAdjustments:[],settings:{note1:"",note2:"",round:1000}}}
 let db=JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultDB();
 db.settings=db.settings||{note1:"",note2:"",round:1000}; db.fundPayments=db.fundPayments||[]; db.billCenters=db.billCenters||[]; db.debtAdjustments=db.debtAdjustments||[];
-let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;let manualOverrides={};function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
+let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;let manualOverrides={};let cloudSyncPending=false;
+window.addEventListener("beforeunload",e=>{if(cloudSyncPending){e.preventDefault();e.returnValue=""}});
+function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
 if(status==="syncing"){el.textContent="🔄 در حال ذخیره";el.style.background="#ffffff30"}
 else if(status==="synced"){el.textContent="☁️ ذخیره شد";el.style.background="#ffffff30"}
 else if(status==="error"){el.textContent="⚠️ عدم اتصال (ذخیره محلی)";el.style.background="#7f1d1d55"}
 else{el.textContent=""}}function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db));syncToCloud()}
-function syncToCloud(){if(!currentUser)return;clearTimeout(syncTimer);setSyncStatus("syncing");
-syncTimer=setTimeout(async()=>{try{const{error}=await supa.rpc("replace_app_state",{p_data:db});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}},500)}async function loadDBFromCloud(){setSyncStatus("syncing");
+function syncToCloud(){if(!currentUser)return;clearTimeout(syncTimer);setSyncStatus("syncing");cloudSyncPending=true;
+syncTimer=setTimeout(async()=>{try{const{error}=await supa.rpc("replace_app_state",{p_data:db});if(error)throw error;setSyncStatus("synced")}catch(e){console.error("sync error",e);setSyncStatus("error")}finally{cloudSyncPending=false}},500)}
+async function syncToCloudNow(){
+  if(!currentUser)return true;
+  clearTimeout(syncTimer);
+  setSyncStatus("syncing");
+  cloudSyncPending=true;
+  try{
+    const{error}=await supa.rpc("replace_app_state",{p_data:db});
+    if(error)throw error;
+    setSyncStatus("synced");
+    return true;
+  }catch(e){
+    console.error("sync error",e);
+    setSyncStatus("error");
+    return false;
+  }finally{
+    cloudSyncPending=false;
+  }
+}
+async function loadDBFromCloud(){setSyncStatus("syncing");
 try{const{data,error}=await supa.rpc("get_app_state");
 if(error)throw error;
 if(data&&(data.units.length||data.bills.length||data.payments.length||data.billCenters.length)){db=data;db.settings=db.settings||{note1:"",note2:"",round:1000};db.fundPayments=db.fundPayments||[];db.expenseArchive=db.expenseArchive||[];db.payments=db.payments||[];db.units=db.units||[];db.bills=db.bills||[];db.billCenters=db.billCenters||[];db.debtAdjustments=db.debtAdjustments||[]}
@@ -1197,11 +1228,14 @@ document.addEventListener('keydown', function(e) {
   }
 });
 function renderPreview(){const b=buildBillData();document.getElementById("bill-preview").innerHTML=`<div class="card"><div class="card-title"><span>پیش‌نمایش قبض</span><span>${esc(b.title)}</span></div><label class="summary-toggle" style="display:inline-flex;margin-bottom:10px"><input type="checkbox" onchange="toggleSummaryTable('wizard', this.checked)"> نمایش جدول دوم</label>${tableHTML(b,"wizard",true)}</div>`;zoomReset("wizard");initPinchZoom("wizard")}
-function saveBill(){
+async function saveBill(){
 if(!editingBillId){const prevLatest=db.bills[db.bills.length-1];if(prevLatest)freezeBillSnapshot(prevLatest)}
 const b=buildBillData();
 if(editingBillId){const i=db.bills.findIndex(x=>x.id===editingBillId);if(i>=0){if(db.bills[i].frozen){b.frozen=true;b.frozenStats=db.bills[i].frozenStats}db.bills[i]=b}}else db.bills.push(b);
-saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفقیت ذخیره شد.","success");editingBillId=null;manualOverrides={}
+localStorage.setItem(STORAGE_KEY,JSON.stringify(db));
+closeModal("bill-modal");renderDashboard();editingBillId=null;manualOverrides={};
+const ok=await syncToCloudNow();
+toast(ok?"قبض با موفقیت ذخیره شد.":"قبض ذخیره محلی شد؛ اتصال اینترنت ضعیف است و ممکن است با رفرش صفحه هنوز همگام نشده باشد.",ok?"success":"error")
 }function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div>
 <!-- دکمه اصلی منو -->
 <div class="unit-actions">
@@ -1212,15 +1246,15 @@ saveDB();closeModal("bill-modal");renderDashboard();toast("قبض با موفق�
     </button>
     <div class="dropdown-menu">
       
-      <button onclick="openPaymentModal(${u.id},'fund')">🏦 واریز صندوق</button>
-      <button onclick="openDebtAdjustModal(${u.id})">✏️ اصلاح بدهی</button>
-      <button onclick="openPaymentHistory(${u.id})">🧾 تاریخچه</button>
-      <button onclick="editUnit(${u.id})">✏️ ویرایش</button>
-      <button onclick="deleteUnit(${u.id})" class="danger">🗑 حذف</button>
+      <button  onclick="openPaymentModal(${u.id},'fund')"><span style="color:#004ec7">£</span>    واریز صندوق</button>
+      <button  onclick="openDebtAdjustModal(${u.id})"><span style="color:#73071f">✒</span>      اصلاح بدهی</button>
+      <button  onclick="openPaymentHistory(${u.id})"><span style="color:#878416">§</span>    تاریخچه</button>
+      <button  onclick="editUnit(${u.id})"><span style="color:#05877c">✎</span>    ویرایش</button>
+      <button  onclick="deleteUnit(${u.id})" class="danger"><span style="color:#ff0000">✘</span>    حذف</button>
     </div>
   </div>
-     <button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')">💳 پرداخت بدهی</button>
-   <button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})">📞 تماس با واحد</button>
+     <button class="btn btn-success" onclick="openPaymentModal(${u.id},'debt')"> پرداخت بدهی $</button>
+   <button class="btn" style="background:#0ea5e9;color:#fff" onclick="openContactSheet(${u.id})"> تماس با واحد ✆</button>
 </div></div>`}).join("")}
 function openContactSheet(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const debt=previousDebt(unitId);
 const msg=`سلام ${u.residentName||"همسایه عزیز"}، واحد ${u.unitNumber}\nبدهی فعلی شما ${money(debt)} می‌باشد.\nلطفاً در اسرع وقت واریز و اطلاع بدید. با تشکر 🙏`;
@@ -1322,17 +1356,18 @@ setTimeout(()=>{location.reload()},700)
 })()
 }
 function openPaymentModal(unitId,type){const u=db.units.find(x=>x.id===unitId),isFund=type==="fund";document.getElementById("payment-unit-id").value=unitId;document.getElementById("payment-type").value=type;document.getElementById("payment-title").textContent=isFund?"واریز به صندوق":"ثبت پرداخت بدهی";setMoneyValue("payment-amount",isFund?0:previousDebt(unitId));document.getElementById("payment-info").innerHTML=`<div class="info-box">${isFund?"صندوق واحد کاملاً جدا از بدهی است. موجودی فعلی صندوق: ":"بدهی فعلی واحد: "}<strong>${money(isFund?unitFund(unitId):previousDebt(unitId))}</strong></div>`;setDateSelects("payment-date",todayJalaliParts());openModal("payment-modal")}
-function savePayment(){const unitId=Number(document.getElementById("payment-unit-id").value),type=document.getElementById("payment-type").value,amount=getMoneyValue("payment-amount");if(!amount||amount<=0){toast("مبلغ صحیح نیست.","error");return}const p={id:Date.now(),unitId,amount,date:dateFromJalaliSelects("payment-date").toISOString()};if(type==="fund")db.fundPayments.push(p);else db.payments.push(p);saveDB();closeModal("payment-modal");renderUnits();renderDashboard();toast(type==="fund"?"واریز صندوق ثبت شد.":"پرداخت بدهی ثبت شد.","success")}
+async function savePayment(){const unitId=Number(document.getElementById("payment-unit-id").value),type=document.getElementById("payment-type").value,amount=getMoneyValue("payment-amount");if(!amount||amount<=0){toast("مبلغ صحیح نیست.","error");return}const p={id:Date.now(),unitId,amount,date:dateFromJalaliSelects("payment-date").toISOString()};if(type==="fund")db.fundPayments.push(p);else db.payments.push(p);localStorage.setItem(STORAGE_KEY,JSON.stringify(db));closeModal("payment-modal");renderUnits();renderDashboard();const ok=await syncToCloudNow();toast(ok?(type==="fund"?"واریز صندوق ثبت شد.":"پرداخت بدهی ثبت شد."):"ذخیره محلی شد؛ اتصال اینترنت را بررسی کنید.",ok?"success":"error")}
 function openDebtAdjustModal(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;const current=previousDebt(unitId);document.getElementById("adjust-unit-id").value=unitId;document.getElementById("adjust-info").innerHTML=`<div class="info-box">بدهی فعلی ثبت‌شده واحد ${esc(u.unitNumber)}: <strong>${money(current)}</strong></div>`;setMoneyValue("adjust-new-debt",current);openModal("debt-adjust-modal")}
-function saveDebtAdjustment(){
+async function saveDebtAdjustment(){
   const unitId=Number(document.getElementById("adjust-unit-id").value);
   const target=getMoneyValue("adjust-new-debt");
   const current=previousDebt(unitId);
   const delta=target-current;
   if(delta===0){toast("بدهی همین الان هم همین مقدار است.","success");closeModal("debt-adjust-modal");return}
   db.debtAdjustments.push({id:Date.now(),unitId,amount:delta,date:new Date().toISOString()});
-  saveDB();closeModal("debt-adjust-modal");renderUnits();renderDashboard();
-  toast("بدهی واحد اصلاح شد.","success")
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(db));closeModal("debt-adjust-modal");renderUnits();renderDashboard();
+  const ok=await syncToCloudNow();
+  toast(ok?"بدهی واحد اصلاح شد.":"اصلاح محلی ذخیره شد؛ اتصال اینترنت را بررسی کنید.",ok?"success":"error")
 }
 function saveSettings(){db.settings.note1=document.getElementById("setting-note1").value.trim();db.settings.note2=document.getElementById("setting-note2").value.trim();db.settings.round=Math.max(1,getMoneyValue("setting-round")||1);saveDB();toast("تنظیمات ذخیره شد.","success")}
 function renderSettings(){document.getElementById("setting-note1").value=db.settings.note1||"";document.getElementById("setting-note2").value=db.settings.note2||"";setMoneyValue("setting-round",db.settings.round||1000);renderBillCenters();const box=document.getElementById("archive-expenses-list");if(!db.expenseArchive.length){box.innerHTML='<div class="empty">هزینه متغیری در آرشیو وجود ندارد.</div>';return}box.innerHTML=db.expenseArchive.map((n,i)=>`<div class="expense-item"><div class="expense-header"><strong>📌 ${esc(n)}</strong><button class="btn btn-danger" style="width:auto;margin:0;padding:7px 10px" onclick="deleteArchivedExpense(${i})">حذف</button></div></div>`).join("")}
