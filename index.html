@@ -954,6 +954,17 @@ height: 30px;
 <div class="form-group"><label class="form-label">نام ساکن</label><input id="resident-name" class="form-control"></div>
 <div class="form-group"><label class="form-label">شماره موبایل (اختیاری - برای یادآوری واتساپ)</label><input id="resident-phone" class="form-control" placeholder="09xxxxxxxxx" inputmode="tel"></div>
 <div class="form-group"><label class="form-label">تعداد نفرات</label><input id="unit-people" type="number" min="1" class="form-control"></div>
+<div class="form-group">
+  <label class="form-label">وضعیت پارکینگ</label>
+  <select id="unit-has-parking" class="form-control" onchange="document.getElementById('unit-parking-number-wrap').style.display=this.value==='1'?'block':'none'">
+    <option value="0">ندارد</option>
+    <option value="1">دارد</option>
+  </select>
+</div>
+<div class="form-group" id="unit-parking-number-wrap" style="display:none">
+  <label class="form-label">شماره محل پارکینگ (اختیاری)</label>
+  <input id="unit-parking-number" class="form-control" placeholder="مثلاً P3">
+</div>
 <button class="btn btn-primary" onclick="saveUnit()">💾 ذخیره اطلاعات</button></div></div>
 <div class="modal" id="payment-modal"><div class="modal-content">
 <div class="modal-header"><strong id="payment-title">ثبت پرداخت بدهی</strong><button class="close-btn" onclick="closeModal('payment-modal')">×</button></div>
@@ -1004,7 +1015,16 @@ const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 let supa = null;if (!window.supabase) {alert("کتابخانه Supabase بارگذاری نشد.");} else {supa = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}
 function defaultDB(){return{units:[],bills:[],payments:[],fundPayments:[],expenseArchive:[],billCenters:[],debtAdjustments:[],settings:{note1:"",note2:"",round:1000}}}
 let db=JSON.parse(localStorage.getItem(STORAGE_KEY))||defaultDB();
-db.settings=db.settings||{note1:"",note2:"",round:1000}; db.fundPayments=db.fundPayments||[]; db.billCenters=db.billCenters||[]; db.debtAdjustments=db.debtAdjustments||[];
+db.settings=db.settings||{note1:"",note2:"",round:1000};
+db.fundPayments=db.fundPayments||[];
+db.billCenters=db.billCenters||[];
+db.debtAdjustments=db.debtAdjustments||[];
+
+// سازگاری با داده‌های قدیمی: فیلدهای پارکینگ واحدها
+(db.units||[]).forEach(u=>{
+  if(typeof u.hasParking !== "boolean") u.hasParking = false;
+  if(typeof u.parkingNumber !== "string") u.parkingNumber = "";
+});
 let currentBill={},editingBillId=null,viewedBillId=null,currentUser=null,syncTimer=null;let manualOverrides={};let cloudSyncPending=false;
 window.addEventListener("beforeunload",e=>{if(cloudSyncPending){e.preventDefault();e.returnValue=""}});
 function setSyncStatus(status){const el=document.getElementById("sync-badge");if(!el)return;
@@ -1105,21 +1125,264 @@ const paid = db.payments.reduce(
 );return fund - billTotal + paid;
 }
 function openBillWizard(bill=null){
-editingBillId=bill?bill.id:null;manualOverrides=bill&&bill.manualOverrides?JSON.parse(JSON.stringify(bill.manualOverrides)):{};document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";
-document.getElementById("bill-title").value=bill?bill.title:"";setDateSelects("bill-date",bill?(parseJalaliDateString(bill.date)||todayJalaliParts()):todayJalaliParts());
-setMoneyValue("water-amount",bill?.fixed?.water?.amount||0);setMoneyValue("electricity-amount",bill?.fixed?.electricity?.amount||0);setMoneyValue("gas-amount",bill?.fixed?.gas?.amount||0);setMoneyValue("cleaning-amount",bill?.fixed?.cleaning?.amountPerTime||0);document.getElementById("cleaning-count").value=bill?.fixed?.cleaning?.count||1;document.getElementById("variable-expenses").innerHTML="";
-if(bill?.variables)bill.variables.forEach(v=>addVariableExpenseRow(v.name,v.amount));else addVariableExpenseRow();goBillStep(1);openModal("bill-modal")
+  editingBillId=bill?bill.id:null;
+  manualOverrides=bill&&bill.manualOverrides?JSON.parse(JSON.stringify(bill.manualOverrides)):{};
+  document.getElementById("bill-modal-title").textContent=bill?"ویرایش قبض":"ایجاد لیست هزینه جدید";
+  document.getElementById("bill-title").value=bill?bill.title:"";
+  setDateSelects("bill-date",bill?(parseJalaliDateString(bill.date)||todayJalaliParts()):todayJalaliParts());
+  setMoneyValue("water-amount",bill?.fixed?.water?.amount||0);
+  setMoneyValue("electricity-amount",bill?.fixed?.electricity?.amount||0);
+  setMoneyValue("gas-amount",bill?.fixed?.gas?.amount||0);
+  setMoneyValue("cleaning-amount",bill?.fixed?.cleaning?.amountPerTime||0);
+  document.getElementById("cleaning-count").value=bill?.fixed?.cleaning?.count||1;
+  document.getElementById("variable-expenses").innerHTML="";
+
+  if(bill?.variables&&bill.variables.length){
+    bill.variables.forEach(v=>{
+      addVariableExpenseRow(v.name,v.amount,{
+        mode:v.mode||"equal",
+        selectedUnits:v.config?.selectedUnits||[],
+        weights:v.config?.weights||{},
+        manualAmounts:v.config?.manualAmounts||{},
+        parkingWeight:v.config?.parkingWeight||2
+      });
+    });
+  }else{
+    addVariableExpenseRow();
+  }
+
+  goBillStep(1);
+  openModal("bill-modal");
 }
 function goBillStep(step){
-if(step===2&&!document.getElementById("bill-title").value.trim()){toast("عنوان لیست را وارد کنید.","error");return}
-if(step===4){if(!db.units.length){toast("ابتدا واحدها را ثبت کنید.","error");return}const vars=readVariables();if(vars===null)return;currentBill={title:document.getElementById("bill-title").value.trim(),date:document.getElementById("bill-date").value.trim(),fixed:{water:{amount:getMoneyValue("water-amount")},electricity:{amount:getMoneyValue("electricity-amount")},gas:{amount:getMoneyValue("gas-amount")},cleaning:{amountPerTime:getMoneyValue("cleaning-amount"),count:Number(document.getElementById("cleaning-count").value)||1}},variables:vars};renderPreview()}
-document.querySelectorAll(".wizard-step").forEach(x=>x.classList.remove("active"));document.getElementById("bill-step-"+step).classList.add("active")
+  if(step===2&&!document.getElementById("bill-title").value.trim()){toast("عنوان لیست را وارد کنید.","error");return}
+  if(step===4){
+    if(!db.units.length){toast("ابتدا واحدها را ثبت کنید.","error");return}
+    const vars=readVariables();
+    if(vars===null)return;
+    currentBill={
+      title:document.getElementById("bill-title").value.trim(),
+      date:document.getElementById("bill-date").value.trim(),
+      fixed:{
+        water:{amount:getMoneyValue("water-amount")},
+        electricity:{amount:getMoneyValue("electricity-amount")},
+        gas:{amount:getMoneyValue("gas-amount")},
+        cleaning:{amountPerTime:getMoneyValue("cleaning-amount"),count:Number(document.getElementById("cleaning-count").value)||1}
+      },
+      variables:vars
+    };
+    renderPreview();
+  }
+  document.querySelectorAll(".wizard-step").forEach(x=>x.classList.remove("active"));
+  document.getElementById("bill-step-"+step).classList.add("active");
 }
-function addVariableExpenseRow(name="",amount=""){const box=document.getElementById("variable-expenses"),row=document.createElement("div");row.className="expense-row";let opts='<option value="">انتخاب هزینه از آرشیو</option>';db.expenseArchive.forEach(n=>opts+=`<option value="${esc(n)}" ${n===name?"selected":""}>${esc(n)}</option>`);row.innerHTML=`<div class="archive-select-row"><div><label class="form-label">نام هزینه</label><select class="form-control variable-name">${opts}</select></div><div><label class="form-label">مبلغ این ماه</label><input type="text" inputmode="numeric" class="form-control variable-amount" value="${amount?Number(amount).toLocaleString("en-US"):""}" oninput="formatMoneyInput(this)"></div></div><div class="form-group" style="margin-top:10px"><label class="form-label">نام هزینه جدید در صورت نیاز</label><input class="form-control new-variable-name"></div><button class="btn btn-danger" onclick="this.parentElement.remove()">🗑 حذف</button>`;box.appendChild(row)}
-function readVariables(){const result=[];const rows=document.querySelectorAll("#variable-expenses .expense-row");for(const row of rows){const selected=row.querySelector(".variable-name").value.trim(),newName=row.querySelector(".new-variable-name").value.trim(),amount=getMoneyValue(row.querySelector(".variable-amount")),name=newName||selected;if(!name&&amount===0)continue;if(!name){toast("نام هزینه متغیر را وارد کنید.","error");return null}if(amount<=0){toast("مبلغ هزینه «"+name+"» صحیح نیست.","error");return null}result.push({name,amount});if(!db.expenseArchive.includes(name))db.expenseArchive.push(name)}saveDB();return result}
+function addVariableExpenseRow(name="",amount="",config=null){
+  const box=document.getElementById("variable-expenses"),row=document.createElement("div");
+  row.className="expense-row";
+  let opts='<option value="">انتخاب هزینه از آرشیو</option>';
+  db.expenseArchive.forEach(n=>opts+=`<option value="${esc(n)}" ${n===name?"selected":""}>${esc(n)}</option>`);
+  const cfg=config||{mode:"equal",weights:{},manualAmounts:{},selectedUnits:[],parkingWeight:2};
+  row.innerHTML=`
+    <div class="archive-select-row">
+      <div><label class="form-label">نام هزینه</label><select class="form-control variable-name">${opts}</select></div>
+      <div><label class="form-label">مبلغ این ماه</label><input type="text" inputmode="numeric" class="form-control variable-amount" value="${amount?Number(amount).toLocaleString("en-US"):""}" oninput="formatMoneyInput(this)"></div>
+    </div>
+    <div class="form-group" style="margin-top:10px"><label class="form-label">نام هزینه جدید در صورت نیاز</label><input class="form-control new-variable-name"></div>
+    <div class="form-group">
+      <label class="form-label">روش تقسیم هزینه</label>
+      <select class="form-control variable-mode" onchange="onVariableModeChange(this)">
+        <option value="equal" ${cfg.mode==="equal"?"selected":""}>مساوی بین همه واحدها</option>
+        <option value="per_person" ${cfg.mode==="per_person"?"selected":""}>بر اساس نفرات</option>
+        <option value="parking_only" ${cfg.mode==="parking_only"?"selected":""}>فقط واحدهای پارکینگ‌دار (مساوی)</option>
+        <option value="parking_double" ${cfg.mode==="parking_double"?"selected":""}>پارکینگ‌دارها با ضریب بیشتر</option>
+        <option value="manual_units" ${cfg.mode==="manual_units"?"selected":""}>انتخاب دستی واحدها + تقسیم مساوی</option>
+        <option value="weighted_units" ${cfg.mode==="weighted_units"?"selected":""}>انتخاب دستی واحدها + ضریب دلخواه</option>
+        <option value="manual_amounts" ${cfg.mode==="manual_amounts"?"selected":""}>تعیین مبلغ دستی برای هر واحد</option>
+      </select>
+    </div>
+    <div class="variable-config" style="display:none"></div>
+    <button class="btn btn-danger" onclick="this.parentElement.remove()">🗑 حذف</button>`;
+  box.appendChild(row);
+  onVariableModeChange(row.querySelector(".variable-mode"));
+  if(config){applyVariableConfigToRow(row,config);}
+}
+function onVariableModeChange(sel){
+  const row=sel.closest(".expense-row");
+  const cfgBox=row.querySelector(".variable-config");
+  const mode=sel.value;
+  if(mode==="equal"||mode==="per_person"){
+    cfgBox.style.display="none";cfgBox.innerHTML="";return;
+  }
+  cfgBox.style.display="block";
+  if(mode==="parking_only"){
+    cfgBox.innerHTML=`<div class="info-box">فقط واحدهایی که در مشخصاتشان «پارکینگ دارد» ثبت شده، در این هزینه شریک‌اند و مبلغ بین آن‌ها مساوی تقسیم می‌شود.</div>`;
+  }
+  else if(mode==="parking_double"){
+    const w=row.dataset.parkingWeight||2;
+    cfgBox.innerHTML=`<div class="form-group"><label class="form-label">ضریب واحدهای پارکینگ‌دار (پیش‌فرض ۲)</label>
+      <input type="number" min="1" step="0.1" class="form-control parking-weight" value="${w}" onchange="row.dataset.parkingWeight=this.value"></div>
+      <div class="info-box">پارکینگ‌دارها این ضریب را می‌گیرند، بقیه ضریب ۱. مبلغ متناسب با جمع ضرایب تقسیم می‌شود.</div>`;
+  }
+  else if(mode==="manual_units"||mode==="weighted_units"||mode==="manual_amounts"){
+    cfgBox.innerHTML=renderUnitPicker(mode);
+  }
+}
+
+function renderUnitPicker(mode){
+  if(!db.units.length)return '<div class="empty">ابتدا واحدها را ثبت کنید.</div>';
+  const rows=db.units.map(u=>{
+    const label=`واحد ${esc(u.unitNumber)} — ${esc(u.residentName||"بدون نام")}${u.hasParking?" 🅿️":""}`;
+    if(mode==="manual_amounts"){
+      return `<div class="payment-history-row" style="margin-bottom:6px">
+        <label style="flex:1">${label}</label>
+        <input type="text" inputmode="numeric" class="form-control unit-amount" data-unit="${u.id}" value="" placeholder="مبلغ سهم" oninput="formatMoneyInput(this)" style="max-width:140px">
+      </div>`;
+    }
+    if(mode==="weighted_units"){
+      return `<div class="payment-history-row" style="margin-bottom:6px">
+        <label style="flex:1"><input type="checkbox" class="unit-check" data-unit="${u.id}"> ${label}</label>
+        <input type="number" min="0" step="0.1" class="form-control unit-weight" data-unit="${u.id}" value="1" style="max-width:80px" title="ضریب">
+      </div>`;
+    }
+    return `<div class="payment-history-row" style="margin-bottom:6px">
+      <label style="flex:1"><input type="checkbox" class="unit-check" data-unit="${u.id}"> ${label}</label>
+    </div>`;
+  }).join("");
+  return `<div class="info-box">واحدهای مشمول را انتخاب کنید${mode==="manual_amounts"?" و مبلغ هر واحد را وارد کنید":mode==="weighted_units"?" و ضریب هر واحد را تعیین کنید":""}.</div>${rows}
+    <div class="total-box">جمع سهم‌ها: <strong class="sum-preview">۰</strong> / مبلغ کل: <strong class="total-preview">۰</strong></div>`;
+}
+
+function applyVariableConfigToRow(row,config){
+  const mode=config.mode||"equal";
+  const sel=row.querySelector(".variable-mode");sel.value=mode;
+  onVariableModeChange(sel);
+  if(mode==="parking_double"&&config.parkingWeight){
+    const wEl=row.querySelector(".parking-weight");if(wEl)wEl.value=config.parkingWeight;
+    row.dataset.parkingWeight=config.parkingWeight;
+  }
+  if(mode==="manual_units"||mode==="weighted_units"||mode==="manual_amounts"){
+    (config.selectedUnits||[]).forEach(uid=>{
+      const cb=row.querySelector('.unit-check[data-unit="'+uid+'"]');if(cb)cb.checked=true;
+    });
+    if(mode==="weighted_units"&&config.weights){
+      Object.entries(config.weights).forEach(([uid,w])=>{
+        const inp=row.querySelector('.unit-weight[data-unit="'+uid+'"]');if(inp)inp.value=w;
+      });
+    }
+    if(mode==="manual_amounts"&&config.manualAmounts){
+      Object.entries(config.manualAmounts).forEach(([uid,a])=>{
+        const inp=row.querySelector('.unit-amount[data-unit="'+uid+'"]');if(inp)inp.value=Number(a).toLocaleString("en-US");
+      });
+    }
+  }
+}
+function readVariables(){
+  const result=[];
+  const rows=document.querySelectorAll("#variable-expenses .expense-row");
+  for(const row of rows){
+    const selected=row.querySelector(".variable-name").value.trim(),
+          newName=row.querySelector(".new-variable-name").value.trim(),
+          amount=getMoneyValue(row.querySelector(".variable-amount")),
+          mode=row.querySelector(".variable-mode").value,
+          name=newName||selected;
+    if(!name&&amount===0)continue;
+    if(!name){toast("نام هزینه متغیر را وارد کنید.","error");return null}
+    if(amount<=0){toast("مبلغ هزینه «"+name+"» صحیح نیست.","error");return null}
+
+    const config={mode,selectedUnits:[],weights:{},manualAmounts:{},parkingWeight:2};
+
+    if(mode==="parking_only"){
+      const parkUnits=db.units.filter(u=>u.hasParking);
+      if(!parkUnits.length){toast("هیچ واحدی پارکینگ ندارد؛ روش «فقط پارکینگ‌دار» قابل استفاده نیست.","error");return null}
+    }
+    else if(mode==="parking_double"){
+      const w=Number(row.querySelector(".parking-weight")?.value)||2;
+      config.parkingWeight=w>0?w:2;
+    }
+    else if(mode==="manual_units"||mode==="weighted_units"){
+      row.querySelectorAll(".unit-check:checked").forEach(cb=>config.selectedUnits.push(Number(cb.dataset.unit)));
+      if(!config.selectedUnits.length){toast("برای «"+name+"» حداقل یک واحد انتخاب کنید.","error");return null}
+      if(mode==="weighted_units"){
+        config.selectedUnits.forEach(uid=>{
+          const inp=row.querySelector('.unit-weight[data-unit="'+uid+'"]');
+          config.weights[uid]=Number(inp?.value)||1;
+        });
+      }
+    }
+    else if(mode==="manual_amounts"){
+      let sum=0;
+      row.querySelectorAll(".unit-amount").forEach(inp=>{
+        const v=getMoneyValue(inp);
+        if(v>0){config.manualAmounts[Number(inp.dataset.unit)]=v;config.selectedUnits.push(Number(inp.dataset.unit));sum+=v}
+      });
+      if(!config.selectedUnits.length){toast("برای «"+name+"» حداقل مبلغ یک واحد را وارد کنید.","error");return null}
+      if(sum!==amount){toast("جمع سهم‌های دستی «"+name+"» ("+money(sum)+") با مبلغ کل ("+money(amount)+") برابر نیست.","error");return null}
+    }
+
+    result.push({name,amount,mode,config});
+    if(!db.expenseArchive.includes(name))db.expenseArchive.push(name);
+  }
+  saveDB();return result;
+}
 function totalPeople(){return db.units.reduce((s,u)=>s+Number(u.people||0),0)}
-function share(e,u){return e.type==="per_person"?(e.amount/totalPeople())*u.people:e.amount/db.units.length}
-function createExpenseList(){const c=currentBill.fixed,arr=[{key:"water",name:"آب",amount:c.water.amount,type:"per_person"},{key:"electricity",name:"برق",amount:c.electricity.amount,type:"per_unit"},{key:"gas",name:"گاز",amount:c.gas.amount,type:"per_unit"},{key:"cleaning",name:"نظافت",amount:c.cleaning.amountPerTime*c.cleaning.count,type:"per_unit"}];currentBill.variables.forEach((v,i)=>arr.push({key:"variable_"+i,name:v.name,amount:v.amount,type:"per_unit"}));return arr}
+function share(e,u){
+  const mode=e.mode||e.type||"equal";
+  if(mode==="per_person"||mode==="per_people"){
+    const tp=totalPeople();
+    if(tp<=0)return 0;
+    return (e.amount/tp)*Number(u.people||0);
+  }
+  if(mode==="parking_only"){
+    const parkUnits=db.units.filter(x=>x.hasParking);
+    if(!parkUnits.length)return 0;
+    return u.hasParking? e.amount/parkUnits.length : 0;
+  }
+  if(mode==="parking_double"){
+    const w=Number(e.config?.parkingWeight)||2;
+    const totalW=db.units.reduce((s,x)=>s+(x.hasParking?w:1),0);
+    if(totalW<=0)return 0;
+    return e.amount*(u.hasParking?w:1)/totalW;
+  }
+  if(mode==="manual_units"){
+    const list=e.config?.selectedUnits||[];
+    if(!list.includes(u.id))return 0;
+    return e.amount/list.length;
+  }
+  if(mode==="weighted_units"){
+    const list=e.config?.selectedUnits||[];
+    if(!list.includes(u.id))return 0;
+    const totalW=list.reduce((s,uid)=>s+(Number(e.config.weights?.[uid])||1),0);
+    if(totalW<=0)return 0;
+    return e.amount*(Number(e.config.weights?.[u.id])||1)/totalW;
+  }
+  if(mode==="manual_amounts"){
+    const m=e.config?.manualAmounts||{};
+    return Number(m[u.id])||0;
+  }
+  // پیش‌فرض: مساوی
+  if(!db.units.length)return 0;
+  return e.amount/db.units.length;
+}
+function createExpenseList(){
+  const c=currentBill.fixed;
+  const arr=[
+    {key:"water",name:"آب",amount:c.water.amount,mode:"per_person",type:"per_person"},
+    {key:"electricity",name:"برق",amount:c.electricity.amount,mode:"equal",type:"per_unit"},
+    {key:"gas",name:"گاز",amount:c.gas.amount,mode:"equal",type:"per_unit"},
+    {key:"cleaning",name:"نظافت",amount:c.cleaning.amountPerTime*c.cleaning.count,mode:"equal",type:"per_unit"}
+  ];
+  currentBill.variables.forEach((v,i)=>{
+    arr.push({
+      key:"variable_"+i,
+      name:v.name,
+      amount:v.amount,
+      mode:v.mode||"equal",
+      type:v.type||"per_unit",
+      config:v.config||null
+    });
+  });
+  return arr;
+}
 function billCurrentCharge(unitShare){
   if(!unitShare)return 0;
   const columns=unitShare.columns||{};
@@ -1227,7 +1490,7 @@ localStorage.setItem(STORAGE_KEY,JSON.stringify(db));
 closeModal("bill-modal");renderDashboard();editingBillId=null;manualOverrides={};
 const ok=await syncToCloudNow();
 toast(ok?"قبض با موفقیت ذخیره شد.":"قبض ذخیره محلی شد؛ اتصال اینترنت ضعیف است و ممکن است با رفرش صفحه هنوز همگام نشده باشد.",ok?"success":"error")
-}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div>
+}function renderUnits(){const box=document.getElementById("units-list");if(!db.units.length){box.innerHTML='<div class="empty">هنوز واحدی ثبت نشده است.</div>';return}box.innerHTML=db.units.map(u=>{const debt=previousDebt(u.id),fund=unitFund(u.id),settled=debt<=0;return `<div class="unit-item${settled?" row-settled":""}"><div class="unit-header"><div><div class="unit-name">واحد ${esc(u.unitNumber)}</div><div class="muted">${esc(u.residentName||"نام ثبت نشده")}</div><div class="muted">👥 ${u.people} نفر${u.hasParking?' · 🅿️ پارکینگ'+(u.parkingNumber?' '+esc(u.parkingNumber):''):''}</div></div><div><span class="badge ${debt>0?"badge-danger":"badge-success"}">${debt>0?"‼  بدهی: "+money(debt):"💲 تسویه"}</span><br><span class="badge badge-primary" style="margin-top:5px">🏦 صندوق: ${money(fund)}</span></div></div>
 <!-- دکمه اصلی منو -->
 <div class="unit-actions">
 
@@ -1258,28 +1521,58 @@ box.appendChild(btnCall);box.appendChild(btnSms);box.appendChild(btnWa);openModa
 let paymentHistoryUnitId=null;
 function openPaymentHistory(unitId){const u=db.units.find(x=>x.id===unitId);if(!u)return;paymentHistoryUnitId=unitId;document.getElementById("payment-history-title").textContent="تاریخچه پرداخت‌های واحد "+u.unitNumber;const debtPays=db.payments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"debt"})),fundPays=db.fundPayments.filter(x=>x.unitId===unitId).map(x=>({...x,kind:"fund"})),adjusts=(db.debtAdjustments||[]).filter(x=>x.unitId===unitId).map(x=>({...x,kind:"adjust"})),all=[...debtPays,...fundPays,...adjusts].sort((a,b)=>new Date(b.date)-new Date(a.date));const box=document.getElementById("payment-history-content");box.innerHTML=all.length?all.map(p=>`<div class="unit-item"><div class="payment-history-row"><div><div class="unit-name">${p.kind==="debt"?"💳 پرداخت بدهی":p.kind==="fund"?"🏦 واریز صندوق":"✏️ اصلاح دستی بدهی"}</div><div class="muted">${formatPaymentDate(p.date)}</div><span class="badge ${p.kind==="debt"?"badge-success":p.kind==="fund"?"badge-primary":(p.amount>=0?"badge-danger":"badge-success")}" style="margin-top:5px;display:inline-block">${p.kind==="adjust"&&p.amount>0?"+":""}${money(p.amount)}</span></div><button class="btn btn-danger" onclick="deletePaymentRecord('${p.kind}',${p.id})">🗑 حذف</button></div></div>`).join(""):'<div class="empty">پرداختی ثبت نشده است.</div>';openModal("payment-history-modal")}
 function deletePaymentRecord(kind,id){if(!confirm("این مورد حذف شود؟ اگر اشتباهی ثبت شده این کار آن را برمی‌گرداند."))return;if(kind==="debt")db.payments=db.payments.filter(x=>x.id!==id);else if(kind==="fund")db.fundPayments=db.fundPayments.filter(x=>x.id!==id);else db.debtAdjustments=(db.debtAdjustments||[]).filter(x=>x.id!==id);saveDB();if(paymentHistoryUnitId!==null)openPaymentHistory(paymentHistoryUnitId);renderUnits();renderDashboard();toast("مورد حذف شد.","success")}
-function openUnitModal(){document.getElementById("unit-modal-title").textContent="افزودن واحد";document.getElementById("editing-unit-id").value="";document.getElementById("unit-number").value="";document.getElementById("resident-name").value="";document.getElementById("resident-phone").value="";document.getElementById("unit-people").value=1;openModal("unit-modal")}
-function editUnit(id){const u=db.units.find(x=>x.id===id);if(!u)return;document.getElementById("unit-modal-title").textContent="ویرایش اطلاعات واحد";document.getElementById("editing-unit-id").value=u.id;document.getElementById("unit-number").value=u.unitNumber;document.getElementById("resident-name").value=u.residentName;document.getElementById("resident-phone").value=u.phone||"";document.getElementById("unit-people").value=u.people;openModal("unit-modal")}
+function openUnitModal(){
+  document.getElementById("unit-modal-title").textContent="افزودن واحد";
+  document.getElementById("editing-unit-id").value="";
+  document.getElementById("unit-number").value="";
+  document.getElementById("resident-name").value="";
+  document.getElementById("resident-phone").value="";
+  document.getElementById("unit-people").value=1;
+  document.getElementById("unit-has-parking").value="0";
+  document.getElementById("unit-parking-number").value="";
+  document.getElementById("unit-parking-number-wrap").style.display="none";
+  openModal("unit-modal");
+}
+function editUnit(id){
+  const u=db.units.find(x=>x.id===id);if(!u)return;
+  document.getElementById("unit-modal-title").textContent="ویرایش اطلاعات واحد";
+  document.getElementById("editing-unit-id").value=u.id;
+  document.getElementById("unit-number").value=u.unitNumber;
+  document.getElementById("resident-name").value=u.residentName;
+  document.getElementById("resident-phone").value=u.phone||"";
+  document.getElementById("unit-people").value=u.people;
+  document.getElementById("unit-has-parking").value=u.hasParking?"1":"0";
+  document.getElementById("unit-parking-number").value=u.parkingNumber||"";
+  document.getElementById("unit-parking-number-wrap").style.display=u.hasParking?"block":"none";
+  openModal("unit-modal");
+}
 let savingUnit=false;
 function saveUnit(){
-if(savingUnit)return;savingUnit=true;
-try{
-const idRaw=document.getElementById("editing-unit-id").value,id=idRaw?Number(idRaw):0,unitNumber=Number(document.getElementById("unit-number").value),residentName=document.getElementById("resident-name").value.trim(),phone=document.getElementById("resident-phone").value.trim(),people=Number(document.getElementById("unit-people").value);
-if(!unitNumber||!people){toast("شماره واحد و تعداد نفرات الزامی است.","error");return}
-if(idRaw&&!id){toast("شناسه واحد نامعتبر است؛ لطفاً صفحه را بروزرسانی کرده و دوباره ویرایش را باز کنید.","error");return}
-if(id){
-const u=db.units.find(x=>x.id===id);
-if(!u){toast("این واحد دیگر در سیستم پیدا نشد (احتمالاً حذف یا اصلاح شده)؛ صفحه را بروزرسانی کنید تا دوباره تلاش کنید.","error");return}
-const dup=db.units.find(x=>x.id!==id&&x.unitNumber===unitNumber);
-if(dup){toast("واحد شماره "+unitNumber+" قبلاً ثبت شده است؛ به جای ساخت مورد جدید، همان واحد را ویرایش کنید.","error");return}
-Object.assign(u,{unitNumber,residentName,phone,people})
-}else{
-const dup=db.units.find(x=>x.unitNumber===unitNumber);
-if(dup){toast("واحد شماره "+unitNumber+" قبلاً وجود دارد.","error");return}
-db.units.push({id:Date.now(),unitNumber,residentName,phone,people})
-}
-saveDB();closeModal("unit-modal");renderUnits();renderDashboard()
-}finally{savingUnit=false}
+  if(savingUnit)return;savingUnit=true;
+  try{
+    const idRaw=document.getElementById("editing-unit-id").value,
+          id=idRaw?Number(idRaw):0,
+          unitNumber=Number(document.getElementById("unit-number").value),
+          residentName=document.getElementById("resident-name").value.trim(),
+          phone=document.getElementById("resident-phone").value.trim(),
+          people=Number(document.getElementById("unit-people").value),
+          hasParking=document.getElementById("unit-has-parking").value==="1",
+          parkingNumber=document.getElementById("unit-parking-number").value.trim();
+    if(!unitNumber||!people){toast("شماره واحد و تعداد نفرات الزامی است.","error");return}
+    if(idRaw&&!id){toast("شناسه واحد نامعتبر است؛ لطفاً صفحه را بروزرسانی کرده و دوباره ویرایش را باز کنید.","error");return}
+    if(id){
+      const u=db.units.find(x=>x.id===id);
+      if(!u){toast("این واحد دیگر در سیستم پیدا نشد؛ صفحه را بروزرسانی کنید.","error");return}
+      const dup=db.units.find(x=>x.id!==id&&x.unitNumber===unitNumber);
+      if(dup){toast("واحد شماره "+unitNumber+" قبلاً ثبت شده است.","error");return}
+      Object.assign(u,{unitNumber,residentName,phone,people,hasParking,parkingNumber:hasParking?parkingNumber:""});
+    }else{
+      const dup=db.units.find(x=>x.unitNumber===unitNumber);
+      if(dup){toast("واحد شماره "+unitNumber+" قبلاً وجود دارد.","error");return}
+      db.units.push({id:Date.now(),unitNumber,residentName,phone,people,hasParking,parkingNumber:hasParking?parkingNumber:""});
+    }
+    saveDB();closeModal("unit-modal");renderUnits();renderDashboard();
+  }finally{savingUnit=false}
 }
 function deleteUnit(id){if(previousDebt(id)>0){toast("این واحد بدهی دارد و قابل حذف نیست.","error");return}if(!confirm("این واحد حذف شود؟"))return;db.units=db.units.filter(x=>x.id!==id);saveDB();renderUnits();renderDashboard()}
 function repairDuplicateUnits(){
